@@ -9,7 +9,7 @@ import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { DateTimeResolver, EmailAddressResolver } from 'graphql-scalars';
 import { APP_GUARD } from '@nestjs/core';
-import { AccessTokenGuard } from './auth/guards/accessToken.guards';
+import { AccessTokenGuard } from './auth/guards/accessToken.guard';
 
 @Module({
   imports: [

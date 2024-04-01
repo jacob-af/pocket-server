@@ -7,6 +7,13 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export enum Relationship {
+  Favorite = 'Favorite',
+  Close = 'Close',
+  Following = 'Following',
+  Blocked = 'Blocked',
+}
+
 export class CreateUserInput {
   userName: string;
   email: EmailAddress;
@@ -64,12 +71,42 @@ export abstract class IMutation {
     userId?: Nullable<string>,
     refreshToken?: Nullable<string>,
   ): Nullable<NewTokenResponse> | Promise<Nullable<NewTokenResponse>>;
+
+  abstract followUser(
+    followId: string,
+    relationship?: Nullable<Relationship>,
+  ): Nullable<FollowReturn> | Promise<Nullable<FollowReturn>>;
+
+  abstract unFollowUser(
+    userId?: Nullable<string>,
+  ): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
 }
 
 export class User {
   id: string;
   userName: string;
   email: EmailAddress;
+  dateJoined?: Nullable<DateTime>;
+  lastEdited?: Nullable<DateTime>;
+  following?: Nullable<Nullable<User>[]>;
+  followedBy?: Nullable<Nullable<User>[]>;
+}
+
+export class Follower {
+  following?: Nullable<User>;
+  followedBy?: Nullable<User>;
+  relationship?: Nullable<Relationship>;
+}
+
+export class StatusMessage {
+  message?: Nullable<string>;
+  code?: Nullable<string>;
+}
+
+export class FollowReturn {
+  following?: Nullable<string>;
+  relationship?: Nullable<Relationship>;
+  status?: Nullable<StatusMessage>;
 }
 
 export type DateTime = any;
