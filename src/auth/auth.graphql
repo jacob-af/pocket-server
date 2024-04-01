@@ -1,0 +1,36 @@
+type AuthPayload {
+  accessToken: String!
+  refreshToken: String!
+  user: User!
+}
+
+input CreateUserInput {
+  userName: String!
+  email: Email!
+  password: String!
+}
+
+input LoginInput {
+  email: Email!
+  password: String!
+}
+
+type LogoutResponse {
+  loggedOut: Boolean!
+}
+
+type NewTokenResponse {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Query {
+  hello: String!
+}
+
+type Mutation {
+  login(loginInput: LoginInput!): AuthPayload
+  signup(createUserInput: CreateUserInput!): AuthPayload
+  logout(userId: ID!): LogoutResponse
+  getNewTokens(userId: ID, refreshToken: String): NewTokenResponse
+}

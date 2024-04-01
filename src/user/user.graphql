@@ -1,0 +1,21 @@
+type User {
+  id: ID!
+  userName: String!
+  email: Email!
+  #dateJoined: DateTimeResolver
+  #lastEdited: DateTimeResolver
+}
+
+input UpdateUserInput {
+  id: ID!
+  userName: String
+  email: String
+}
+
+type Query {
+  allUsers: [User]!
+  userById(id: ID!): User
+}
+
+scalar Date
+scalar Email

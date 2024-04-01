@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique @db.VarChar(100)
+  userName     String   @unique @db.VarChar(255)
+  dateJoined   DateTime @default(now())
+  lastEdited   DateTime @default(now())
+  password     String   @db.VarChar(255)
+  refreshToken String?  @db.VarChar(255)
+  followedBy   Follow[] @relation("followedBy")
+  following    Follow[] @relation("following")
+  recipe       Recipe[]
+}
+
+model Follow {
+  followedBy   User   @relation("followedBy", fields: [followedById], references: [id])
+  followedById String
+  following    User   @relation("following", fields: [followingId], references: [id])
+  followingId  String
+  relationship String
+
+  @@id([followingId, followedById])
+}
+
+model Recipe {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  createdAt    DateTime @default(now())
+  createdById  String?
+  createdBy    User?    @relation(fields: [createdById], references: [id])
+  instructions String?
+  notes        String?
+  glassware    String?  @db.VarChar()
+  ice          String?  @db.VarChar(100)
+  touch        Touch[]
+}
+
+model Touch {
+  id           String      @id @default(uuid())
+  recipe       Recipe      @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  recipeId     String
+  order        Int?
+  amount       Float?      @db.Real
+  unit         String?     @db.VarChar(50)
+  ingredientId String?
+  ingredient   Ingredient? @relation(fields: [ingredientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  version      Int?        @default(0)
+}
+
+model Ingredient {
+  id          String  @id @default(uuid())
+  name        String  @default("") @db.VarChar(255)
+  description String
+  price       Float?  @db.Real
+  amount      Float?  @db.Real
+  unit        String?
+  source      String?
+  touch       Touch[]
+}
