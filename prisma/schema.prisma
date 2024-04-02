@@ -67,8 +67,20 @@ model Touch {
 }
 
 model Ingredient {
-  id          String  @id @default(uuid())
-  name        String  @default("") @db.VarChar(255)
-  description String
+  id          String               @id @default(uuid())
+  name        String               @unique @db.VarChar(255)
+  description String?
   touch       Touch[]
+  parents     IngredientRelation[] @relation("IngredientParent")
+  children    IngredientRelation[] @relation("IngredientChild")
+}
+
+// Intermediate join table for the many-to-many relationship
+model IngredientRelation {
+  parent   Ingredient @relation("IngredientParent", fields: [parentId], references: [id])
+  parentId String
+  child    Ingredient @relation("IngredientChild", fields: [childId], references: [id])
+  childId  String
+
+  @@id([parentId, childId])
 }

@@ -26,6 +26,17 @@ export class LoginInput {
     password: string;
 }
 
+export class CreateIngredientInput {
+    name: string;
+    description?: Nullable<string>;
+}
+
+export class UpdateIngredientInput {
+    id: string;
+    name: string;
+    description?: Nullable<string>;
+}
+
 export class UpdateUserInput {
     id: string;
     userName?: Nullable<string>;
@@ -50,6 +61,10 @@ export class NewTokenResponse {
 export abstract class IQuery {
     abstract hello(): string | Promise<string>;
 
+    abstract ingredients(): Nullable<Ingredient>[] | Promise<Nullable<Ingredient>[]>;
+
+    abstract ingredient(id: number): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
+
     abstract allUsers(): Nullable<User>[] | Promise<Nullable<User>[]>;
 
     abstract userById(id: string): Nullable<User> | Promise<Nullable<User>>;
@@ -64,6 +79,12 @@ export abstract class IMutation {
 
     abstract getNewTokens(userId?: Nullable<string>, refreshToken?: Nullable<string>): Nullable<NewTokenResponse> | Promise<Nullable<NewTokenResponse>>;
 
+    abstract createIngredient(createIngredientInput: CreateIngredientInput): Ingredient | Promise<Ingredient>;
+
+    abstract updateIngredient(updateIngredientInput: UpdateIngredientInput): Ingredient | Promise<Ingredient>;
+
+    abstract removeIngredient(id: number): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
+
     abstract followUser(followId: string, relationship?: Nullable<Relationship>): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
 
     abstract unFollowUser(unfollowId: string): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
@@ -71,6 +92,12 @@ export abstract class IMutation {
     abstract blockUser(blockId: string): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
 
     abstract unblockUser(unblockId: string): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
+}
+
+export class Ingredient {
+    id: string;
+    name: string;
+    description?: Nullable<string>;
 }
 
 export class User {

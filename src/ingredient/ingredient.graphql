@@ -1,0 +1,32 @@
+type Ingredient {
+  id: ID!
+  name: String!
+  description: String
+  #touch: [Touch]
+}
+
+input CreateIngredientInput {
+  name: String!
+  description: String
+}
+
+input UpdateIngredientInput {
+  id: ID!
+  name: String!
+  description: String
+}
+
+type Query {
+  ingredients: [Ingredient]!
+  ingredient(id: Int!): Ingredient
+}
+
+type Mutation {
+  createIngredient(createIngredientInput: CreateIngredientInput!): Ingredient!
+  createManyIngredient(
+    createIngredientInputs: [CreateIngredientInput]!
+  ): StatusMessage!
+
+  updateIngredient(updateIngredientInput: UpdateIngredientInput!): Ingredient!
+  removeIngredient(id: Int!): Ingredient
+}
