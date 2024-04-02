@@ -81,9 +81,11 @@ export abstract class IMutation {
 
     abstract createIngredient(createIngredientInput: CreateIngredientInput): Ingredient | Promise<Ingredient>;
 
+    abstract createManyIngredient(createIngredientInputs: Nullable<CreateIngredientInput>[]): StatusMessage | Promise<StatusMessage>;
+
     abstract updateIngredient(updateIngredientInput: UpdateIngredientInput): Ingredient | Promise<Ingredient>;
 
-    abstract removeIngredient(id: number): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
+    abstract removeIngredient(id: string): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
 
     abstract followUser(followId: string, relationship?: Nullable<Relationship>): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
 

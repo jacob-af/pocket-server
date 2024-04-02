@@ -28,5 +28,5 @@ type Mutation {
   ): StatusMessage!
 
   updateIngredient(updateIngredientInput: UpdateIngredientInput!): Ingredient!
-  removeIngredient(id: Int!): Ingredient
+  removeIngredient(id: String!): Ingredient
 }
