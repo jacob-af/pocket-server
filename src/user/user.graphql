@@ -4,8 +4,8 @@ type User {
   email: Email!
   dateJoined: Date
   lastEdited: Date
-  following: [User]
-  followedBy: [User]
+  following: [Following]
+  followedBy: [Follower]
 }
 
 input UpdateUserInput {
@@ -14,22 +14,25 @@ input UpdateUserInput {
   email: String
 }
 
-type Follower {
-  following: User
-  followedBy: User
+type Following {
+  id: ID!
+  userName: String!
+  email: Email!
+  dateJoined: Date
+  lastEdited: Date
   relationship: Relationship
+}
+
+type Follower {
+  id: ID!
+  userName: String!
+  email: Email!
+  dateJoined: Date
+  lastEdited: Date
 }
 
 type StatusMessage {
   message: String
-  code: String
-}
-
-enum Relationship {
-  Favorite
-  Close
-  Following
-  Blocked
 }
 
 type FollowReturn {
@@ -44,6 +47,8 @@ type Query {
 }
 
 type Mutation {
-  followUser(followId: String!, relationship: Relationship): FollowReturn
-  unFollowUser(userId: String): StatusMessage
+  followUser(followId: String!, relationship: Relationship): StatusMessage
+  unFollowUser(unfollowId: String!): StatusMessage
+  blockUser(blockId: String!): StatusMessage
+  unblockUser(unblockId: String!): StatusMessage
 }

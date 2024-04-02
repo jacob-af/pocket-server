@@ -32,6 +32,28 @@ export class UserResolver {
     return this.userService.followUser(followId, relationship, userId);
   }
 
+  @Mutation('unFollowUser')
+  unFollowUser(
+    @Args('unfollowId') unfollowId: string,
+    @CurrentUserId() userId: string,
+  ) {
+    this.userService.unfollowUser(unfollowId, userId);
+    return { message: 'success' };
+  }
+
+  @Mutation('blockUser')
+  blockUser(@Args('blockId') blockId: string, @CurrentUserId() userId: string) {
+    return this.userService.blockUser(blockId, userId);
+  }
+
+  @Mutation('unblockUser')
+  unblockUser(
+    @Args('unblockId') unblockId: string,
+    @CurrentUserId() userId: string,
+  ) {
+    return this.userService.unblockUser(unblockId, userId);
+  }
+
   @ResolveField()
   async following(@Parent() user) {
     const id: string = user.id;

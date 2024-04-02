@@ -1,0 +1,6 @@
+enum Relationship {
+  Favorite
+  Close
+  Following
+  Blocked
+}

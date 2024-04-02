@@ -8,15 +8,17 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique @db.VarChar(100)
-  userName     String   @unique @db.VarChar(255)
-  dateJoined   DateTime @default(now())
-  lastEdited   DateTime @default(now())
-  password     String   @db.VarChar(255)
-  refreshToken String?  @db.VarChar(255)
-  followedBy   Follow[] @relation("followedBy")
-  following    Follow[] @relation("following")
+  id           String        @id @default(uuid())
+  email        String        @unique @db.VarChar(100)
+  userName     String        @unique @db.VarChar(255)
+  dateJoined   DateTime      @default(now())
+  lastEdited   DateTime      @default(now())
+  password     String        @db.VarChar(255)
+  refreshToken String?       @db.VarChar(255)
+  followedBy   Follow[]      @relation("followedBy")
+  following    Follow[]      @relation("following")
+  blockedUser  BlockedUser[] @relation("blocked")
+  blockingUser BlockedUser[] @relation("blocking")
 }
 
 model Follow {
@@ -27,4 +29,13 @@ model Follow {
   relationship String
 
   @@id([followingId, followedById])
+}
+
+model BlockedUser {
+  user           User   @relation("blocked", fields: [userId], references: [id])
+  userId         String
+  blockingUser   User   @relation("blocking", fields: [blockingUserId], references: [id])
+  blockingUserId String
+
+  @@id([userId, blockingUserId])
 }
