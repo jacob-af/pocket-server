@@ -19,6 +19,7 @@ import { IngredientModule } from './ingredient/ingredient.module';
       driver: ApolloDriver,
       typePaths: ['./**/*.graphql'],
       playground: false,
+      introspection: true,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       definitions: {
         path: join(process.cwd(), 'src/graphql.ts'),
