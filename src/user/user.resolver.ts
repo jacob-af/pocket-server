@@ -65,9 +65,4 @@ export class UserResolver {
     const id: string = user.id;
     return await this.userService.findFollowers(id);
   }
-
-  @Query()
-  hello() {
-    return 'Helsdfglrld';
-  }
 }

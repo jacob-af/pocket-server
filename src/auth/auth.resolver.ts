@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { CreateUserInput, LoginInput } from 'src/graphql';
 import { Public } from './decorators/public-decorators';
@@ -18,6 +18,7 @@ export class AuthResolver {
   @Public()
   @Mutation('login')
   login(@Args('loginInput') loginInput: LoginInput) {
+    console.log('ding');
     return this.authService.loginUser(loginInput);
   }
   @Mutation('logout')
@@ -33,5 +34,11 @@ export class AuthResolver {
     @CurrentUser('refreshToken') refreshToken: string,
   ) {
     return this.authService.getNewTokens(userId, refreshToken);
+  }
+
+  @Public()
+  @Query()
+  hello() {
+    return 'We are passing data';
   }
 }

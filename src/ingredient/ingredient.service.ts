@@ -74,7 +74,10 @@ export class IngredientService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ingredient`;
+  async remove(id: string) {
+    const response: Ingredient = await this.prisma.ingredient.delete({
+      where: { id },
+    });
+    return `You have deleted #${response.name}`;
   }
 }

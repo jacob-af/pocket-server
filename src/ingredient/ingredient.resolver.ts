@@ -35,7 +35,7 @@ export class IngredientResolver {
   }
 
   @Mutation('removeIngredient')
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.ingredientService.remove(id);
   }
 }
