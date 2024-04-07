@@ -17,7 +17,7 @@ export class IngredientResolver {
     return this.ingredientService.create(createIngredientInput);
   }
 
-  @Query('ingredient')
+  @Query('ingredients')
   findAll() {
     return this.ingredientService.findAll();
   }

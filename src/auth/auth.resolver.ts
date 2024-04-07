@@ -22,7 +22,7 @@ export class AuthResolver {
     return this.authService.loginUser(loginInput);
   }
   @Mutation('logout')
-  logout(@Args('userId') userId: string) {
+  logout(@CurrentUserId() userId: string) {
     return this.authService.logout(userId);
   }
 

@@ -41,6 +41,7 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { email: loginInput.email },
     });
+    console.log('login service hit');
     if (!user) {
       throw new ForbiddenException('Access Denied');
     }
@@ -68,6 +69,7 @@ export class AuthService {
       where: { id: userId, refreshToken: { not: null } },
       data: { refreshToken: null },
     });
+    console.log('Logged out: true');
     return { loggedOut: true };
   }
 
@@ -120,6 +122,7 @@ export class AuthService {
       user.email,
     );
     await this.updateRefreshToken(user.id, refreshToken);
+    console.log('user: ', !!user, 'accesToken:', !!accessToken);
     return {
       user,
       accessToken,

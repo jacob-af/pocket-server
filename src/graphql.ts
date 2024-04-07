@@ -77,7 +77,7 @@ export abstract class IMutation {
 
     abstract logout(userId: string): Nullable<LogoutResponse> | Promise<Nullable<LogoutResponse>>;
 
-    abstract getNewTokens(userId?: Nullable<string>, refreshToken?: Nullable<string>): Nullable<NewTokenResponse> | Promise<Nullable<NewTokenResponse>>;
+    abstract getNewTokens(refreshToken?: Nullable<string>): Nullable<AuthPayload> | Promise<Nullable<AuthPayload>>;
 
     abstract createIngredient(createIngredientInput: CreateIngredientInput): Ingredient | Promise<Ingredient>;
 

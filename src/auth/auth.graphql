@@ -32,5 +32,5 @@ type Mutation {
   login(loginInput: LoginInput!): AuthPayload
   signup(createUserInput: CreateUserInput!): AuthPayload
   logout(userId: ID!): LogoutResponse
-  getNewTokens(userId: ID, refreshToken: String): NewTokenResponse
+  getNewTokens(refreshToken: String): AuthPayload
 }

@@ -60,15 +60,17 @@ export class IngredientService {
   }
 
   async findAll(): Promise<Ingredient[]> {
-    return this.prisma.ingredient.findMany();
+    const res: Ingredient[] = await this.prisma.ingredient.findMany();
+    console.log(res);
+    return res;
   }
 
   async findOne(id: string): Promise<Ingredient> {
-    return this.prisma.ingredient.findUnique({ where: { id } });
+    return await this.prisma.ingredient.findUnique({ where: { id } });
   }
 
   async update(updateIngredientInput: UpdateIngredientInput) {
-    return this.prisma.ingredient.update({
+    return await this.prisma.ingredient.update({
       where: { id: updateIngredientInput.id },
       data: updateIngredientInput,
     });
