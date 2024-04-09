@@ -71,13 +71,13 @@ export abstract class IQuery {
 }
 
 export abstract class IMutation {
-    abstract login(loginInput: LoginInput): Nullable<AuthPayload> | Promise<Nullable<AuthPayload>>;
+    abstract login(loginInput: LoginInput): AuthPayload | Promise<AuthPayload>;
 
-    abstract signup(createUserInput: CreateUserInput): Nullable<AuthPayload> | Promise<Nullable<AuthPayload>>;
+    abstract signup(createUserInput: CreateUserInput): AuthPayload | Promise<AuthPayload>;
 
-    abstract logout(userId: string): Nullable<LogoutResponse> | Promise<Nullable<LogoutResponse>>;
+    abstract logout(userId: string): LogoutResponse | Promise<LogoutResponse>;
 
-    abstract getNewTokens(refreshToken?: Nullable<string>): Nullable<AuthPayload> | Promise<Nullable<AuthPayload>>;
+    abstract getNewTokens(refreshToken?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
 
     abstract createIngredient(createIngredientInput: CreateIngredientInput): Ingredient | Promise<Ingredient>;
 
