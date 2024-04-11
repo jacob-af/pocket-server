@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Build" ADD COLUMN     "editedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "editedById" TEXT;
+
+-- AddForeignKey
+ALTER TABLE "Build" ADD CONSTRAINT "Build_editedById_fkey" FOREIGN KEY ("editedById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -9,8 +9,8 @@ export class UserService {
   async findAll(): Promise<User[]> {
     return await this.prisma.user.findMany();
   }
-  findOne(id: string): string {
-    return `This action returns a ${id} user`;
+  async findOne(userId: string): Promise<User> {
+    return await this.prisma.user.findUnique({ where: { id: userId } });
   }
 
   async findFollows(userId: string) {

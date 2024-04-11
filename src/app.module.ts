@@ -11,6 +11,7 @@ import { DateTimeResolver, EmailAddressResolver } from 'graphql-scalars';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from './auth/guards/accessToken.guard';
 import { IngredientModule } from './ingredient/ingredient.module';
+import { BuildModule } from './build/build.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { IngredientModule } from './ingredient/ingredient.module';
     AuthModule,
     UserModule,
     IngredientModule,
+    BuildModule,
   ],
   controllers: [],
   providers: [

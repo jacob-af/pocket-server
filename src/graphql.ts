@@ -8,6 +8,14 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export enum Permission {
+    VIEW = "VIEW",
+    EDIT = "EDIT",
+    MANAGER = "MANAGER",
+    OWNER = "OWNER",
+    BLOCKED = "BLOCKED"
+}
+
 export enum Relationship {
     Favorite = "Favorite",
     Close = "Close",
@@ -17,13 +25,45 @@ export enum Relationship {
 
 export class CreateUserInput {
     userName: string;
-    email: EmailAddress;
+    email: Email;
     password: string;
 }
 
 export class LoginInput {
-    email: EmailAddress;
+    email: Email;
     password: string;
+}
+
+export class CreateBuildInput {
+    buildName?: Nullable<string>;
+    instructions?: Nullable<string>;
+    glassware?: Nullable<string>;
+    ice?: Nullable<string>;
+    touchArray?: Nullable<Nullable<TouchInput>[]>;
+}
+
+export class UpdateBuildInput {
+    buildId?: Nullable<string>;
+    buildName?: Nullable<string>;
+    instructions?: Nullable<string>;
+    glassware?: Nullable<string>;
+    ice?: Nullable<string>;
+    touchArray?: Nullable<Nullable<TouchInput>[]>;
+    permission?: Nullable<Permission>;
+}
+
+export class ChangeBuildPermissionInput {
+    userId?: Nullable<string>;
+    buildId?: Nullable<string>;
+    userPermission?: Nullable<Permission>;
+    desiredPermission?: Nullable<Permission>;
+}
+
+export class TouchInput {
+    order?: Nullable<number>;
+    ingredientId?: Nullable<string>;
+    amount?: Nullable<number>;
+    unit?: Nullable<string>;
 }
 
 export class CreateIngredientInput {
@@ -79,6 +119,18 @@ export abstract class IMutation {
 
     abstract getNewTokens(refreshToken?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
 
+    abstract addBuild(createBuildInput?: Nullable<CreateBuildInput>): Nullable<BuildResponse> | Promise<Nullable<BuildResponse>>;
+
+    abstract updateBuild(updateBuildInput?: Nullable<UpdateBuildInput>): Nullable<ArchiveResponse> | Promise<Nullable<ArchiveResponse>>;
+
+    abstract removeBuild(buildId?: Nullable<string>, permission?: Nullable<Permission>): Nullable<BuildResponse> | Promise<Nullable<BuildResponse>>;
+
+    abstract changeBuildPermission(userId?: Nullable<string>, buildId?: Nullable<string>, userPermission?: Nullable<Permission>, desiredPermission?: Nullable<Permission>): Nullable<BuildPermissionResponse> | Promise<Nullable<BuildPermissionResponse>>;
+
+    abstract deleteBuildPermission(userId?: Nullable<string>, buildId?: Nullable<string>, userPermission?: Nullable<Permission>, permission?: Nullable<Permission>): Nullable<BuildPermissionResponse> | Promise<Nullable<BuildPermissionResponse>>;
+
+    abstract updateTouch(newTouchArray?: Nullable<Nullable<TouchInput>[]>, permission?: Nullable<Permission>, buildId?: Nullable<string>, version?: Nullable<number>): Nullable<Nullable<Touch>[]> | Promise<Nullable<Nullable<Touch>[]>>;
+
     abstract createIngredient(createIngredientInput: CreateIngredientInput): Ingredient | Promise<Ingredient>;
 
     abstract createManyIngredient(createIngredientInputs: Nullable<CreateIngredientInput>[]): StatusMessage | Promise<StatusMessage>;
@@ -96,6 +148,103 @@ export abstract class IMutation {
     abstract unblockUser(unblockId: string): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
 }
 
+export class Build {
+    id: string;
+    buildName: string;
+    createdAt?: Nullable<Date>;
+    editedAt?: Nullable<Date>;
+    createdBy?: Nullable<User>;
+    editedBy?: Nullable<User>;
+    instructions?: Nullable<string>;
+    notes?: Nullable<string>;
+    glassware?: Nullable<string>;
+    ice?: Nullable<string>;
+    permission?: Nullable<Permission>;
+    touch?: Nullable<Nullable<Touch>[]>;
+    version?: Nullable<number>;
+    archivedBuild?: Nullable<Nullable<ArchivedBuild>[]>;
+}
+
+export class ArchivedBuild {
+    id: string;
+    buildId: string;
+    buildName: string;
+    createdAt?: Nullable<Date>;
+    createdBy?: Nullable<User>;
+    instructions?: Nullable<string>;
+    notes?: Nullable<string>;
+    glassware?: Nullable<string>;
+    ice?: Nullable<string>;
+    version?: Nullable<number>;
+    archivedTouch?: Nullable<Nullable<ArchivedTouch>[]>;
+}
+
+export class BuildUser {
+    user: User;
+    build: Build;
+    permission?: Nullable<Permission>;
+}
+
+export class CompleteBuild {
+    id: string;
+    buildName: string;
+    createdAt?: Nullable<Date>;
+    editedAt?: Nullable<Date>;
+    createdBy?: Nullable<User>;
+    editedBy?: Nullable<User>;
+    about?: Nullable<string>;
+    notes?: Nullable<string>;
+    glassware?: Nullable<string>;
+    ice?: Nullable<string>;
+    instructions?: Nullable<string>;
+    permission?: Nullable<Permission>;
+    completeTouch?: Nullable<Nullable<CompleteTouch>[]>;
+}
+
+export class BuildResponse {
+    build?: Nullable<Build>;
+    permission?: Nullable<Permission>;
+}
+
+export class ArchiveResponse {
+    build?: Nullable<Build>;
+    archivedBuild?: Nullable<ArchivedBuild>;
+}
+
+export class BuildPermissionResponse {
+    buildUser?: Nullable<BuildUser>;
+    permission?: Nullable<Permission>;
+}
+
+export class Touch {
+    id: string;
+    build?: Nullable<Build>;
+    order?: Nullable<number>;
+    amount?: Nullable<number>;
+    unit?: Nullable<string>;
+    version?: Nullable<number>;
+    ingredient?: Nullable<Ingredient>;
+}
+
+export class ArchivedTouch {
+    id: string;
+    archivedBuild?: Nullable<Build>;
+    order?: Nullable<number>;
+    amount?: Nullable<number>;
+    unit?: Nullable<string>;
+    version?: Nullable<number>;
+    ingredient?: Nullable<Ingredient>;
+}
+
+export class CompleteTouch {
+    id: string;
+    order?: Nullable<number>;
+    ingredientId?: Nullable<string>;
+    amount?: Nullable<number>;
+    unit?: Nullable<string>;
+    cost?: Nullable<number>;
+}
+
 export class Ingredient {
     id: string;
     name: string;
@@ -105,28 +254,31 @@ export class Ingredient {
 export class User {
     id: string;
     userName: string;
-    email: EmailAddress;
-    dateJoined?: Nullable<DateTime>;
-    lastEdited?: Nullable<DateTime>;
+    email: Email;
+    dateJoined?: Nullable<Date>;
+    lastEdited?: Nullable<Date>;
     following?: Nullable<Nullable<Following>[]>;
     followedBy?: Nullable<Nullable<Follower>[]>;
+    myBuild?: Nullable<Nullable<Build>[]>;
+    allBuild?: Nullable<Nullable<Build>[]>;
+    buildEditedBy?: Nullable<Nullable<Build>[]>;
 }
 
 export class Following {
     id: string;
     userName: string;
-    email: EmailAddress;
-    dateJoined?: Nullable<DateTime>;
-    lastEdited?: Nullable<DateTime>;
+    email: Email;
+    dateJoined?: Nullable<Date>;
+    lastEdited?: Nullable<Date>;
     relationship?: Nullable<Relationship>;
 }
 
 export class Follower {
     id: string;
     userName: string;
-    email: EmailAddress;
-    dateJoined?: Nullable<DateTime>;
-    lastEdited?: Nullable<DateTime>;
+    email: Email;
+    dateJoined?: Nullable<Date>;
+    lastEdited?: Nullable<Date>;
 }
 
 export class StatusMessage {
@@ -139,6 +291,5 @@ export class FollowReturn {
     status?: Nullable<StatusMessage>;
 }
 
-export type DateTime = any;
-export type EmailAddress = any;
+export type Email = any;
 type Nullable<T> = T | null;

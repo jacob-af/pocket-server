@@ -6,6 +6,9 @@ type User {
   lastEdited: Date
   following: [Following]
   followedBy: [Follower]
+  myBuild: [Build]
+  allBuild: [Build]
+  buildEditedBy: [Build]
 }
 
 input UpdateUserInput {

@@ -1,0 +1,172 @@
+type Build {
+  id: ID!
+  buildName: String!
+  createdAt: Date
+  editedAt: Date
+  createdBy: User
+  editedBy: User
+  instructions: String
+  notes: String
+  glassware: String
+  ice: String
+  permission: Permission
+  touch: [Touch]
+  version: Int
+  archivedBuild: [ArchivedBuild]
+}
+type ArchivedBuild {
+  id: ID!
+  buildId: ID!
+  buildName: String!
+  createdAt: Date
+  createdBy: User
+  instructions: String
+  notes: String
+  glassware: String
+  ice: String
+  version: Int
+  archivedTouch: [ArchivedTouch]
+}
+
+type BuildUser {
+  user: User!
+  build: Build!
+  permission: Permission
+}
+
+type CompleteBuild {
+  id: ID!
+  buildName: String!
+  createdAt: Date
+  editedAt: Date
+  createdBy: User
+  editedBy: User
+  about: String
+  notes: String
+  glassware: String
+  ice: String
+  instructions: String
+  permission: Permission
+  completeTouch: [CompleteTouch]
+}
+
+type BuildUser {
+  build: Build
+  user: User
+  permission: Permission
+}
+
+type BuildResponse {
+  build: Build
+  permission: Permission
+}
+
+type ArchiveResponse {
+  build: Build
+  archivedBuild: ArchivedBuild
+}
+
+type BuildPermissionResponse {
+  buildUser: BuildUser
+  permission: Permission
+}
+
+input CreateBuildInput {
+  buildName: String
+  instructions: String
+  glassware: String
+  ice: String
+  touchArray: [TouchInput]
+}
+
+input UpdateBuildInput {
+  buildId: String
+  buildName: String
+  instructions: String
+  glassware: String
+  ice: String
+  touchArray: [TouchInput]
+  permission: Permission
+}
+
+input ChangeBuildPermissionInput {
+  userId: String
+  buildId: String
+  userPermission: Permission
+  desiredPermission: Permission
+}
+
+type Mutation {
+  addBuild(createBuildInput: CreateBuildInput): BuildResponse
+
+  updateBuild(updateBuildInput: UpdateBuildInput): ArchiveResponse
+
+  removeBuild(buildId: String, permission: Permission): BuildResponse
+
+  changeBuildPermission(
+    userId: String
+    buildId: String
+    userPermission: Permission
+    desiredPermission: Permission
+  ): BuildPermissionResponse
+
+  deleteBuildPermission(
+    userId: String
+    buildId: String
+    userPermission: Permission
+    permission: Permission
+  ): BuildPermissionResponse
+}
+
+type Touch {
+  id: ID!
+  build: Build
+  order: Int
+  amount: Float
+  unit: String
+  version: Int
+  ingredient: Ingredient
+}
+
+type ArchivedTouch {
+  id: ID!
+  archivedBuild: Build
+  order: Int
+  amount: Float
+  unit: String
+  version: Int
+  ingredient: Ingredient
+}
+
+input TouchInput {
+  order: Int
+  ingredientId: String
+  amount: Float
+  unit: String
+}
+
+type CompleteTouch {
+  id: ID!
+  order: Int
+  ingredientId: String
+  amount: Float
+  unit: String
+  cost: Float
+}
+
+type Mutation {
+  updateTouch(
+    newTouchArray: [TouchInput]
+    permission: Permission
+    buildId: String
+    version: Int
+  ): [Touch]
+}
+
+enum Permission {
+  VIEW
+  EDIT
+  MANAGER
+  OWNER
+  BLOCKED
+}
