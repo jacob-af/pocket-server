@@ -12,6 +12,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from './auth/guards/accessToken.guard';
 import { IngredientModule } from './ingredient/ingredient.module';
 import { BuildModule } from './build/build.module';
+import { TouchModule } from './touch/touch.module';
+import { RecipeModule } from './recipe/recipe.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { BuildModule } from './build/build.module';
     UserModule,
     IngredientModule,
     BuildModule,
+    TouchModule,
+    RecipeModule,
   ],
   controllers: [],
   providers: [

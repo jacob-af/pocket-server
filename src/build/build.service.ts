@@ -4,7 +4,6 @@ import {
   CreateBuildInput,
   UpdateBuildInput,
   Permission,
-  Build,
   ArchivedBuild,
 } from '../graphql';
 import { TouchService } from '../touch//touch.service';

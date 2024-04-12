@@ -8,10 +8,14 @@ import {
 } from '@nestjs/graphql';
 import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
 import { UserService } from './user.service';
+import { BuildService } from '../build/build.service';
 
 @Resolver('User')
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly buildService: BuildService,
+  ) {}
 
   @Query('allUsers')
   allUsers() {
@@ -64,5 +68,20 @@ export class UserResolver {
   async followedBy(@Parent() user) {
     const id: string = user.id;
     return await this.userService.findFollowers(id);
+  }
+
+  @ResolveField('myBuild')
+  async myBuild(@Parent() user) {
+    return await this.buildService.builds({ createdById: user.id });
+  }
+
+  @ResolveField('buildEditedBy')
+  async buildEditedBy(@Parent() user) {
+    return await this.buildService.builds({ editedById: user.id });
+  }
+
+  @ResolveField('allBuilds')
+  async allBuilds(@Parent() user) {
+    return await this.buildService.allBuilds(user.id);
   }
 }

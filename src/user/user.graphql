@@ -7,7 +7,7 @@ type User {
   following: [Following]
   followedBy: [Follower]
   myBuild: [Build]
-  allBuild: [Build]
+  allBuilds: [Build]
   buildEditedBy: [Build]
 }
 
