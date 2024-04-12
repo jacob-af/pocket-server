@@ -1,0 +1,36 @@
+type Recipe {
+  id: ID!
+  createdAt: Date
+  editedAt: Date
+  name: String
+  about: String
+  createdBy: User
+  editedBy: User
+  builds: [Build]
+}
+
+input CreateRecipeInput {
+  name: String!
+  about: String!
+  build: CreateFirstBuildInput!
+}
+
+input UpdateRecipeInput {
+  id: ID!
+  name: String
+  about: String
+}
+
+type Query {
+  recipes: [Recipe]!
+  recipe(id: Int!): Recipe
+}
+
+type Mutation {
+  createManyRecipes(
+    createManyRecipeInputs: [CreateRecipeInput]!
+  ): StatusMessage!
+  createRecipe(createRecipeInput: CreateRecipeInput!): Recipe!
+  updateRecipe(updateRecipeInput: UpdateRecipeInput!): Recipe!
+  removeRecipe(id: ID!): Recipe
+}
