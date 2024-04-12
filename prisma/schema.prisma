@@ -17,12 +17,14 @@ model User {
   refreshToken   String?         @db.VarChar(255)
   followedBy     Follow[]        @relation("followedBy")
   following      Follow[]        @relation("following")
+  recipe         Recipe[]
+  recipeEditedBy Recipe[]        @relation("recipeEditedById")
   blockedUser    BlockedUser[]   @relation("blocked")
   blockingUser   BlockedUser[]   @relation("blocking")
   buildCreatedBy Build[]         @relation("buildCreatedBy")
   buildEditedBy  Build[]         @relation("buildEditedBy")
   archivedBuild  ArchivedBuild[]
-  BuildUser      BuildUser[]
+  buildUser      BuildUser[]
 }
 
 model Follow {
@@ -44,6 +46,19 @@ model BlockedUser {
   @@id([userId, blockingUserId])
 }
 
+model Recipe {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  editedAt    DateTime @default(now())
+  name        String   @unique @db.VarChar(255)
+  about       String?
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  createdById String?
+  editedBy    User?    @relation("recipeEditedById", fields: [editedById], references: [id])
+  editedById  String?
+  build       Build[]
+}
+
 model Build {
   id            String          @id @default(uuid())
   buildName     String          @unique
@@ -58,9 +73,11 @@ model Build {
   glassware     String?         @db.VarChar()
   ice           String?         @db.VarChar(100)
   touch         Touch[]
-  ArchivedBuild ArchivedBuild[]
-  BuildUser     BuildUser[]
+  archivedBuild ArchivedBuild[]
+  buildUser     BuildUser[]
   version       Int
+  recipe        Recipe?         @relation(fields: [recipeId], references: [id])
+  recipeId      String?
 }
 
 model ArchivedBuild {
@@ -90,15 +107,15 @@ model BuildUser {
 }
 
 model Touch {
-  id           String     @id @default(uuid())
-  build        Build      @relation(fields: [buildId], references: [id], onDelete: Cascade)
-  buildId      String
-  order        Int
-  amount       Float      @db.Real
-  unit         String     @db.VarChar(50)
-  ingredientId String
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  version      Int        @default(0)
+  id             String     @id @default(uuid())
+  build          Build      @relation(fields: [buildId], references: [id], onDelete: Cascade)
+  buildId        String
+  order          Int
+  amount         Float      @db.Real
+  unit           String     @db.VarChar(50)
+  ingredientName String
+  ingredient     Ingredient @relation(fields: [ingredientName], references: [name], onDelete: NoAction, onUpdate: NoAction)
+  version        Int        @default(0)
 }
 
 model ArchivedTouch {
@@ -108,8 +125,8 @@ model ArchivedTouch {
   order           Int?
   amount          Float         @db.Real
   unit            String        @db.VarChar(50)
-  ingredientId    String
-  ingredient      Ingredient?   @relation(fields: [ingredientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ingredientName  String
+  ingredient      Ingredient?   @relation(fields: [ingredientName], references: [name], onDelete: NoAction, onUpdate: NoAction)
   version         Int
 }
 
@@ -120,7 +137,7 @@ model Ingredient {
   touch         Touch[]
   parents       IngredientRelation[] @relation("IngredientParent")
   children      IngredientRelation[] @relation("IngredientChild")
-  ArchivedTouch ArchivedTouch[]
+  archivedTouch ArchivedTouch[]
 }
 
 // Intermediate join table for the many-to-many relationship
