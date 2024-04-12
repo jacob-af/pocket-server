@@ -1,5 +1,6 @@
 type Build {
   id: ID!
+  recipe: Recipe!
   buildName: String!
   createdAt: Date
   editedAt: Date
@@ -10,7 +11,7 @@ type Build {
   glassware: String
   ice: String
   permission: Permission
-  touch: [Touch]
+  touches: [Touch]!
   version: Int
   archivedBuild: [ArchivedBuild]
 }
@@ -72,20 +73,29 @@ type BuildPermissionResponse {
 }
 
 input CreateBuildInput {
-  buildName: String
+  recipeId: ID!
+  buildName: String!
   instructions: String
   glassware: String
   ice: String
-  touchArray: [TouchInput]
+  touchArray: [TouchInput]!
+}
+input CreateFirstBuildInput {
+  buildName: String!
+  instructions: String
+  glassware: String
+  ice: String
+  touchArray: [TouchInput]!
 }
 
 input UpdateBuildInput {
-  buildId: String
+  recipeId: ID!
+  buildId: String!
   buildName: String
   instructions: String
   glassware: String
   ice: String
-  touchArray: [TouchInput]
+  touchArray: [TouchInput]!
   permission: Permission
 }
 
@@ -96,8 +106,13 @@ input ChangeBuildPermissionInput {
   desiredPermission: Permission
 }
 
+type Query {
+  builds: [Build]
+  build: Build
+}
+
 type Mutation {
-  addBuild(createBuildInput: CreateBuildInput): BuildResponse
+  createBuild(createBuildInput: CreateBuildInput): BuildResponse
 
   updateBuild(updateBuildInput: UpdateBuildInput): ArchiveResponse
 
@@ -116,51 +131,6 @@ type Mutation {
     userPermission: Permission
     permission: Permission
   ): BuildPermissionResponse
-}
-
-type Touch {
-  id: ID!
-  build: Build
-  order: Int
-  amount: Float
-  unit: String
-  version: Int
-  ingredient: Ingredient
-}
-
-type ArchivedTouch {
-  id: ID!
-  archivedBuild: Build
-  order: Int
-  amount: Float
-  unit: String
-  version: Int
-  ingredient: Ingredient
-}
-
-input TouchInput {
-  order: Int
-  ingredientId: String
-  amount: Float
-  unit: String
-}
-
-type CompleteTouch {
-  id: ID!
-  order: Int
-  ingredientId: String
-  amount: Float
-  unit: String
-  cost: Float
-}
-
-type Mutation {
-  updateTouch(
-    newTouchArray: [TouchInput]
-    permission: Permission
-    buildId: String
-    version: Int
-  ): [Touch]
 }
 
 enum Permission {

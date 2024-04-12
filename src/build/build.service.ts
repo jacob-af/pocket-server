@@ -4,25 +4,34 @@ import {
   CreateBuildInput,
   UpdateBuildInput,
   Permission,
-  TouchInput,
-  Touch,
   Build,
   ArchivedBuild,
-  ArchivedTouch,
 } from '../graphql';
+import { TouchService } from '../touch//touch.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class BuildService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private touchService: TouchService,
+  ) {}
 
   async create(
-    { buildName, instructions, glassware, ice, touchArray }: CreateBuildInput,
+    {
+      recipeId,
+      buildName,
+      instructions,
+      glassware,
+      ice,
+      touchArray,
+    }: CreateBuildInput,
     userId: string,
   ) {
     try {
-      const build: Build = await this.prisma.build.create({
+      const build = await this.prisma.build.create({
         data: {
+          recipe: { connect: { id: recipeId } },
           buildName,
           instructions,
           glassware,
@@ -31,7 +40,7 @@ export class BuildService {
           editedBy: { connect: { id: userId } },
           version: 0,
           touch: {
-            create: this.touchArrayWithIndex(touchArray, 0),
+            create: this.touchService.touchArrayWithIndex(touchArray, 0),
           },
         },
       });
@@ -50,17 +59,11 @@ export class BuildService {
       };
     } catch (err) {
       console.log(err);
-      return {
-        status: {
-          code: err.code,
-          message: err.message,
-        },
-      };
     }
   }
 
-  async findAll() {
-    return await this.prisma.build.findMany();
+  async builds(options?: { [key: string]: string }) {
+    return await this.prisma.build.findMany({ where: options });
   }
 
   async findOne(buildId: string) {
@@ -95,7 +98,7 @@ export class BuildService {
           ice,
           editedById: userId,
           touch: {
-            create: this.touchArrayWithIndex(
+            create: this.touchService.touchArrayWithIndex(
               touchArray,
               archivedBuild.version + 1,
             ),
@@ -128,7 +131,7 @@ export class BuildService {
 
   async archiveBuild(buildId: string, userId: string): Promise<ArchivedBuild> {
     try {
-      const { id, buildName, instructions, glassware, ice, version }: Build =
+      const { id, buildName, instructions, glassware, ice, version } =
         await this.prisma.build.findUnique({
           where: {
             id: buildId,
@@ -150,7 +153,7 @@ export class BuildService {
           ice,
           version,
           archivedTouch: {
-            create: this.touchArrayWithIndex(touch, version),
+            create: this.touchService.touchArrayWithIndex(touch, version),
           },
         },
       });
@@ -165,6 +168,21 @@ export class BuildService {
       console.log(err);
       throw new Error(err);
     }
+  }
+  async allBuilds(userId: string) {
+    const buildUser = await this.prisma.buildUser.findMany({
+      where: { userId: userId },
+    });
+    console.log(buildUser);
+    return buildUser.map(async (each) => {
+      const build = await this.prisma.build.findUnique({
+        where: { id: each.buildId },
+      });
+      return {
+        ...build,
+        permission: each.permission,
+      };
+    });
   }
 
   async changeBuildPermission({
@@ -201,68 +219,6 @@ export class BuildService {
         },
       };
     }
-  }
-
-  async createTouchArray(context, buildId, touchArray, version) {
-    const newTouchArray = await touchArray.map(async (touch, index) => {
-      const newTouch = await context.prisma.touch.create({
-        data: {
-          buildId,
-          order: index,
-          ingredientTypeId: touch.ingredientTypeId,
-          ingredientId: touch.ingredientId,
-          amount: touch.amount,
-          unit: touch.unit,
-          version,
-        },
-      });
-      return newTouch;
-    });
-    return newTouchArray;
-  }
-
-  touchArrayWithIndex(touchArray: TouchInput[], version: number) {
-    return touchArray.map((touch, index) => {
-      return {
-        order: index,
-        ingredientId: touch.ingredientId,
-        amount: touch.amount,
-        unit: touch.unit,
-        version,
-      };
-    });
-  }
-
-  async archiveTouchArray(buildId, version) {
-    const touchToArchive = await this.prisma.touch.findMany({
-      where: {
-        buildId,
-        version,
-      },
-    });
-
-    const archivedTouchArray: Promise<ArchivedTouch>[] = touchToArchive.map(
-      async (touch: Touch, index: number) => {
-        return await this.prisma.archivedTouch.create({
-          data: {
-            archivedBuild: { connect: { id: buildId } },
-            order: index,
-            ingredient: { connect: { id: touch.ingredient.id } },
-            amount: touch.amount,
-            unit: touch.unit,
-            version,
-          },
-        });
-      },
-    );
-
-    const deletedArray = touchToArchive.map(async (touch: Touch) => {
-      return this.prisma.touch.delete({
-        where: { id: touch.id },
-      });
-    });
-    console.log(deletedArray);
-    return archivedTouchArray;
   }
 
   async deleteBuildPermission(buildId: string, userId: string) {

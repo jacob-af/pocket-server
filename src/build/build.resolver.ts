@@ -1,29 +1,41 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { BuildService } from './build.service';
+import { TouchService } from '../touch/touch.service';
 import {
   CreateBuildInput,
   UpdateBuildInput,
   ChangeBuildPermissionInput,
   Permission,
+  Build,
 } from '../graphql';
 import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
 import { resolvePermission } from 'src/utils/resolvePermission';
 
 @Resolver('Build')
 export class BuildResolver {
-  constructor(private readonly buildService: BuildService) {}
+  constructor(
+    private readonly buildService: BuildService,
+    private touchService: TouchService,
+  ) {}
 
   @Mutation('createBuild')
   create(
-    @Args('newBuildInput') newBuildInput: CreateBuildInput,
+    @Args('createBuildInput') createBuildInput: CreateBuildInput,
     @CurrentUserId() userId: string,
   ) {
-    return this.buildService.create(newBuildInput, userId);
+    return this.buildService.create(createBuildInput, userId);
   }
 
   @Query('builds')
   findAll() {
-    return this.buildService.findAll();
+    return this.buildService.builds();
   }
 
   @Query('build')
@@ -98,5 +110,10 @@ export class BuildResolver {
     } catch (err) {
       throw new Error(err.message);
     }
+  }
+
+  @ResolveField('touches')
+  async touches(@Parent() build: Build) {
+    return this.touchService.touches(build.id);
   }
 }
