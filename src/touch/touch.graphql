@@ -1,0 +1,47 @@
+type Touch {
+  id: ID!
+  build: Build
+  order: Int
+  amount: Float
+  unit: String
+  version: Int
+  ingredient: Ingredient
+}
+
+type ArchivedTouch {
+  id: ID!
+  archivedBuild: Build
+  order: Int
+  amount: Float
+  unit: String
+  version: Int
+  ingredient: Ingredient
+}
+
+input TouchInput {
+  ingredientName: String
+  amount: Float
+  unit: String
+}
+
+type CompleteTouch {
+  id: ID!
+  ingredientName: String
+  amount: Float
+  unit: String
+  cost: Float
+}
+
+# type Query {
+#   findAll: Touch
+#   touches(option): [Touch]
+# }
+
+type Mutation {
+  updateTouch(
+    newTouchArray: [TouchInput]
+    permission: Permission
+    buildId: String
+    version: Int
+  ): [Touch]
+}
