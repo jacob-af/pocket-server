@@ -23,8 +23,8 @@ type Query {
 
 type Mutation {
   createIngredient(createIngredientInput: CreateIngredientInput!): Ingredient!
-  createManyIngredient(
-    createIngredientInputs: [CreateIngredientInput]!
+  createManyIngredients(
+    createManyIngredientInputs: [CreateIngredientInput]!
   ): StatusMessage!
 
   updateIngredient(updateIngredientInput: UpdateIngredientInput!): Ingredient!

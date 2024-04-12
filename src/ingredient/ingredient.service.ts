@@ -4,6 +4,7 @@ import {
   CreateIngredientInput,
   UpdateIngredientInput,
   Ingredient,
+  StatusMessage,
 } from 'src/graphql';
 
 @Injectable()
@@ -18,10 +19,13 @@ export class IngredientService {
     });
   }
 
-  async addManyIngredient(createIngredientInputs: CreateIngredientInput[]) {
+  async createManyIngredients(
+    createManyIngredientInputs: CreateIngredientInput[],
+  ): Promise<StatusMessage> {
     const successes: Ingredient[] = [];
     const errors: string[] = [];
-    createIngredientInputs.forEach(async (ingredient) => {
+    //console.log(createManyIngredientInputs);
+    for (const ingredient of createManyIngredientInputs) {
       try {
         const result = await this.prisma.ingredient.upsert({
           where: {
@@ -36,12 +40,14 @@ export class IngredientService {
           },
         });
         successes.push(result);
+        console.log(successes.length, errors.length);
       } catch (err) {
         console.log(err.message);
         errors.push(ingredient.name);
       }
-    });
-    console.log(successes, errors);
+    }
+
+    console.log(successes.length);
     if (successes.length > 0 && errors.length === 0) {
       return {
         message: `Successfully added ${successes.length} ingredients with no errors`,
@@ -59,14 +65,16 @@ export class IngredientService {
     }
   }
 
-  async findAll(): Promise<Ingredient[]> {
-    const res: Ingredient[] = await this.prisma.ingredient.findMany();
-    console.log(res);
+  async findAll(options?: { [key: string]: string }): Promise<Ingredient[]> {
+    const res: Ingredient[] = await this.prisma.ingredient.findMany({
+      where: options,
+    });
     return res;
   }
 
-  async findOne(id: string): Promise<Ingredient> {
-    return await this.prisma.ingredient.findUnique({ where: { id } });
+  async ingredient(name: string): Promise<Ingredient> {
+    console.log('dong');
+    return await this.prisma.ingredient.findUnique({ where: { name } });
   }
 
   async update(updateIngredientInput: UpdateIngredientInput) {
