@@ -78,10 +78,10 @@ export class RecipeService {
     return await this.prisma.recipe.findUnique({ where: { id } });
   }
 
-  async update({ id, name, about }: UpdateRecipeInput) {
+  async update({ id, name, about }: UpdateRecipeInput, userId) {
     return await this.prisma.recipe.update({
       where: { id },
-      data: { name, about },
+      data: { name, about, editedBy: { connect: { id: userId } } },
     });
   }
 

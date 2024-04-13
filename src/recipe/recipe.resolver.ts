@@ -51,8 +51,11 @@ export class RecipeResolver {
   }
 
   @Mutation('updateRecipe')
-  update(@Args('updateRecipeInput') updateRecipeInput: UpdateRecipeInput) {
-    return this.recipeService.update(updateRecipeInput);
+  update(
+    @Args('updateRecipeInput') updateRecipeInput: UpdateRecipeInput,
+    @CurrentUserId() userId: string,
+  ) {
+    return this.recipeService.update(updateRecipeInput, userId);
   }
 
   @Mutation('removeRecipe')
