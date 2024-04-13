@@ -68,16 +68,16 @@ model Build {
   editedAt      DateTime        @default(now())
   editedById    String
   editedBy      User            @relation("buildEditedBy", fields: [editedById], references: [id])
-  instructions  String?
+  instructions  String
   notes         String?
-  glassware     String?         @db.VarChar()
-  ice           String?         @db.VarChar(100)
+  glassware     String          @db.VarChar()
+  ice           String          @db.VarChar(100)
   touch         Touch[]
   archivedBuild ArchivedBuild[]
   buildUser     BuildUser[]
   version       Int
   recipe        Recipe?         @relation(fields: [recipeId], references: [id])
-  recipeId      String?
+  recipeId      String
 }
 
 model ArchivedBuild {

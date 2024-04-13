@@ -21,7 +21,7 @@ import { resolvePermission } from 'src/utils/resolvePermission';
 @Resolver('Build')
 export class BuildResolver {
   constructor(
-    private readonly buildService: BuildService,
+    private buildService: BuildService,
     private touchService: TouchService,
   ) {}
 
@@ -33,12 +33,12 @@ export class BuildResolver {
     return this.buildService.create(createBuildInput, userId);
   }
 
-  @Query('builds')
+  @Query('findAllBuilds')
   findAll() {
     return this.buildService.findAll();
   }
 
-  @Query('build')
+  @Query('findOneBuild')
   findOne(@Args('id') id: string) {
     return this.buildService.findOne(id);
   }

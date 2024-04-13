@@ -107,8 +107,8 @@ input ChangeBuildPermissionInput {
 }
 
 type Query {
-  findAll: [Build]
-  findOne: Build
+  findAllBuilds: [Build]
+  findOneBuild: Build
 }
 
 type Mutation {

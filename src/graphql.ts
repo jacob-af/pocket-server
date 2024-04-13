@@ -25,12 +25,12 @@ export enum Relationship {
 
 export class CreateUserInput {
     userName: string;
-    email: Email;
+    email: EmailAddress;
     password: string;
 }
 
 export class LoginInput {
-    email: Email;
+    email: EmailAddress;
     password: string;
 }
 
@@ -122,9 +122,9 @@ export class NewTokenResponse {
 export abstract class IQuery {
     abstract hello(): string | Promise<string>;
 
-    abstract findAll(): Nullable<Nullable<Build>[]> | Promise<Nullable<Nullable<Build>[]>>;
+    abstract findAllBuilds(): Nullable<Nullable<Build>[]> | Promise<Nullable<Nullable<Build>[]>>;
 
-    abstract findOne(): Nullable<Build> | Promise<Nullable<Build>>;
+    abstract findOneBuild(): Nullable<Build> | Promise<Nullable<Build>>;
 
     abstract ingredients(): Nullable<Ingredient>[] | Promise<Nullable<Ingredient>[]>;
 
@@ -189,8 +189,8 @@ export class Build {
     id: string;
     recipe: Recipe;
     buildName: string;
-    createdAt?: Nullable<Date>;
-    editedAt?: Nullable<Date>;
+    createdAt?: Nullable<DateTime>;
+    editedAt?: Nullable<DateTime>;
     createdBy?: Nullable<User>;
     editedBy?: Nullable<User>;
     instructions?: Nullable<string>;
@@ -207,7 +207,7 @@ export class ArchivedBuild {
     id: string;
     buildId: string;
     buildName: string;
-    createdAt?: Nullable<Date>;
+    createdAt?: Nullable<DateTime>;
     createdBy?: Nullable<User>;
     instructions?: Nullable<string>;
     notes?: Nullable<string>;
@@ -226,8 +226,8 @@ export class BuildUser {
 export class CompleteBuild {
     id: string;
     buildName: string;
-    createdAt?: Nullable<Date>;
-    editedAt?: Nullable<Date>;
+    createdAt?: Nullable<DateTime>;
+    editedAt?: Nullable<DateTime>;
     createdBy?: Nullable<User>;
     editedBy?: Nullable<User>;
     about?: Nullable<string>;
@@ -262,8 +262,8 @@ export class Ingredient {
 
 export class Recipe {
     id: string;
-    createdAt?: Nullable<Date>;
-    editedAt?: Nullable<Date>;
+    createdAt?: Nullable<DateTime>;
+    editedAt?: Nullable<DateTime>;
     name?: Nullable<string>;
     about?: Nullable<string>;
     createdBy?: Nullable<User>;
@@ -302,9 +302,9 @@ export class CompleteTouch {
 export class User {
     id: string;
     userName: string;
-    email: Email;
-    dateJoined?: Nullable<Date>;
-    lastEdited?: Nullable<Date>;
+    email: EmailAddress;
+    dateJoined?: Nullable<DateTime>;
+    lastEdited?: Nullable<DateTime>;
     following?: Nullable<Nullable<Following>[]>;
     followedBy?: Nullable<Nullable<Follower>[]>;
     myBuild?: Nullable<Nullable<Build>[]>;
@@ -315,18 +315,18 @@ export class User {
 export class Following {
     id: string;
     userName: string;
-    email: Email;
-    dateJoined?: Nullable<Date>;
-    lastEdited?: Nullable<Date>;
+    email: EmailAddress;
+    dateJoined?: Nullable<DateTime>;
+    lastEdited?: Nullable<DateTime>;
     relationship?: Nullable<Relationship>;
 }
 
 export class Follower {
     id: string;
     userName: string;
-    email: Email;
-    dateJoined?: Nullable<Date>;
-    lastEdited?: Nullable<Date>;
+    email: EmailAddress;
+    dateJoined?: Nullable<DateTime>;
+    lastEdited?: Nullable<DateTime>;
 }
 
 export class StatusMessage {
@@ -339,5 +339,6 @@ export class FollowReturn {
     status?: Nullable<StatusMessage>;
 }
 
-export type Email = any;
+export type DateTime = any;
+export type EmailAddress = any;
 type Nullable<T> = T | null;
