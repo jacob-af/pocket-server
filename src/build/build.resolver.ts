@@ -35,7 +35,7 @@ export class BuildResolver {
 
   @Query('builds')
   findAll() {
-    return this.buildService.builds();
+    return this.buildService.findAll();
   }
 
   @Query('build')

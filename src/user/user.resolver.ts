@@ -72,12 +72,12 @@ export class UserResolver {
 
   @ResolveField('myBuild')
   async myBuild(@Parent() user) {
-    return await this.buildService.builds({ createdById: user.id });
+    return await this.buildService.findAll({ createdById: user.id });
   }
 
   @ResolveField('buildEditedBy')
   async buildEditedBy(@Parent() user) {
-    return await this.buildService.builds({ editedById: user.id });
+    return await this.buildService.findAll({ editedById: user.id });
   }
 
   @ResolveField('allBuilds')

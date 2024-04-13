@@ -61,7 +61,7 @@ export class BuildService {
     }
   }
 
-  async builds(options?: { [key: string]: string }) {
+  async findAll(options?: { [key: string]: string }) {
     return await this.prisma.build.findMany({ where: options });
   }
 
