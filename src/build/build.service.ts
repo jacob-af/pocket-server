@@ -5,6 +5,7 @@ import {
   UpdateBuildInput,
   Permission,
   ArchivedBuild,
+  Build,
 } from '../graphql';
 import { TouchService } from '../touch//touch.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -168,6 +169,7 @@ export class BuildService {
       throw new Error(err);
     }
   }
+
   async allBuilds(userId: string) {
     const buildUser = await this.prisma.buildUser.findMany({
       where: { userId: userId },
@@ -247,5 +249,51 @@ export class BuildService {
         },
       };
     }
+  }
+
+  async usersBuilds(userId: string) {
+    console.log(userId);
+    const buildList: {
+      userId: string;
+      buildId: string;
+      permission: string;
+    }[] = await this.prisma.buildUser.findMany({
+      where: { userId: userId },
+    });
+    const recipes = [];
+    for (const connection of buildList) {
+      const { recipe, ...build }: Build = await this.prisma.build.findUnique({
+        where: { id: connection.buildId },
+        include: {
+          recipe: true,
+          touch: true,
+        },
+      });
+      const index = recipes.findIndex((rec) => rec.id === recipe.id);
+      if (index === -1) {
+        recipes.push({
+          ...recipe,
+          build: [
+            {
+              ...build,
+              permission: connection.permission,
+            },
+          ],
+        });
+      } else {
+        recipes[index] = {
+          ...recipes[index],
+          build: [
+            ...recipes[index].build,
+            {
+              ...build,
+              permission: connection.permission,
+            },
+          ],
+        };
+      }
+    }
+    console.log('user builds route hit');
+    return recipes;
   }
 }

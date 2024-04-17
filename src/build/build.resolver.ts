@@ -8,6 +8,7 @@ import {
 } from '@nestjs/graphql';
 import { BuildService } from './build.service';
 import { TouchService } from '../touch/touch.service';
+import { RecipeService } from '../recipe/recipe.service';
 import {
   CreateBuildInput,
   UpdateBuildInput,
@@ -23,6 +24,7 @@ export class BuildResolver {
   constructor(
     private buildService: BuildService,
     private touchService: TouchService,
+    private recipeService: RecipeService,
   ) {}
 
   @Mutation('createBuild')
@@ -41,6 +43,12 @@ export class BuildResolver {
   @Query('findOneBuild')
   findOne(@Args('id') id: string) {
     return this.buildService.findOne(id);
+  }
+
+  @Query('usersBuilds')
+  usersBuilds(@CurrentUserId() userId: string) {
+    console.log(userId);
+    return this.buildService.usersBuilds(userId);
   }
 
   @Mutation('updateBuild')
@@ -112,8 +120,12 @@ export class BuildResolver {
     }
   }
 
-  @ResolveField('touches')
-  async touches(@Parent() build: Build) {
-    return this.touchService.touches(build.id);
+  @ResolveField('touch')
+  async touch(@Parent() build: Build) {
+    return this.touchService.touch(build.id);
+  }
+  @ResolveField('recipe')
+  async recipe(@Parent() build: Build) {
+    return this.recipeService.findOne(build.recipe.id);
   }
 }

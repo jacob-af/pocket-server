@@ -11,7 +11,7 @@ type Build {
   glassware: String
   ice: String
   permission: Permission
-  touches: [Touch]!
+  touch: [Touch]!
   version: Int
   archivedBuild: [ArchivedBuild]
 }
@@ -54,11 +54,6 @@ type CompleteBuild {
 type BuildUser {
   build: Build
   user: User
-  permission: Permission
-}
-
-type BuildResponse {
-  build: Build
   permission: Permission
 }
 
@@ -109,14 +104,15 @@ input ChangeBuildPermissionInput {
 type Query {
   findAllBuilds: [Build]
   findOneBuild: Build
+  usersBuilds: [Recipe]
 }
 
 type Mutation {
-  createBuild(createBuildInput: CreateBuildInput): BuildResponse
+  createBuild(createBuildInput: CreateBuildInput): Build
 
   updateBuild(updateBuildInput: UpdateBuildInput): ArchiveResponse
 
-  removeBuild(buildId: String, permission: Permission): BuildResponse
+  removeBuild(buildId: String, permission: Permission): Build
 
   changeBuildPermission(
     userId: String

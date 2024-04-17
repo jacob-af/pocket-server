@@ -63,8 +63,8 @@ export class RecipeResolver {
     return this.recipeService.remove(id);
   }
 
-  @ResolveField('builds')
-  async builds(@Parent() recipe: Recipe) {
-    return this.buildService.findAll({ id: recipe.id });
+  @ResolveField('build')
+  async build(@Parent() recipe: Recipe) {
+    return this.buildService.findAll({ recipeId: recipe.id });
   }
 }

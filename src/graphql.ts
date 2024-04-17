@@ -126,6 +126,8 @@ export abstract class IQuery {
 
     abstract findOneBuild(): Nullable<Build> | Promise<Nullable<Build>>;
 
+    abstract usersBuilds(): Nullable<Nullable<Recipe>[]> | Promise<Nullable<Nullable<Recipe>[]>>;
+
     abstract ingredients(): Nullable<Ingredient>[] | Promise<Nullable<Ingredient>[]>;
 
     abstract ingredient(id: number): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
@@ -148,11 +150,11 @@ export abstract class IMutation {
 
     abstract getNewTokens(refreshToken?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
 
-    abstract createBuild(createBuildInput?: Nullable<CreateBuildInput>): Nullable<BuildResponse> | Promise<Nullable<BuildResponse>>;
+    abstract createBuild(createBuildInput?: Nullable<CreateBuildInput>): Nullable<Build> | Promise<Nullable<Build>>;
 
     abstract updateBuild(updateBuildInput?: Nullable<UpdateBuildInput>): Nullable<ArchiveResponse> | Promise<Nullable<ArchiveResponse>>;
 
-    abstract removeBuild(buildId?: Nullable<string>, permission?: Nullable<Permission>): Nullable<BuildResponse> | Promise<Nullable<BuildResponse>>;
+    abstract removeBuild(buildId?: Nullable<string>, permission?: Nullable<Permission>): Nullable<Build> | Promise<Nullable<Build>>;
 
     abstract changeBuildPermission(userId?: Nullable<string>, buildId?: Nullable<string>, userPermission?: Nullable<Permission>, desiredPermission?: Nullable<Permission>): Nullable<BuildPermissionResponse> | Promise<Nullable<BuildPermissionResponse>>;
 
@@ -198,7 +200,7 @@ export class Build {
     glassware?: Nullable<string>;
     ice?: Nullable<string>;
     permission?: Nullable<Permission>;
-    touches: Nullable<Touch>[];
+    touch: Nullable<Touch>[];
     version?: Nullable<number>;
     archivedBuild?: Nullable<Nullable<ArchivedBuild>[]>;
 }
@@ -239,11 +241,6 @@ export class CompleteBuild {
     completeTouch?: Nullable<Nullable<CompleteTouch>[]>;
 }
 
-export class BuildResponse {
-    build?: Nullable<Build>;
-    permission?: Nullable<Permission>;
-}
-
 export class ArchiveResponse {
     build?: Nullable<Build>;
     archivedBuild?: Nullable<ArchivedBuild>;
@@ -268,7 +265,7 @@ export class Recipe {
     about?: Nullable<string>;
     createdBy?: Nullable<User>;
     editedBy?: Nullable<User>;
-    builds?: Nullable<Nullable<Build>[]>;
+    build?: Nullable<Nullable<Build>[]>;
 }
 
 export class Touch {

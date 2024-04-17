@@ -10,7 +10,7 @@ export class TouchService {
     return 'This action adds a new touch';
   }
 
-  async touches(buildId: string) {
+  async touch(buildId: string) {
     return await this.prisma.touch.findMany({ where: { buildId } });
   }
 

@@ -73,7 +73,6 @@ export class IngredientService {
   }
 
   async ingredient(name: string): Promise<Ingredient> {
-    console.log('dong');
     return await this.prisma.ingredient.findUnique({ where: { name } });
   }
 
