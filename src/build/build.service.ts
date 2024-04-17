@@ -19,7 +19,7 @@ export class BuildService {
 
   async create(
     {
-      recipeId,
+      recipeName,
       buildName,
       instructions,
       glassware,
@@ -29,9 +29,9 @@ export class BuildService {
     userId: string,
   ) {
     try {
-      const build = await this.prisma.build.create({
+      const build: Build = await this.prisma.build.create({
         data: {
-          recipe: { connect: { id: recipeId } },
+          recipe: { connect: { name: recipeName } },
           buildName,
           instructions,
           glassware,
@@ -42,6 +42,10 @@ export class BuildService {
           touch: {
             create: this.touchService.touchArrayWithIndex(touchArray, 0),
           },
+        },
+        include: {
+          recipe: true,
+          touch: true,
         },
       });
       const {

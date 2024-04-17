@@ -68,7 +68,7 @@ type BuildPermissionResponse {
 }
 
 input CreateBuildInput {
-  recipeId: ID!
+  recipeName: String!
   buildName: String!
   instructions: String
   glassware: String
@@ -84,7 +84,7 @@ input CreateFirstBuildInput {
 }
 
 input UpdateBuildInput {
-  recipeId: ID!
+  recipeName: String
   buildId: String!
   buildName: String
   instructions: String

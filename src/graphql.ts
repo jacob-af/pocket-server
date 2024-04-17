@@ -35,7 +35,7 @@ export class LoginInput {
 }
 
 export class CreateBuildInput {
-    recipeId: string;
+    recipeName: string;
     buildName: string;
     instructions?: Nullable<string>;
     glassware?: Nullable<string>;
@@ -52,7 +52,7 @@ export class CreateFirstBuildInput {
 }
 
 export class UpdateBuildInput {
-    recipeId: string;
+    recipeName?: Nullable<string>;
     buildId: string;
     buildName?: Nullable<string>;
     instructions?: Nullable<string>;

@@ -27,12 +27,12 @@ export class RecipeService {
       });
       const buildWithId = {
         ...build,
-        recipeId: recipe.id,
+        recipeName: recipe.name,
       };
       const newBuild = await this.buildService.create(buildWithId, userId);
       return {
         ...recipe,
-        newBuild,
+        build: [newBuild.build],
       };
     } catch (err) {
       throw new Error(err);
