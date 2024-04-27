@@ -74,8 +74,17 @@ export class RecipeService {
     return this.prisma.recipe.findMany();
   }
 
-  async findOne(id: string) {
-    return await this.prisma.recipe.findUnique({ where: { id } });
+  async findOne(name: string) {
+    return await this.prisma.recipe.findUnique({ where: { name } });
+  }
+
+  async recipeList() {
+    return await this.prisma.recipe.findMany({
+      select: {
+        name: true,
+        id: true,
+      },
+    });
   }
 
   async update({ id, name, about }: UpdateRecipeInput, userId: string) {

@@ -4,3 +4,8 @@ enum Relationship {
   Following
   Blocked
 }
+
+type ListItem {
+  id: String!
+  name: String!
+}

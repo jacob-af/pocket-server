@@ -126,15 +126,17 @@ export abstract class IQuery {
 
     abstract findOneBuild(): Nullable<Build> | Promise<Nullable<Build>>;
 
-    abstract usersBuilds(): Nullable<Nullable<Recipe>[]> | Promise<Nullable<Nullable<Recipe>[]>>;
+    abstract usersBuilds(): Nullable<Nullable<Build>[]> | Promise<Nullable<Nullable<Build>[]>>;
 
     abstract ingredients(): Nullable<Ingredient>[] | Promise<Nullable<Ingredient>[]>;
 
     abstract ingredient(id: number): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
 
+    abstract recipeList(): Nullable<ListItem>[] | Promise<Nullable<ListItem>[]>;
+
     abstract recipes(): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;
 
-    abstract recipe(id: number): Nullable<Recipe> | Promise<Nullable<Recipe>>;
+    abstract recipe(name: string): Nullable<Recipe> | Promise<Nullable<Recipe>>;
 
     abstract allUsers(): Nullable<User>[] | Promise<Nullable<User>[]>;
 
@@ -189,7 +191,7 @@ export abstract class IMutation {
 
 export class Build {
     id: string;
-    recipe: Recipe;
+    recipe?: Nullable<Recipe>;
     buildName: string;
     createdAt?: Nullable<DateTime>;
     editedAt?: Nullable<DateTime>;
@@ -200,7 +202,7 @@ export class Build {
     glassware?: Nullable<string>;
     ice?: Nullable<string>;
     permission?: Nullable<Permission>;
-    touch: Nullable<Touch>[];
+    touch?: Nullable<Nullable<Touch>[]>;
     version?: Nullable<number>;
     archivedBuild?: Nullable<Nullable<ArchivedBuild>[]>;
 }
@@ -251,6 +253,11 @@ export class BuildPermissionResponse {
     permission?: Nullable<Permission>;
 }
 
+export class ListItem {
+    id: string;
+    name: string;
+}
+
 export class Ingredient {
     id: string;
     name: string;
@@ -261,7 +268,7 @@ export class Recipe {
     id: string;
     createdAt?: Nullable<DateTime>;
     editedAt?: Nullable<DateTime>;
-    name?: Nullable<string>;
+    name: string;
     about?: Nullable<string>;
     createdBy?: Nullable<User>;
     editedBy?: Nullable<User>;

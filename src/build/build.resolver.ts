@@ -125,7 +125,8 @@ export class BuildResolver {
     return this.touchService.touch(build.id);
   }
   @ResolveField('recipe')
-  async recipe(@Parent() build: Build) {
-    return this.recipeService.findOne(build.recipe.id);
+  async recipe(@Parent() build) {
+    console.log(build.recipeName);
+    return this.recipeService.findOne(build.recipeName);
   }
 }

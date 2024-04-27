@@ -1,6 +1,6 @@
 type Build {
   id: ID!
-  recipe: Recipe!
+  recipe: Recipe
   buildName: String!
   createdAt: Date
   editedAt: Date
@@ -11,7 +11,7 @@ type Build {
   glassware: String
   ice: String
   permission: Permission
-  touch: [Touch]!
+  touch: [Touch]
   version: Int
   archivedBuild: [ArchivedBuild]
 }
@@ -104,7 +104,7 @@ input ChangeBuildPermissionInput {
 type Query {
   findAllBuilds: [Build]
   findOneBuild: Build
-  usersBuilds: [Recipe]
+  usersBuilds: [Build]
 }
 
 type Mutation {

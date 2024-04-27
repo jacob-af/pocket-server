@@ -264,40 +264,14 @@ export class BuildService {
     }[] = await this.prisma.buildUser.findMany({
       where: { userId: userId },
     });
-    const recipes = [];
+    const builds = [];
     for (const connection of buildList) {
-      const { recipe, ...build }: Build = await this.prisma.build.findUnique({
+      const build: Build = await this.prisma.build.findUnique({
         where: { id: connection.buildId },
-        include: {
-          recipe: true,
-          touch: true,
-        },
       });
-      const index = recipes.findIndex((rec) => rec.id === recipe.id);
-      if (index === -1) {
-        recipes.push({
-          ...recipe,
-          build: [
-            {
-              ...build,
-              permission: connection.permission,
-            },
-          ],
-        });
-      } else {
-        recipes[index] = {
-          ...recipes[index],
-          build: [
-            ...recipes[index].build,
-            {
-              ...build,
-              permission: connection.permission,
-            },
-          ],
-        };
-      }
+      builds.push({ ...build, permission: connection.permission });
     }
     console.log('user builds route hit');
-    return recipes;
+    return builds;
   }
 }

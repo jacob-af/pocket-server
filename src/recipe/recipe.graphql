@@ -2,7 +2,7 @@ type Recipe {
   id: ID!
   createdAt: Date
   editedAt: Date
-  name: String
+  name: String!
   about: String
   createdBy: User
   editedBy: User
@@ -22,8 +22,9 @@ input UpdateRecipeInput {
 }
 
 type Query {
+  recipeList: [ListItem]!
   recipes: [Recipe]!
-  recipe(id: Int!): Recipe
+  recipe(name: String!): Recipe
 }
 
 type Mutation {

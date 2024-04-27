@@ -40,14 +40,19 @@ export class RecipeResolver {
     return this.recipeService.createManyRecipes(createManyRecipeInputs, userId);
   }
 
-  @Query('recipe')
+  @Query('recipes')
   findAll() {
     return this.recipeService.findAll();
   }
 
+  @Query('recipeList')
+  recipeList() {
+    return this.recipeService.recipeList();
+  }
+
   @Query('recipe')
-  findOne(@Args('id') id: string) {
-    return this.recipeService.findOne(id);
+  findOne(@Args('name') name: string) {
+    return this.recipeService.findOne(name);
   }
 
   @Mutation('updateRecipe')
@@ -65,6 +70,6 @@ export class RecipeResolver {
 
   @ResolveField('build')
   async build(@Parent() recipe: Recipe) {
-    return this.buildService.findAll({ recipeId: recipe.id });
+    return this.buildService.findAll({ recipeName: recipe.name });
   }
 }
