@@ -1,4 +1,4 @@
-import { Permission } from 'src/graphql';
+import { Permission } from '../graphql';
 
 export function resolvePermission(
   userPermission: Permission,

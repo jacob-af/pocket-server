@@ -16,8 +16,8 @@ import {
   Permission,
   Build,
 } from '../graphql';
-import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
-import { resolvePermission } from 'src/utils/resolvePermission';
+import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
+import { resolvePermission } from '../utils/resolvePermission';
 
 @Resolver('Build')
 export class BuildResolver {

@@ -6,7 +6,7 @@ import {
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
-import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
+import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
 import { UserService } from './user.service';
 import { BuildService } from '../build/build.service';
 

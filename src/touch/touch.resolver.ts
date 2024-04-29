@@ -7,8 +7,8 @@ import {
   Parent,
 } from '@nestjs/graphql';
 import { TouchService } from './touch.service';
-import { BuildService } from 'src/build/build.service';
-import { IngredientService } from 'src/ingredient/ingredient.service';
+import { BuildService } from '../build/build.service';
+import { IngredientService } from '../ingredient/ingredient.service';
 
 @Resolver('Touch')
 export class TouchResolver {

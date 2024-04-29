@@ -5,7 +5,7 @@ import {
   UpdateIngredientInput,
   Ingredient,
   StatusMessage,
-} from 'src/graphql';
+} from '../graphql';
 
 @Resolver('Ingredient')
 export class IngredientResolver {

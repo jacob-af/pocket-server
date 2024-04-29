@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { BuildService } from 'src/build/build.service';
+import { BuildService } from '../build/build.service';
 import {
   CreateRecipeInput,
   UpdateRecipeInput,
   Recipe,
   StatusMessage,
-} from 'src/graphql';
+} from '../graphql';
 
 @Injectable()
 export class RecipeService {

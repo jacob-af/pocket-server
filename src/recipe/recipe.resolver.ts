@@ -13,8 +13,8 @@ import {
   UpdateRecipeInput,
   Recipe,
   StatusMessage,
-} from 'src/graphql';
-import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
+} from '../graphql';
+import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
 
 @Resolver('Recipe')
 export class RecipeResolver {
