@@ -61,7 +61,7 @@ model Recipe {
 
 model Build {
   id            String          @id @default(uuid())
-  buildName     String          @unique
+  buildName     String
   createdAt     DateTime        @default(now())
   createdById   String
   createdBy     User            @relation("buildCreatedBy", fields: [createdById], references: [id])

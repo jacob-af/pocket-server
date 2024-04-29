@@ -27,6 +27,16 @@ export class UserResolver {
     return this.userService.findOne(id);
   }
 
+  @Query('findFollows')
+  findFollows(@CurrentUserId() userId: string) {
+    return this.userService.findFollows(userId);
+  }
+
+  @Query('findFollowers')
+  findFollowers(@CurrentUserId() userId: string) {
+    return this.userService.findFollowers(userId);
+  }
+
   @Mutation('followUser')
   followUser(
     @Args('followId') followId: string,

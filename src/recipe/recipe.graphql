@@ -10,7 +10,7 @@ type Recipe {
 }
 
 input CreateRecipeInput {
-  name: String!
+  recipeName: String!
   about: String!
   build: CreateFirstBuildInput!
 }

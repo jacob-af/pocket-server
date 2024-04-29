@@ -81,7 +81,7 @@ export class UpdateIngredientInput {
 }
 
 export class CreateRecipeInput {
-    name: string;
+    recipeName: string;
     about: string;
     build: CreateFirstBuildInput;
 }
@@ -141,6 +141,10 @@ export abstract class IQuery {
     abstract allUsers(): Nullable<User>[] | Promise<Nullable<User>[]>;
 
     abstract userById(id: string): Nullable<User> | Promise<Nullable<User>>;
+
+    abstract findFollows(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
+
+    abstract findFollowers(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
 }
 
 export abstract class IMutation {

@@ -47,6 +47,8 @@ type FollowReturn {
 type Query {
   allUsers: [User]!
   userById(id: ID!): User
+  findFollows: [User]
+  findFollowers: [User]
 }
 
 type Mutation {

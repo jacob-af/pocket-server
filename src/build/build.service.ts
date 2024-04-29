@@ -265,13 +265,13 @@ export class BuildService {
       where: { userId: userId },
     });
     const builds = [];
+    console.log('user builds route hit');
     for (const connection of buildList) {
       const build: Build = await this.prisma.build.findUnique({
         where: { id: connection.buildId },
       });
       builds.push({ ...build, permission: connection.permission });
     }
-    console.log('user builds route hit');
     return builds;
   }
 }

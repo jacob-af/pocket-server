@@ -15,11 +15,14 @@ export class RecipeService {
     private buildService: BuildService,
   ) {}
 
-  async create({ name, about, build }: CreateRecipeInput, userId: string) {
+  async create(
+    { recipeName, about, build }: CreateRecipeInput,
+    userId: string,
+  ) {
     try {
       const recipe = await this.prisma.recipe.create({
         data: {
-          name: name,
+          name: recipeName,
           about: about,
           createdById: userId,
           editedById: userId,
@@ -50,7 +53,7 @@ export class RecipeService {
         const newRecipe: Recipe = await this.create(recipe, userId);
         successes.push(newRecipe);
       } catch (error) {
-        errors.push(recipe.name);
+        errors.push(recipe.recipeName);
       }
     }
     if (successes.length > 0 && errors.length === 0) {
