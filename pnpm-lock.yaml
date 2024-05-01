@@ -116,7 +116,7 @@ devDependencies:
     specifier: ^3.0.0
     version: 3.2.5
   prisma:
-    specifier: ^5.13
+    specifier: ^5.13.0
     version: 5.13.0
   source-map-support:
     specifier: ^0.5.21
