@@ -18,12 +18,11 @@ export class RefreshTokenStrategy extends PassportStrategy(
     });
   }
   validate(req: Request, payload: JwtPayload): JwtPayloadWithRefreshToken {
-    console.log('howdy');
+    console.log('refresh being hit');
     const refreshToken = req
       ?.get('authorization')
       ?.replace('Bearer ', '')
       .trim();
-    console.log(payload);
     return {
       ...payload,
       refreshToken,
