@@ -6,7 +6,7 @@ type Recipe {
   about: String
   createdBy: User
   editedBy: User
-  build: [Build]
+  build: [Build!]
 }
 
 input CreateRecipeInput {

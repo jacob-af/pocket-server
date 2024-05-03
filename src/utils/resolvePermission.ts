@@ -6,13 +6,13 @@ export function resolvePermission(
 ): boolean {
   function toNumber(permission) {
     switch (permission) {
-      case 'Admin':
+      case 'ADMIN':
         return 4;
-      case 'Owner':
+      case 'OWNER':
         return 3;
-      case 'Manager':
+      case 'MANAGER':
         return 2;
-      case 'View':
+      case 'VIEW':
         return 1;
       default:
         return 0;

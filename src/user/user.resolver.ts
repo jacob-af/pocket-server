@@ -37,6 +37,11 @@ export class UserResolver {
     return this.userService.findFollowers(userId);
   }
 
+  @Query('getUserRelationships')
+  getUserRelationships(@CurrentUserId() userId: string) {
+    return this.userService.getUserRelationships(userId);
+  }
+
   @Mutation('followUser')
   followUser(
     @Args('followId') followId: string,

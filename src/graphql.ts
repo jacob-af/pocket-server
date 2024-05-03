@@ -8,19 +8,19 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export enum Relationship {
+    Favorite = "Favorite",
+    Close = "Close",
+    Following = "Following",
+    Blocked = "Blocked"
+}
+
 export enum Permission {
     VIEW = "VIEW",
     EDIT = "EDIT",
     MANAGER = "MANAGER",
     OWNER = "OWNER",
     BLOCKED = "BLOCKED"
-}
-
-export enum Relationship {
-    Favorite = "Favorite",
-    Close = "Close",
-    Following = "Following",
-    Blocked = "Blocked"
 }
 
 export class CreateUserInput {
@@ -35,12 +35,16 @@ export class LoginInput {
 }
 
 export class CreateBuildInput {
-    recipeName: string;
+    recipe: RecipeNameInput;
     buildName: string;
     instructions?: Nullable<string>;
     glassware?: Nullable<string>;
     ice?: Nullable<string>;
     touchArray: Nullable<TouchInput>[];
+}
+
+export class RecipeNameInput {
+    name: string;
 }
 
 export class CreateFirstBuildInput {
@@ -128,6 +132,10 @@ export abstract class IQuery {
 
     abstract usersBuilds(): Nullable<Nullable<Build>[]> | Promise<Nullable<Nullable<Build>[]>>;
 
+    abstract findBuildUsers(buildId: string): Nullable<Nullable<BuildUser>[]> | Promise<Nullable<Nullable<BuildUser>[]>>;
+
+    abstract findFolloweddUsersBuildPermission(buildId: string): Nullable<Nullable<UserBuildPermission>[]> | Promise<Nullable<Nullable<UserBuildPermission>[]>>;
+
     abstract ingredients(): Nullable<Ingredient>[] | Promise<Nullable<Ingredient>[]>;
 
     abstract ingredient(id: number): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
@@ -145,6 +153,8 @@ export abstract class IQuery {
     abstract findFollows(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
 
     abstract findFollowers(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
+
+    abstract getUserRelationships(): Nullable<Nullable<UserRelationship>[]> | Promise<Nullable<Nullable<UserRelationship>[]>>;
 }
 
 export abstract class IMutation {
@@ -162,9 +172,9 @@ export abstract class IMutation {
 
     abstract removeBuild(buildId?: Nullable<string>, permission?: Nullable<Permission>): Nullable<Build> | Promise<Nullable<Build>>;
 
-    abstract changeBuildPermission(userId?: Nullable<string>, buildId?: Nullable<string>, userPermission?: Nullable<Permission>, desiredPermission?: Nullable<Permission>): Nullable<BuildPermissionResponse> | Promise<Nullable<BuildPermissionResponse>>;
+    abstract changeBuildPermission(changeBuildPermissionInput?: Nullable<ChangeBuildPermissionInput>): Nullable<BuildPermissionResponse> | Promise<Nullable<BuildPermissionResponse>>;
 
-    abstract deleteBuildPermission(userId?: Nullable<string>, buildId?: Nullable<string>, userPermission?: Nullable<Permission>, permission?: Nullable<Permission>): Nullable<BuildPermissionResponse> | Promise<Nullable<BuildPermissionResponse>>;
+    abstract deleteBuildPermission(changeBuildPermissionInput?: Nullable<ChangeBuildPermissionInput>): Nullable<BuildPermissionResponse> | Promise<Nullable<BuildPermissionResponse>>;
 
     abstract createIngredient(createIngredientInput: CreateIngredientInput): Ingredient | Promise<Ingredient>;
 
@@ -195,6 +205,24 @@ export abstract class IMutation {
 
 export class Build {
     id: string;
+    recipe: Recipe;
+    buildName: string;
+    createdAt?: Nullable<DateTime>;
+    editedAt?: Nullable<DateTime>;
+    createdBy?: Nullable<User>;
+    editedBy?: Nullable<User>;
+    instructions?: Nullable<string>;
+    notes?: Nullable<string>;
+    glassware?: Nullable<string>;
+    ice?: Nullable<string>;
+    permission?: Nullable<Permission>;
+    touch: Touch[];
+    version?: Nullable<number>;
+    archivedBuild?: Nullable<Nullable<ArchivedBuild>[]>;
+}
+
+export class BuildWithRecipeOptional {
+    id: string;
     recipe?: Nullable<Recipe>;
     buildName: string;
     createdAt?: Nullable<DateTime>;
@@ -206,7 +234,7 @@ export class Build {
     glassware?: Nullable<string>;
     ice?: Nullable<string>;
     permission?: Nullable<Permission>;
-    touch?: Nullable<Nullable<Touch>[]>;
+    touch?: Nullable<Touch[]>;
     version?: Nullable<number>;
     archivedBuild?: Nullable<Nullable<ArchivedBuild>[]>;
 }
@@ -247,6 +275,11 @@ export class CompleteBuild {
     completeTouch?: Nullable<Nullable<CompleteTouch>[]>;
 }
 
+export class UserBuildPermission {
+    user: User;
+    permission?: Nullable<string>;
+}
+
 export class ArchiveResponse {
     build?: Nullable<Build>;
     archivedBuild?: Nullable<ArchivedBuild>;
@@ -254,7 +287,7 @@ export class ArchiveResponse {
 
 export class BuildPermissionResponse {
     buildUser?: Nullable<BuildUser>;
-    permission?: Nullable<Permission>;
+    status?: Nullable<StatusMessage>;
 }
 
 export class ListItem {
@@ -276,7 +309,7 @@ export class Recipe {
     about?: Nullable<string>;
     createdBy?: Nullable<User>;
     editedBy?: Nullable<User>;
-    build?: Nullable<Nullable<Build>[]>;
+    build?: Nullable<Build[]>;
 }
 
 export class Touch {
@@ -310,7 +343,7 @@ export class CompleteTouch {
 export class User {
     id: string;
     userName: string;
-    email: EmailAddress;
+    email?: Nullable<EmailAddress>;
     dateJoined?: Nullable<DateTime>;
     lastEdited?: Nullable<DateTime>;
     following?: Nullable<Nullable<Following>[]>;
@@ -323,7 +356,7 @@ export class User {
 export class Following {
     id: string;
     userName: string;
-    email: EmailAddress;
+    email?: Nullable<EmailAddress>;
     dateJoined?: Nullable<DateTime>;
     lastEdited?: Nullable<DateTime>;
     relationship?: Nullable<Relationship>;
@@ -332,7 +365,7 @@ export class Following {
 export class Follower {
     id: string;
     userName: string;
-    email: EmailAddress;
+    email?: Nullable<EmailAddress>;
     dateJoined?: Nullable<DateTime>;
     lastEdited?: Nullable<DateTime>;
 }
@@ -345,6 +378,12 @@ export class FollowReturn {
     following?: Nullable<string>;
     relationship?: Nullable<Relationship>;
     status?: Nullable<StatusMessage>;
+}
+
+export class UserRelationship {
+    user: User;
+    followedBy?: Nullable<boolean>;
+    following?: Nullable<boolean>;
 }
 
 export type DateTime = any;

@@ -5,6 +5,14 @@ enum Relationship {
   Blocked
 }
 
+enum Permission {
+  VIEW
+  EDIT
+  MANAGER
+  OWNER
+  BLOCKED
+}
+
 type ListItem {
   id: String!
   name: String!

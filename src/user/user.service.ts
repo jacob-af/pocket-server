@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { User } from '../graphql';
+import { User, UserRelationship } from '../graphql';
 
 @Injectable()
 export class UserService {
@@ -29,7 +29,7 @@ export class UserService {
         email,
         dateJoined,
         lastEdited,
-        relationship: r.relationship,
+        followedBy: r.relationship,
       };
     });
     return users;
@@ -50,10 +50,89 @@ export class UserService {
         email,
         dateJoined,
         lastEdited,
-        relationship: r.relationship,
+        rfollowing: r.relationship,
       };
     });
     return [...users];
+  }
+
+  async getUserRelationships(userId: string): Promise<UserRelationship[]> {
+    // Fetch all necessary data in one or more queries
+    const [allUsers, relations] = await Promise.all([
+      // Query for all users
+      this.prisma.user.findMany(),
+      // Query for the necessary relationships: followers, following, and blocked
+      this.prisma.follow.findMany({
+        where: {
+          OR: [{ followedById: userId }, { followingId: userId }],
+        },
+        include: {
+          followedBy: true,
+          following: true,
+        },
+      }),
+    ]);
+
+    // Create sets for followers, following, and blocked users
+    const followersSet = new Set<string>();
+    const followingSet = new Set<string>();
+    const blockedSet = new Set<string>();
+
+    // Process relations to populate the sets
+    for (const relation of relations) {
+      if (relation.followedById === userId) {
+        // User is being followed
+        if (relation.following) {
+          followersSet.add(relation.following.id);
+        }
+      }
+      if (relation.followingId === userId) {
+        // User is following someone
+        if (relation.followedBy) {
+          followingSet.add(relation.followedBy.id);
+        }
+      }
+      if (
+        (relation.followingId === userId || relation.followedById === userId) &&
+        relation.relationship === 'Blocked'
+      ) {
+        // User is blocked
+        if (relation.following) {
+          blockedSet.add(relation.following.id);
+        }
+        if (relation.followedBy) {
+          blockedSet.add(relation.followedBy.id);
+        }
+      }
+    }
+
+    // Process allUsers and filter out blocked users
+    const result: UserRelationship[] = [];
+
+    for (const user of allUsers) {
+      const userId = user.id;
+      // Skip blocked users
+      if (blockedSet.has(userId)) {
+        continue;
+      }
+
+      // Determine the user's relationship to the current user
+      const isFollowing = followingSet.has(userId);
+      const isFollowedBy = followersSet.has(userId);
+
+      // Create an object with the user and their relationship status
+      const userRelationship: UserRelationship = {
+        user,
+        following: isFollowing,
+        followedBy: isFollowedBy,
+      };
+
+      // Add the userRelationship object to the result array
+      result.push(userRelationship);
+    }
+
+    // Return the list of user relationships
+    return result;
   }
 
   async followUser(followId: string, relationship: string, userId: string) {

@@ -6,6 +6,8 @@ import {
   Permission,
   ArchivedBuild,
   Build,
+  UserBuildPermission,
+  BuildWithRecipeOptional,
 } from '../graphql';
 import { TouchService } from '../touch//touch.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -19,7 +21,7 @@ export class BuildService {
 
   async create(
     {
-      recipeName,
+      recipe: { name },
       buildName,
       instructions,
       glassware,
@@ -31,7 +33,7 @@ export class BuildService {
     try {
       const build: Build = await this.prisma.build.create({
         data: {
-          recipe: { connect: { name: recipeName } },
+          recipe: { connect: { name: name } },
           buildName,
           instructions,
           glassware,
@@ -51,8 +53,8 @@ export class BuildService {
       const {
         buildUser: { permission },
       } = await this.changeBuildPermission({
-        buildId: build.id,
         userId,
+        buildId: build.id,
         userPermission: Permission.OWNER,
         desiredPermission: Permission.OWNER,
       });
@@ -213,21 +215,21 @@ export class BuildService {
       });
       return {
         buildUser,
-        status: { code: 'Success', message: 'Build is Shared' },
+        status: { message: 'Build is Shared' },
       };
     } catch (err) {
       console.log(err);
       return {
         status: {
-          code: err.code,
           message: err.message,
         },
       };
     }
   }
 
-  async deleteBuildPermission(buildId: string, userId: string) {
+  async deleteBuildPermission(userId: string, buildId: string) {
     try {
+      console.log(userId, buildId);
       const buildUser = await this.prisma.buildUser.delete({
         where: {
           userId_buildId: {
@@ -236,19 +238,17 @@ export class BuildService {
           },
         },
       });
-
+      console.log('working');
       return {
         buildUser,
         status: {
           message: 'user no longer has access to this build!',
-          code: 'Success',
         },
       };
     } catch (err) {
       console.log(err);
       return {
         status: {
-          code: err.code,
           message: err.message,
         },
       };
@@ -267,11 +267,93 @@ export class BuildService {
     const builds = [];
     console.log('user builds route hit');
     for (const connection of buildList) {
-      const build: Build = await this.prisma.build.findUnique({
-        where: { id: connection.buildId },
-      });
+      const build: BuildWithRecipeOptional = await this.prisma.build.findUnique(
+        {
+          where: { id: connection.buildId },
+        },
+      );
       builds.push({ ...build, permission: connection.permission });
     }
     return builds;
+  }
+
+  async findFolloweddUsersBuildPermission({
+    userId,
+    buildId,
+  }: {
+    userId: string;
+    buildId: string;
+  }): Promise<UserBuildPermission[]> {
+    // Retrieve the list of users the current user follows
+    const followingRelations = await this.prisma.follow.findMany({
+      where: { followedById: userId },
+      include: { following: true },
+    });
+
+    // Retrieve the list of users the current user has blocked
+    const blockedRelations = await this.prisma.follow.findMany({
+      where: {
+        OR: [
+          { followingId: userId, relationship: 'Blocked' },
+          { followedById: userId, relationship: 'Blocked' },
+        ],
+      },
+      include: {
+        following: true,
+        followedBy: true,
+      },
+    });
+
+    // Retrieve permission information for the specific build
+    console.log(buildId);
+    const buildUserPermissions = await this.prisma.buildUser.findMany({
+      where: {
+        buildId,
+        userId: {
+          in: followingRelations.map((relation) => relation.following?.id),
+        },
+      },
+    });
+    console.log('why', buildUserPermissions.length, 'just why');
+    // Create a map for quick lookup of permissions by user ID
+    const permissionMap = new Map<string, string | null>();
+    buildUserPermissions.forEach((permission) => {
+      //console.log(permission);
+      permissionMap.set(permission.userId, permission.permission);
+    });
+
+    // Create a set of blocked user IDs for efficient lookups
+    const blockedUserIds = new Set<string>();
+    blockedRelations.forEach((relation) => {
+      if (relation.following) {
+        blockedUserIds.add(relation.following.id);
+      }
+      if (relation.followedBy) {
+        blockedUserIds.add(relation.followedBy.id);
+      }
+    });
+
+    // Process the following relations and filter out blocked users
+    const userBuildPermissions: UserBuildPermission[] = [];
+
+    for (const relation of followingRelations) {
+      const user = relation.following;
+      if (user && !blockedUserIds.has(user.id)) {
+        // Determine the permission level for the user
+        const permission = permissionMap.get(user.id) || null;
+
+        // Debugging: log the user ID and permission
+        console.log(`User ID: ${user.id}, Permission: ${permission}`);
+
+        // Add the user and permission level to the result
+        userBuildPermissions.push({
+          user,
+          permission,
+        });
+      }
+    }
+
+    // Return the list of user and permission pairs
+    return userBuildPermissions;
   }
 }

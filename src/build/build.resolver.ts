@@ -45,6 +45,17 @@ export class BuildResolver {
     return this.buildService.findOne(id);
   }
 
+  @Query('findFolloweddUsersBuildPermission')
+  findFolloweddUsersBuildPermission(
+    @CurrentUserId() userId: string,
+    @Args('buildId') buildId: string,
+  ) {
+    return this.buildService.findFolloweddUsersBuildPermission({
+      userId,
+      buildId,
+    });
+  }
+
   @Query('usersBuilds')
   usersBuilds(@CurrentUserId() userId: string) {
     console.log(userId);
@@ -80,6 +91,7 @@ export class BuildResolver {
     @Args('changeBuildPermissionInput')
     changeBuildPermissionInput: ChangeBuildPermissionInput,
   ) {
+    console.log('top of resolver', changeBuildPermissionInput.userPermission);
     if (
       !resolvePermission(
         changeBuildPermissionInput.userPermission,
@@ -102,6 +114,7 @@ export class BuildResolver {
     @Args('changeBuildPermissionInput')
     changeBuildPermissionInput: ChangeBuildPermissionInput,
   ) {
+    console.log('resolver hit');
     if (
       !resolvePermission(
         changeBuildPermissionInput.userPermission,
@@ -110,14 +123,11 @@ export class BuildResolver {
     ) {
       throw new Error('You do not have permission to do that, Dave');
     }
-    try {
-      return this.buildService.deleteBuildPermission(
-        changeBuildPermissionInput.userId,
-        changeBuildPermissionInput.buildId,
-      );
-    } catch (err) {
-      throw new Error(err.message);
-    }
+
+    return this.buildService.deleteBuildPermission(
+      changeBuildPermissionInput.userId,
+      changeBuildPermissionInput.buildId,
+    );
   }
 
   @ResolveField('touch')

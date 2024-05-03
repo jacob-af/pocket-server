@@ -1,7 +1,7 @@
 type User {
   id: ID!
   userName: String!
-  email: Email!
+  email: Email
   dateJoined: Date
   lastEdited: Date
   following: [Following]
@@ -20,7 +20,7 @@ input UpdateUserInput {
 type Following {
   id: ID!
   userName: String!
-  email: Email!
+  email: Email
   dateJoined: Date
   lastEdited: Date
   relationship: Relationship
@@ -29,7 +29,7 @@ type Following {
 type Follower {
   id: ID!
   userName: String!
-  email: Email!
+  email: Email
   dateJoined: Date
   lastEdited: Date
 }
@@ -44,11 +44,18 @@ type FollowReturn {
   status: StatusMessage
 }
 
+type UserRelationship {
+  user: User!
+  followedBy: Boolean
+  following: Boolean
+}
+
 type Query {
   allUsers: [User]!
   userById(id: ID!): User
   findFollows: [User]
   findFollowers: [User]
+  getUserRelationships: [UserRelationship]
 }
 
 type Mutation {
