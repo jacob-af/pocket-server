@@ -32,7 +32,18 @@ export class BuildResolver {
     @Args('createBuildInput') createBuildInput: CreateBuildInput,
     @CurrentUserId() userId: string,
   ) {
-    return this.buildService.create(createBuildInput, userId);
+    console.log('hello hello');
+    return this.buildService.create(
+      {
+        recipe: { name: createBuildInput.recipe.name },
+        buildName: createBuildInput.buildName,
+        instructions: createBuildInput.instructions,
+        glassware: createBuildInput.glassware,
+        ice: createBuildInput.ice,
+        touchArray: createBuildInput.touchArray,
+      },
+      userId,
+    );
   }
 
   @Query('findAllBuilds')

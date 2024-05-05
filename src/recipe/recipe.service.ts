@@ -36,7 +36,7 @@ export class RecipeService {
       const newBuild = await this.buildService.create(buildWithId, userId);
       return {
         ...recipe,
-        build: [newBuild.build],
+        build: [newBuild],
       };
     } catch (err) {
       throw new Error(err);

@@ -31,6 +31,7 @@ export class BuildService {
     }: CreateBuildInput,
     userId: string,
   ) {
+    console.log('arf');
     try {
       const build: Build = await this.prisma.build.create({
         data: {
@@ -51,6 +52,7 @@ export class BuildService {
           touch: true,
         },
       });
+      console.log(build.id);
       const {
         buildUser: { permission },
       } = await this.changeBuildPermission({
@@ -59,13 +61,14 @@ export class BuildService {
         userPermission: Permission.OWNER,
         desiredPermission: Permission.OWNER,
       });
-
+      console.log({ buildId: build.id, permission: permission });
       return {
-        build,
+        ...build,
         permission,
       };
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
+      return err;
     }
   }
 
@@ -117,8 +120,7 @@ export class BuildService {
       return {
         build,
         status: {
-          code: 'Success',
-          message: 'Against all sanity, you didi it!',
+          message: 'Against all sanity, you did it!',
         },
       };
     } catch (err) {
