@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { BuildService } from '../build/build.service';
 import {
   CreateRecipeInput,
-  UpdateRecipeInput,
   Recipe,
   StatusMessage,
+  UpdateRecipeInput,
 } from '../graphql';
+
+import { BuildService } from '../build/build.service';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class RecipeService {
@@ -87,6 +88,7 @@ export class RecipeService {
         name: true,
         id: true,
       },
+      orderBy: { name: 'asc' },
     });
   }
 

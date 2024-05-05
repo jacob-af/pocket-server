@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
 import {
   CreateIngredientInput,
-  UpdateIngredientInput,
   Ingredient,
   StatusMessage,
+  UpdateIngredientInput,
 } from '../graphql';
+
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class IngredientService {
@@ -68,6 +69,7 @@ export class IngredientService {
   async findAll(options?: { [key: string]: string }): Promise<Ingredient[]> {
     const res: Ingredient[] = await this.prisma.ingredient.findMany({
       where: options,
+      orderBy: { name: 'asc' },
     });
     return res;
   }
