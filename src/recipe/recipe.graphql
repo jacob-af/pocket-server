@@ -5,8 +5,11 @@ type Recipe {
   name: String!
   about: String
   createdBy: User
+  createdById: String
   editedBy: User
-  build: [Build!]
+  editeById: String
+  build: [Build]
+  userBuild: [Build]
 }
 
 input CreateRecipeInput {
@@ -17,8 +20,9 @@ input CreateRecipeInput {
 
 input UpdateRecipeInput {
   id: ID!
-  name: String
-  about: String
+  name: String!
+  about: String!
+  build: UpdateBuildInput!
 }
 
 type Query {

@@ -36,7 +36,7 @@ type BuildWithRecipeOptional {
 
 type ArchivedBuild {
   id: ID!
-  buildId: ID!
+  buildId: String!
   buildName: String!
   createdAt: Date
   createdBy: User
@@ -52,22 +52,6 @@ type BuildUser {
   user: User!
   build: Build!
   permission: Permission
-}
-
-type CompleteBuild {
-  id: ID!
-  buildName: String!
-  createdAt: Date
-  editedAt: Date
-  createdBy: User
-  editedBy: User
-  about: String
-  notes: String
-  glassware: String
-  ice: String
-  instructions: String
-  permission: Permission
-  completeTouch: [CompleteTouch]
 }
 
 type BuildUser {

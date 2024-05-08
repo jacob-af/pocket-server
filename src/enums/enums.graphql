@@ -6,11 +6,11 @@ enum Relationship {
 }
 
 enum Permission {
+  BLOCKED
   VIEW
   EDIT
   MANAGER
   OWNER
-  BLOCKED
 }
 
 type ListItem {

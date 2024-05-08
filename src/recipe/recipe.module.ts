@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
-import { RecipeService } from './recipe.service';
-import { RecipeResolver } from './recipe.resolver';
 import { BuildService } from '../build/build.service';
-import { TouchService } from '../touch/touch.service';
+import { Module } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { RecipeResolver } from './recipe.resolver';
+import { RecipeService } from './recipe.service';
+import { TouchService } from '../touch/touch.service';
+import { UserService } from '../user/user.service';
 
 @Module({
   providers: [
@@ -11,6 +12,7 @@ import { PrismaService } from '../prisma/prisma.service';
     RecipeService,
     TouchService,
     BuildService,
+    UserService,
     PrismaService,
   ],
 })

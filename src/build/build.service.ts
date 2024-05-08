@@ -61,7 +61,6 @@ export class BuildService {
         userPermission: Permission.OWNER,
         desiredPermission: Permission.OWNER,
       });
-      console.log({ buildId: build.id, permission: permission });
       return {
         ...build,
         permission,
@@ -154,9 +153,9 @@ export class BuildService {
       });
       const arcBuild: ArchivedBuild = await this.prisma.archivedBuild.create({
         data: {
-          buildId: id,
+          build: { connect: { id } },
           buildName,
-          createdById: userId,
+          createdBy: { connect: { id: userId } },
           instructions,
           glassware,
           ice,
@@ -278,6 +277,42 @@ export class BuildService {
       builds.push({ ...build, permission: connection.permission });
     }
     return builds;
+  }
+
+  async userBuilds2({
+    recipeName,
+    userId,
+  }: {
+    recipeName: string;
+    userId: string;
+  }) {
+    console.log(userId);
+    const builds = await this.prisma.build.findMany({
+      where: {
+        recipeName: recipeName,
+        buildUser: {
+          some: {
+            userId: userId,
+          },
+        },
+      },
+      // include: {
+      //   buildUser: {
+      //     where: {
+      //       userId: userId,
+      //     },
+      //   },
+      // },
+    });
+    const buildsWithPermission = builds.map((build) => {
+      console.log(build);
+      if 
+      return {
+        ...build,
+        permission: build.buildUser[0].permission,
+      };
+    });
+    return buildsWithPermission;
   }
 
   async findFolloweddUsersBuildPermission({

@@ -8,19 +8,23 @@ import {
 } from '@nestjs/graphql';
 import { RecipeService } from './recipe.service';
 import { BuildService } from '../build/build.service';
+import { UserService } from '../user/user.service';
 import {
   CreateRecipeInput,
   UpdateRecipeInput,
   Recipe,
   StatusMessage,
+  Permission,
 } from '../graphql';
 import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
+import { resolvePermission } from 'src/utils/resolvePermission';
 
 @Resolver('Recipe')
 export class RecipeResolver {
   constructor(
     private readonly recipeService: RecipeService,
     private readonly buildService: BuildService,
+    private readonly userService: UserService,
   ) {}
 
   @Mutation('createRecipe')
@@ -64,12 +68,26 @@ export class RecipeResolver {
   }
 
   @Mutation('removeRecipe')
-  remove(@Args('id') id: string) {
+  remove(@Args('id') id: string, permission: Permission) {
+    if (!resolvePermission(permission, Permission.MANAGER)) {
+      throw new Error('You do not have permission to do that, Dave');
+    }
     return this.recipeService.remove(id);
   }
 
   @ResolveField('build')
   async build(@Parent() recipe: Recipe) {
     return this.buildService.findAll({ recipeName: recipe.name });
+  }
+
+  @ResolveField('userBuild')
+  async userBuild(@Parent() recipe: Recipe, @CurrentUserId() userId: string) {
+    return this.buildService.userBuilds2({ recipeName: recipe.name, userId });
+  }
+
+  @ResolveField('createdBy')
+  async createdBy(@Parent() recipe: Recipe) {
+    console.log('id:', recipe);
+    return this.userService.findOne(recipe.createdById);
   }
 }

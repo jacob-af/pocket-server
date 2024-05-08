@@ -13,8 +13,8 @@ import {
   CreateBuildInput,
   UpdateBuildInput,
   ChangeBuildPermissionInput,
-  Permission,
   Build,
+  Permission,
 } from '../graphql';
 import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
 import { resolvePermission } from '../utils/resolvePermission';

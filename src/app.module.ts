@@ -1,19 +1,21 @@
-import { Module } from '@nestjs/common';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { join } from 'path';
-import { PrismaService } from './prisma/prisma.service';
-import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { ConfigModule } from '@nestjs/config';
 import { DateTimeResolver, EmailAddressResolver } from 'graphql-scalars';
+
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from './auth/guards/accessToken.guard';
-import { IngredientModule } from './ingredient/ingredient.module';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { AuthModule } from './auth/auth.module';
 import { BuildModule } from './build/build.module';
-import { TouchModule } from './touch/touch.module';
+import { ConfigModule } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
+import { IngredientModule } from './ingredient/ingredient.module';
+import { Module } from '@nestjs/common';
+import { PrismaService } from './prisma/prisma.service';
+import { RecipeBookModule } from './recipe-book/recipe-book.module';
 import { RecipeModule } from './recipe/recipe.module';
+import { TouchModule } from './touch/touch.module';
+import { UserModule } from './user/user.module';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -39,6 +41,7 @@ import { RecipeModule } from './recipe/recipe.module';
     BuildModule,
     TouchModule,
     RecipeModule,
+    RecipeBookModule,
   ],
   controllers: [],
   providers: [

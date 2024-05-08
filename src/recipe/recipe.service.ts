@@ -25,8 +25,8 @@ export class RecipeService {
         data: {
           name: recipeName,
           about: about,
-          createdById: userId,
-          editedById: userId,
+          createdBy: { connect: { id: userId } },
+          editedBy: { connect: { id: userId } },
         },
       });
       const buildWithId = {
@@ -74,6 +74,18 @@ export class RecipeService {
     }
   }
 
+  async update({ id, name, about, build }: UpdateRecipeInput, userId: string) {
+    const newBuild = this.buildService.update(build, userId);
+    const recipe = await this.prisma.recipe.update({
+      where: { name },
+      data: { name, about, editedBy: { connect: { id: userId } } },
+    });
+    return {
+      ...recipe,
+      build: { ...newBuild, id },
+    };
+  }
+
   async findAll() {
     return this.prisma.recipe.findMany();
   }
@@ -89,13 +101,6 @@ export class RecipeService {
         id: true,
       },
       orderBy: { name: 'asc' },
-    });
-  }
-
-  async update({ id, name, about }: UpdateRecipeInput, userId: string) {
-    return await this.prisma.recipe.update({
-      where: { id },
-      data: { name, about, editedBy: { connect: { id: userId } } },
     });
   }
 

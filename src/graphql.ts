@@ -16,11 +16,11 @@ export enum Relationship {
 }
 
 export enum Permission {
+    BLOCKED = "BLOCKED",
     VIEW = "VIEW",
     EDIT = "EDIT",
     MANAGER = "MANAGER",
-    OWNER = "OWNER",
-    BLOCKED = "BLOCKED"
+    OWNER = "OWNER"
 }
 
 export class CreateUserInput {
@@ -92,14 +92,16 @@ export class CreateRecipeInput {
 
 export class UpdateRecipeInput {
     id: string;
-    name?: Nullable<string>;
-    about?: Nullable<string>;
+    name: string;
+    about: string;
+    build: UpdateBuildInput;
 }
 
 export class TouchInput {
-    ingredientName?: Nullable<string>;
-    amount?: Nullable<number>;
-    unit?: Nullable<string>;
+    id: string;
+    ingredientName: string;
+    amount: number;
+    unit: string;
 }
 
 export class UpdateUserInput {
@@ -139,6 +141,10 @@ export abstract class IQuery {
     abstract ingredients(): Nullable<Ingredient>[] | Promise<Nullable<Ingredient>[]>;
 
     abstract ingredient(id: number): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
+
+    abstract allRecipeBooks(): Nullable<RecipeBook>[] | Promise<Nullable<RecipeBook>[]>;
+
+    abstract userRecipeBooks(userId: string): Nullable<RecipeBook> | Promise<Nullable<RecipeBook>>;
 
     abstract recipeList(): Nullable<ListItem>[] | Promise<Nullable<ListItem>[]>;
 
@@ -183,6 +189,20 @@ export abstract class IMutation {
     abstract updateIngredient(updateIngredientInput: UpdateIngredientInput): Ingredient | Promise<Ingredient>;
 
     abstract removeIngredient(id: string): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
+
+    abstract createRecipeBook(name: string, description?: Nullable<string>): RecipeBook | Promise<RecipeBook>;
+
+    abstract updateRecipeBook(recipeBookId: string, name: string, permission: Permission, description?: Nullable<string>): RecipeBook | Promise<RecipeBook>;
+
+    abstract removeRecipeBook(recipeBookId: string, permission: Permission): StatusMessage | Promise<StatusMessage>;
+
+    abstract addBuildToRecipeBook(recipeBookId: string, buildId: string, buildPermission: Permission, bookPermission: Permission): StatusMessage | Promise<StatusMessage>;
+
+    abstract removeBuildFromRecipeBook(recipeBookId: string, buildId: string, bookPermission: Permission): StatusMessage | Promise<StatusMessage>;
+
+    abstract changeRecipeBookPermission(userId: string, recipeBookId: string, permission?: Nullable<Permission>, userPermission?: Nullable<Permission>): StatusMessage | Promise<StatusMessage>;
+
+    abstract removeRecipeBookPermission(userId: string, recipeBookId: string, permission?: Nullable<Permission>): StatusMessage | Promise<StatusMessage>;
 
     abstract createManyRecipes(createManyRecipeInputs: Nullable<CreateRecipeInput>[]): StatusMessage | Promise<StatusMessage>;
 
@@ -259,22 +279,6 @@ export class BuildUser {
     permission?: Nullable<Permission>;
 }
 
-export class CompleteBuild {
-    id: string;
-    buildName: string;
-    createdAt?: Nullable<DateTime>;
-    editedAt?: Nullable<DateTime>;
-    createdBy?: Nullable<User>;
-    editedBy?: Nullable<User>;
-    about?: Nullable<string>;
-    notes?: Nullable<string>;
-    glassware?: Nullable<string>;
-    ice?: Nullable<string>;
-    instructions?: Nullable<string>;
-    permission?: Nullable<Permission>;
-    completeTouch?: Nullable<Nullable<CompleteTouch>[]>;
-}
-
 export class UserBuildPermission {
     user: User;
     permission?: Nullable<string>;
@@ -301,6 +305,29 @@ export class Ingredient {
     description?: Nullable<string>;
 }
 
+export class RecipeBook {
+    id: string;
+    name?: Nullable<string>;
+    description?: Nullable<string>;
+    createdAt?: Nullable<DateTime>;
+    editedAt?: Nullable<DateTime>;
+    createdBy?: Nullable<User>;
+    editedBy?: Nullable<User>;
+    permission?: Nullable<Permission>;
+    build?: Nullable<Nullable<Build>[]>;
+}
+
+export class RecipeBookUser {
+    recipeBook: RecipeBook;
+    user: User;
+    permission: Permission;
+}
+
+export class RecipeBookBuild {
+    recipeBook?: Nullable<RecipeBook>;
+    build?: Nullable<Build>;
+}
+
 export class Recipe {
     id: string;
     createdAt?: Nullable<DateTime>;
@@ -308,8 +335,11 @@ export class Recipe {
     name: string;
     about?: Nullable<string>;
     createdBy?: Nullable<User>;
+    createdById?: Nullable<string>;
     editedBy?: Nullable<User>;
-    build?: Nullable<Build[]>;
+    editeById?: Nullable<string>;
+    build?: Nullable<Nullable<Build>[]>;
+    userBuild?: Nullable<Nullable<Build>[]>;
 }
 
 export class Touch {

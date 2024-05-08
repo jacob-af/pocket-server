@@ -19,9 +19,10 @@ type ArchivedTouch {
 }
 
 input TouchInput {
-  ingredientName: String
-  amount: Float
-  unit: String
+  id: String!
+  ingredientName: String!
+  amount: Float!
+  unit: String!
 }
 
 type CompleteTouch {
