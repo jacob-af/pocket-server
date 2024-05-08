@@ -1,0 +1,67 @@
+type RecipeBook {
+  id: ID!
+  name: String
+  description: String
+  createdAt: Date
+  editedAt: Date
+  createdBy: User
+  editedBy: User
+  permission: Permission
+  build: [Build]
+}
+
+type RecipeBookUser {
+  recipeBook: RecipeBook!
+  user: User!
+  permission: Permission!
+}
+
+type RecipeBookBuild {
+  recipeBook: RecipeBook
+  build: Build
+}
+
+type Query {
+  allRecipeBooks: [RecipeBook]!
+  userRecipeBooks(userId: String!): RecipeBook
+}
+
+type Mutation {
+  createRecipeBook(name: String!, description: String): RecipeBook!
+  updateRecipeBook(
+    recipeBookId: String!
+    name: String!
+    permission: Permission!
+    description: String
+  ): RecipeBook!
+  removeRecipeBook(
+    recipeBookId: String!
+    permission: Permission!
+  ): StatusMessage!
+
+  addBuildToRecipeBook(
+    recipeBookId: String!
+    buildId: String!
+    buildPermission: Permission!
+    bookPermission: Permission!
+  ): StatusMessage!
+
+  removeBuildFromRecipeBook(
+    recipeBookId: String!
+    buildId: String!
+    bookPermission: Permission!
+  ): StatusMessage!
+
+  changeRecipeBookPermission(
+    userId: String!
+    recipeBookId: String!
+    permission: Permission
+    userPermission: Permission
+  ): StatusMessage!
+
+  removeRecipeBookPermission(
+    userId: String!
+    recipeBookId: String!
+    permission: Permission
+  ): StatusMessage!
+}
