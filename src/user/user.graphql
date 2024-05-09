@@ -9,6 +9,7 @@ type User {
   myBuild: [Build]
   allBuilds: [Build]
   buildEditedBy: [Build]
+  profile: Profile
 }
 
 input UpdateUserInput {

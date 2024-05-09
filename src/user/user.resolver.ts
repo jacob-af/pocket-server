@@ -9,11 +9,13 @@ import {
 import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
 import { UserService } from './user.service';
 import { BuildService } from '../build/build.service';
+import { ProfileService } from '../profile/profile.service';
 
 @Resolver('User')
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
+    private readonly profileService: ProfileService,
     private readonly buildService: BuildService,
   ) {}
 
@@ -98,5 +100,10 @@ export class UserResolver {
   @ResolveField('allBuilds')
   async allBuilds(@Parent() user) {
     return await this.buildService.allBuilds(user.id);
+  }
+
+  @ResolveField('profile')
+  async profile(@Parent() user) {
+    return await this.profileService.getProfile(user.id);
   }
 }

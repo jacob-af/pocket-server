@@ -40,6 +40,7 @@ export class CreateBuildInput {
     instructions?: Nullable<string>;
     glassware?: Nullable<string>;
     ice?: Nullable<string>;
+    image?: Nullable<string>;
     touchArray: Nullable<TouchInput>[];
 }
 
@@ -62,6 +63,7 @@ export class UpdateBuildInput {
     instructions?: Nullable<string>;
     glassware?: Nullable<string>;
     ice?: Nullable<string>;
+    image?: Nullable<string>;
     touchArray: Nullable<TouchInput>[];
     permission?: Nullable<Permission>;
 }
@@ -82,6 +84,11 @@ export class UpdateIngredientInput {
     id: string;
     name: string;
     description?: Nullable<string>;
+}
+
+export class ProfileInput {
+    userId: string;
+    image?: Nullable<string>;
 }
 
 export class CreateRecipeInput {
@@ -142,6 +149,8 @@ export abstract class IQuery {
 
     abstract ingredient(id: number): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
 
+    abstract getProfile(userId?: Nullable<string>): Profile | Promise<Profile>;
+
     abstract allRecipeBooks(): Nullable<RecipeBook>[] | Promise<Nullable<RecipeBook>[]>;
 
     abstract userRecipeBooks(userId: string): Nullable<RecipeBook> | Promise<Nullable<RecipeBook>>;
@@ -192,6 +201,8 @@ export abstract class IMutation {
 
     abstract removeIngredient(id: string): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
 
+    abstract updateProfile(image?: Nullable<string>): Profile | Promise<Profile>;
+
     abstract createRecipeBook(name: string, description?: Nullable<string>): RecipeBook | Promise<RecipeBook>;
 
     abstract updateRecipeBook(recipeBookId: string, name: string, permission: Permission, description?: Nullable<string>): RecipeBook | Promise<RecipeBook>;
@@ -238,26 +249,9 @@ export class Build {
     notes?: Nullable<string>;
     glassware?: Nullable<string>;
     ice?: Nullable<string>;
+    image?: Nullable<string>;
     permission?: Nullable<Permission>;
     touch: Touch[];
-    version?: Nullable<number>;
-    archivedBuild?: Nullable<Nullable<ArchivedBuild>[]>;
-}
-
-export class BuildWithRecipeOptional {
-    id: string;
-    recipe?: Nullable<Recipe>;
-    buildName: string;
-    createdAt?: Nullable<DateTime>;
-    editedAt?: Nullable<DateTime>;
-    createdBy?: Nullable<User>;
-    editedBy?: Nullable<User>;
-    instructions?: Nullable<string>;
-    notes?: Nullable<string>;
-    glassware?: Nullable<string>;
-    ice?: Nullable<string>;
-    permission?: Nullable<Permission>;
-    touch?: Nullable<Touch[]>;
     version?: Nullable<number>;
     archivedBuild?: Nullable<Nullable<ArchivedBuild>[]>;
 }
@@ -306,6 +300,12 @@ export class Ingredient {
     id: string;
     name: string;
     description?: Nullable<string>;
+}
+
+export class Profile {
+    id: string;
+    image?: Nullable<string>;
+    user?: Nullable<User>;
 }
 
 export class RecipeBook {
@@ -384,6 +384,7 @@ export class User {
     myBuild?: Nullable<Nullable<Build>[]>;
     allBuilds?: Nullable<Nullable<Build>[]>;
     buildEditedBy?: Nullable<Nullable<Build>[]>;
+    profile?: Nullable<Profile>;
 }
 
 export class Following {

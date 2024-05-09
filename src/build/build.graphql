@@ -11,29 +11,30 @@ type Build {
   notes: String
   glassware: String
   ice: String
+  image: String
   permission: Permission
   touch: [Touch!]!
   version: Int
   archivedBuild: [ArchivedBuild]
 }
 
-type BuildWithRecipeOptional {
-  id: ID!
-  recipe: Recipe
-  buildName: String!
-  createdAt: Date
-  editedAt: Date
-  createdBy: User
-  editedBy: User
-  instructions: String
-  notes: String
-  glassware: String
-  ice: String
-  permission: Permission
-  touch: [Touch!]
-  version: Int
-  archivedBuild: [ArchivedBuild]
-}
+# type BuildWithRecipeOptional {
+#   id: ID!
+#   recipe: Recipe
+#   buildName: String!
+#   createdAt: Date
+#   editedAt: Date
+#   createdBy: User
+#   editedBy: User
+#   instructions: String
+#   notes: String
+#   glassware: String
+#   ice: String
+#   permission: Permission
+#   touch: [Touch!]
+#   version: Int
+#   archivedBuild: [ArchivedBuild]
+# }
 
 type ArchivedBuild {
   id: ID!
@@ -82,6 +83,7 @@ input CreateBuildInput {
   instructions: String
   glassware: String
   ice: String
+  image: String
   touchArray: [TouchInput]!
 }
 
@@ -104,6 +106,7 @@ input UpdateBuildInput {
   instructions: String
   glassware: String
   ice: String
+  image: String
   touchArray: [TouchInput]!
   permission: Permission
 }

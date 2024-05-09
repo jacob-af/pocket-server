@@ -1,7 +1,6 @@
 import {
   ArchivedBuild,
   Build,
-  BuildWithRecipeOptional,
   ChangeBuildPermissionInput,
   CreateBuildInput,
   Permission,
@@ -27,6 +26,7 @@ export class BuildService {
       instructions,
       glassware,
       ice,
+      image,
       touchArray,
     }: CreateBuildInput,
     userId: string,
@@ -40,6 +40,7 @@ export class BuildService {
           instructions,
           glassware,
           ice,
+          image,
           createdBy: { connect: { id: userId } },
           editedBy: { connect: { id: userId } },
           version: 0,
@@ -66,7 +67,7 @@ export class BuildService {
         permission,
       };
     } catch (err) {
-      console.log(err.message);
+      console.log(err.messagen);
       return err;
     }
   }
@@ -86,6 +87,7 @@ export class BuildService {
       instructions,
       glassware,
       ice,
+      image,
       touchArray,
     }: UpdateBuildInput,
     userId: string,
@@ -105,6 +107,7 @@ export class BuildService {
           instructions,
           glassware,
           ice,
+          image,
           editedById: userId,
           touch: {
             create: this.touchService.touchArrayWithIndex(
@@ -269,11 +272,13 @@ export class BuildService {
     const builds = [];
     console.log('user builds route hit');
     for (const connection of buildList) {
-      const build: BuildWithRecipeOptional = await this.prisma.build.findUnique(
-        {
-          where: { id: connection.buildId },
+      const build: Build = await this.prisma.build.findUnique({
+        where: { id: connection.buildId },
+        include: {
+          recipe: true,
+          touch: true,
         },
-      );
+      });
       builds.push({ ...build, permission: connection.permission });
     }
     return builds;

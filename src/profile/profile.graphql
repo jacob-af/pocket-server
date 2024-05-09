@@ -1,0 +1,18 @@
+type Profile {
+  id: ID!
+  image: String
+  user: User
+}
+
+input ProfileInput {
+  userId: String!
+  image: String
+}
+
+type Query {
+  getProfile(userId: String): Profile!
+}
+
+type Mutation {
+  updateProfile(image: String): Profile!
+}

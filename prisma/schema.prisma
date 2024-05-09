@@ -35,7 +35,7 @@ model Profile {
   id     String  @id @default(uuid())
   image  String?
   user   User    @relation(fields: [userId], references: [id])
-  userId String
+  userId String  @unique
 }
 
 model Follow {
@@ -83,6 +83,7 @@ model Build {
   notes           String?
   glassware       String            @db.VarChar()
   ice             String            @db.VarChar(100)
+  image           String?
   touch           Touch[]
   archivedBuild   ArchivedBuild[]
   buildUser       BuildUser[]
