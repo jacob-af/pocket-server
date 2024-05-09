@@ -5,6 +5,7 @@ type Build {
   createdAt: Date
   editedAt: Date
   createdBy: User
+  createdById: String
   editedBy: User
   instructions: String
   notes: String
@@ -97,7 +98,7 @@ input CreateFirstBuildInput {
 }
 
 input UpdateBuildInput {
-  recipeName: String
+  recipe: RecipeNameInput!
   buildId: String!
   buildName: String
   instructions: String

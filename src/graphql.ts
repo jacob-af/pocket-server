@@ -56,7 +56,7 @@ export class CreateFirstBuildInput {
 }
 
 export class UpdateBuildInput {
-    recipeName?: Nullable<string>;
+    recipe: RecipeNameInput;
     buildId: string;
     buildName?: Nullable<string>;
     instructions?: Nullable<string>;
@@ -152,6 +152,8 @@ export abstract class IQuery {
 
     abstract recipe(name: string): Nullable<Recipe> | Promise<Nullable<Recipe>>;
 
+    abstract userRecipe(): Nullable<Nullable<Recipe>[]> | Promise<Nullable<Nullable<Recipe>[]>>;
+
     abstract allUsers(): Nullable<User>[] | Promise<Nullable<User>[]>;
 
     abstract userById(id: string): Nullable<User> | Promise<Nullable<User>>;
@@ -230,6 +232,7 @@ export class Build {
     createdAt?: Nullable<DateTime>;
     editedAt?: Nullable<DateTime>;
     createdBy?: Nullable<User>;
+    createdById?: Nullable<string>;
     editedBy?: Nullable<User>;
     instructions?: Nullable<string>;
     notes?: Nullable<string>;

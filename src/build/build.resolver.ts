@@ -18,6 +18,7 @@ import {
 } from '../graphql';
 import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
 import { resolvePermission } from '../utils/resolvePermission';
+import { UserService } from 'src/user/user.service';
 
 @Resolver('Build')
 export class BuildResolver {
@@ -25,6 +26,7 @@ export class BuildResolver {
     private buildService: BuildService,
     private touchService: TouchService,
     private recipeService: RecipeService,
+    private userService: UserService,
   ) {}
 
   @Mutation('createBuild')
@@ -77,9 +79,8 @@ export class BuildResolver {
   update(
     @Args('updateBuildInput') updateBuildInput: UpdateBuildInput,
     @CurrentUserId() userId: string,
-    permission: Permission,
   ) {
-    if (!resolvePermission(permission, Permission.MANAGER)) {
+    if (!resolvePermission(updateBuildInput.permission, Permission.MANAGER)) {
       throw new Error('You do not have permission to do that, Dave');
     }
     try {
@@ -90,7 +91,11 @@ export class BuildResolver {
   }
 
   @Mutation('removeBuild')
-  remove(@Args('buildId') buildId: string, permission: Permission) {
+  remove(
+    @Args('buildId') buildId: string,
+    @Args('permission') permission: Permission,
+  ) {
+    console.log(permission);
     if (!resolvePermission(permission, Permission.OWNER)) {
       throw new Error('You do not have permission to do that, Dave');
     }
@@ -134,7 +139,6 @@ export class BuildResolver {
     ) {
       throw new Error('You do not have permission to do that, Dave');
     }
-
     return this.buildService.deleteBuildPermission(
       changeBuildPermissionInput.userId,
       changeBuildPermissionInput.buildId,
@@ -149,5 +153,10 @@ export class BuildResolver {
   async recipe(@Parent() build) {
     console.log(build.recipeName);
     return this.recipeService.findOne(build.recipeName);
+  }
+
+  @ResolveField('createdBy')
+  async createdBy(@Parent() build: Build) {
+    return this.userService.findOne(build.createdById);
   }
 }

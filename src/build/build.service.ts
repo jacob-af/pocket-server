@@ -296,17 +296,16 @@ export class BuildService {
           },
         },
       },
-      // include: {
-      //   buildUser: {
-      //     where: {
-      //       userId: userId,
-      //     },
-      //   },
-      // },
+      include: {
+        buildUser: {
+          where: {
+            userId: userId,
+          },
+        },
+      },
     });
     const buildsWithPermission = builds.map((build) => {
       console.log(build);
-      if 
       return {
         ...build,
         permission: build.buildUser[0].permission,

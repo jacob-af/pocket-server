@@ -1,6 +1,7 @@
+import { User, UserRelationship } from '../graphql';
+
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { User, UserRelationship } from '../graphql';
 
 @Injectable()
 export class UserService {
@@ -10,6 +11,7 @@ export class UserService {
     return await this.prisma.user.findMany();
   }
   async findOne(userId: string): Promise<User> {
+    console.log(userId);
     return await this.prisma.user.findUnique({ where: { id: userId } });
   }
 

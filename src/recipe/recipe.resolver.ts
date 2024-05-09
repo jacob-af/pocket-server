@@ -59,11 +59,21 @@ export class RecipeResolver {
     return this.recipeService.findOne(name);
   }
 
+  @Query('userRecipe')
+  userRecipe() {
+    return this.recipeService.userRecipe();
+  }
+
   @Mutation('updateRecipe')
   update(
     @Args('updateRecipeInput') updateRecipeInput: UpdateRecipeInput,
     @CurrentUserId() userId: string,
   ) {
+    if (
+      !resolvePermission(updateRecipeInput.build.permission, Permission.MANAGER)
+    ) {
+      throw new Error('You do not have permission to do that, Dave');
+    }
     return this.recipeService.update(updateRecipeInput, userId);
   }
 

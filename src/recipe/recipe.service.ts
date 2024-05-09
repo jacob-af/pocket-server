@@ -104,6 +104,20 @@ export class RecipeService {
     });
   }
 
+  async userRecipe() {
+    return await this.prisma.recipe.findMany({
+      where: {
+        // Filter recipes that have at least one build
+        build: {
+          some: {},
+        },
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+  }
+
   async remove(id: string) {
     return await this.prisma.recipe.delete({ where: { id } });
   }
