@@ -16,6 +16,7 @@ import { RecipeModule } from './recipe/recipe.module';
 import { TouchModule } from './touch/touch.module';
 import { UserModule } from './user/user.module';
 import { join } from 'path';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { join } from 'path';
     TouchModule,
     RecipeModule,
     RecipeBookModule,
+    ProfileModule,
   ],
   controllers: [],
   providers: [
