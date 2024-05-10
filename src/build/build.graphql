@@ -111,6 +111,21 @@ input UpdateBuildInput {
   permission: Permission
 }
 
+input UpdateManyBuildInput {
+  name: String!
+  about: String
+  build: ManyBuildInput!
+}
+
+input ManyBuildInput {
+  buildId: String
+  buildName: String!
+  instructions: String
+  glassware: String
+  ice: String
+  touchArray: [TouchInput]!
+}
+
 input ChangeBuildPermissionInput {
   userId: String
   buildId: String
@@ -120,7 +135,7 @@ input ChangeBuildPermissionInput {
 
 type Query {
   findAllBuilds: [Build]
-  findOneBuild: Build
+  findOneBuild(recipeName: String!, buildName: String!): Build
   usersBuilds: [Build]
   findBuildUsers(buildId: String!): [BuildUser]
   findFolloweddUsersBuildPermission(buildId: String!): [UserBuildPermission]
@@ -130,6 +145,7 @@ type Mutation {
   createBuild(createBuildInput: CreateBuildInput): Build
 
   updateBuild(updateBuildInput: UpdateBuildInput): ArchiveResponse
+  updateManyBuilds(updateManyBuildInput: [UpdateManyBuildInput]!): StatusMessage
 
   removeBuild(buildId: String, permission: Permission): Build
 

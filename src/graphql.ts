@@ -68,6 +68,21 @@ export class UpdateBuildInput {
     permission?: Nullable<Permission>;
 }
 
+export class UpdateManyBuildInput {
+    name: string;
+    about?: Nullable<string>;
+    build: ManyBuildInput;
+}
+
+export class ManyBuildInput {
+    buildId?: Nullable<string>;
+    buildName: string;
+    instructions?: Nullable<string>;
+    glassware?: Nullable<string>;
+    ice?: Nullable<string>;
+    touchArray: Nullable<TouchInput>[];
+}
+
 export class ChangeBuildPermissionInput {
     userId?: Nullable<string>;
     buildId?: Nullable<string>;
@@ -105,7 +120,7 @@ export class UpdateRecipeInput {
 }
 
 export class TouchInput {
-    id: string;
+    id?: Nullable<string>;
     ingredientName: string;
     amount: number;
     unit: string;
@@ -137,7 +152,7 @@ export abstract class IQuery {
 
     abstract findAllBuilds(): Nullable<Nullable<Build>[]> | Promise<Nullable<Nullable<Build>[]>>;
 
-    abstract findOneBuild(): Nullable<Build> | Promise<Nullable<Build>>;
+    abstract findOneBuild(recipeName: string, buildName: string): Nullable<Build> | Promise<Nullable<Build>>;
 
     abstract usersBuilds(): Nullable<Nullable<Build>[]> | Promise<Nullable<Nullable<Build>[]>>;
 
@@ -186,6 +201,8 @@ export abstract class IMutation {
     abstract createBuild(createBuildInput?: Nullable<CreateBuildInput>): Nullable<Build> | Promise<Nullable<Build>>;
 
     abstract updateBuild(updateBuildInput?: Nullable<UpdateBuildInput>): Nullable<ArchiveResponse> | Promise<Nullable<ArchiveResponse>>;
+
+    abstract updateManyBuilds(updateManyBuildInput: Nullable<UpdateManyBuildInput>[]): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
 
     abstract removeBuild(buildId?: Nullable<string>, permission?: Nullable<Permission>): Nullable<Build> | Promise<Nullable<Build>>;
 

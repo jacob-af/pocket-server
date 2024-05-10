@@ -5,6 +5,7 @@ import {
   CreateBuildInput,
   Permission,
   UpdateBuildInput,
+  UpdateManyBuildInput,
   UserBuildPermission,
 } from '../graphql';
 
@@ -76,8 +77,15 @@ export class BuildService {
     return await this.prisma.build.findMany({ where: options });
   }
 
-  async findOne(buildId: string) {
-    return await this.prisma.build.findUnique({ where: { id: buildId } });
+  async findOne(recipeName: string, buildName: string) {
+    return await this.prisma.build.findUnique({
+      where: {
+        buildName_recipeName: {
+          recipeName,
+          buildName,
+        },
+      },
+    });
   }
 
   async update(
@@ -136,6 +144,22 @@ export class BuildService {
     }
   }
 
+  async updateMany(
+    updateManyBuildsInput: UpdateManyBuildInput[],
+    userId: string,
+  ) {
+    console.log(updateManyBuildsInput, userId);
+
+    // updateManyBuildsInput.forEach((recipe) => {
+    //   if (recipe.build.buildId) {
+    //     const permission = this.prisma.buildUser.findUnique({
+    //       where: { userId: userId },
+    //     });
+    //   }
+    // });
+    return { message: 'no' };
+  }
+
   async remove(buildId: string) {
     return await this.prisma.build.delete({ where: { id: buildId } });
   }
@@ -169,7 +193,6 @@ export class BuildService {
         },
       });
       touch.forEach(async (t) => {
-        console.log(t);
         return await this.prisma.touch.delete({
           where: { id: t.id },
         });

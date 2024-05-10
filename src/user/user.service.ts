@@ -11,7 +11,6 @@ export class UserService {
     return await this.prisma.user.findMany();
   }
   async findOne(userId: string): Promise<User> {
-    console.log(userId);
     return await this.prisma.user.findUnique({ where: { id: userId } });
   }
 
@@ -20,7 +19,6 @@ export class UserService {
       where: { followedById: userId },
     });
     const users = await res.map(async (r) => {
-      console.log(r);
       const { id, userName, email, dateJoined, lastEdited } =
         await this.prisma.user.findUnique({
           where: { id: r.followingId },

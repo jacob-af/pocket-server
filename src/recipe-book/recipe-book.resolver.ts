@@ -70,7 +70,6 @@ export class RecipeBookResolver {
     @Args('bookPermission') bookPermission: Permission,
   ) {
     if (!resolvePermission(bookPermission, Permission.MANAGER)) {
-      console.log(bookPermission, Permission.MANAGER);
       throw new Error('You do not have permission to do that, Dave');
     }
     return this.recipeBookService.removeBuildFromRecipeBook({

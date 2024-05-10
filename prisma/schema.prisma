@@ -91,6 +91,8 @@ model Build {
   recipe          Recipe?           @relation(fields: [recipeName], references: [name], onDelete: Cascade, onUpdate: Cascade)
   recipeName      String
   RecipeBookBuild RecipeBookBuild[]
+
+  @@unique([buildName, recipeName])
 }
 
 model ArchivedBuild {

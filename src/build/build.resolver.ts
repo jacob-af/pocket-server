@@ -12,9 +12,11 @@ import { RecipeService } from '../recipe/recipe.service';
 import {
   CreateBuildInput,
   UpdateBuildInput,
+  UpdateManyBuildInput,
   ChangeBuildPermissionInput,
   Build,
   Permission,
+  StatusMessage,
 } from '../graphql';
 import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
 import { resolvePermission } from '../utils/resolvePermission';
@@ -54,8 +56,12 @@ export class BuildResolver {
   }
 
   @Query('findOneBuild')
-  findOne(@Args('id') id: string) {
-    return this.buildService.findOne(id);
+  async findOne(
+    @Args('recipeName') recipeName: string,
+    @Args('buildName') buildName: string,
+  ) {
+    console.log(recipeName, buildName);
+    return await this.buildService.findOne(recipeName, buildName);
   }
 
   @Query('findFolloweddUsersBuildPermission')
@@ -71,7 +77,6 @@ export class BuildResolver {
 
   @Query('usersBuilds')
   usersBuilds(@CurrentUserId() userId: string) {
-    console.log(userId);
     return this.buildService.usersBuilds(userId);
   }
 
@@ -88,6 +93,14 @@ export class BuildResolver {
     } catch (err) {
       throw new Error('Something has gone wrong with your update');
     }
+  }
+
+  @Mutation('updateManyBuilds')
+  async updateManyBuilds(
+    @Args('updateManyBuildInput') updateManyBuildInput: UpdateManyBuildInput[],
+    @CurrentUserId() userId: string,
+  ): Promise<StatusMessage> {
+    return await this.buildService.updateMany(updateManyBuildInput, userId);
   }
 
   @Mutation('removeBuild')
@@ -149,6 +162,7 @@ export class BuildResolver {
   async touch(@Parent() build: Build) {
     return this.touchService.touch(build.id);
   }
+
   @ResolveField('recipe')
   async recipe(@Parent() build) {
     console.log(build.recipeName);

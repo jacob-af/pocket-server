@@ -56,6 +56,7 @@ export class RecipeResolver {
 
   @Query('recipe')
   findOne(@Args('name') name: string) {
+    console.log(name);
     return this.recipeService.findOne(name);
   }
 
@@ -97,7 +98,6 @@ export class RecipeResolver {
 
   @ResolveField('createdBy')
   async createdBy(@Parent() recipe: Recipe) {
-    console.log('id:', recipe);
     return this.userService.findOne(recipe.createdById);
   }
 }

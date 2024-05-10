@@ -1,11 +1,13 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+
 //import { CreateUser } from './dto/create-user.input';
 //import { UpdateAuthInput } from './dto/update-auth.input';
 import { CreateUserInput, LoginInput } from '../graphql';
-import { PrismaService } from '../prisma/prisma.service';
-import { JwtService } from '@nestjs/jwt';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+
 import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +18,6 @@ export class AuthService {
   ) {}
 
   async createUser(createUserInput: CreateUserInput) {
-    console.log(createUserInput);
     const hpassword = await bcrypt.hash(createUserInput.password, 10);
     const user = await this.prisma.user.create({
       data: {
@@ -122,7 +123,6 @@ export class AuthService {
       user.email,
     );
     await this.updateRefreshToken(user.id, refreshToken);
-    console.log('user: ', !!user, 'accesToken:', !!accessToken);
     return {
       user,
       accessToken,
