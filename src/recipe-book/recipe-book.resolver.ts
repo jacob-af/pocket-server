@@ -132,6 +132,12 @@ export class RecipeBookResolver {
     return res;
   }
 
+  @Query('recipeBook')
+  async recipeBook(@Args('name') name: string) {
+    console.log(name);
+    return await this.recipeBookService.recipeBook(name);
+  }
+
   @ResolveField('build')
   async build(
     @Parent() recipeBook: RecipeBook,

@@ -170,6 +170,8 @@ export abstract class IQuery {
 
     abstract userRecipeBooks(): Nullable<Nullable<RecipeBook>[]> | Promise<Nullable<Nullable<RecipeBook>[]>>;
 
+    abstract recipeBook(name?: Nullable<string>): Nullable<RecipeBook> | Promise<Nullable<RecipeBook>>;
+
     abstract recipeList(): Nullable<ListItem>[] | Promise<Nullable<ListItem>[]>;
 
     abstract recipes(): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;

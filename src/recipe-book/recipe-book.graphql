@@ -24,6 +24,7 @@ type RecipeBookBuild {
 type Query {
   allRecipeBooks: [RecipeBook]!
   userRecipeBooks: [RecipeBook]
+  recipeBook(name: String): RecipeBook
 }
 
 type Mutation {

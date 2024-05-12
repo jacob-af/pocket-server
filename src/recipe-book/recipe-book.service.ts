@@ -178,6 +178,10 @@ export class RecipeBookService {
     return sharedBooks;
   }
 
+  async recipeBook(name: string) {
+    return await this.prisma.recipeBook.findUnique({ where: { name: name } });
+  }
+
   async build(recipeBookId: string, userId: string) {
     try {
       // Query the RecipeBookBuild table to fetch builds associated with the specified recipe book
