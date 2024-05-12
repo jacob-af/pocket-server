@@ -18,23 +18,17 @@ type Build {
   archivedBuild: [ArchivedBuild]
 }
 
-# type BuildWithRecipeOptional {
-#   id: ID!
-#   recipe: Recipe
-#   buildName: String!
-#   createdAt: Date
-#   editedAt: Date
-#   createdBy: User
-#   editedBy: User
-#   instructions: String
-#   notes: String
-#   glassware: String
-#   ice: String
-#   permission: Permission
-#   touch: [Touch!]
-#   version: Int
-#   archivedBuild: [ArchivedBuild]
-# }
+type BuildConstructor {
+  name: String!
+  buildName: String!
+  about: String
+  instructions: String
+  ice: String
+  glassware: String
+  touchArray: [CompleteTouch]!
+  id: String!
+  permission: Permission!
+}
 
 type ArchivedBuild {
   id: ID!

@@ -7,7 +7,7 @@ type RecipeBook {
   createdBy: User
   editedBy: User
   permission: Permission
-  build: [Build]
+  build: [Build!]
 }
 
 type RecipeBookUser {
@@ -23,7 +23,7 @@ type RecipeBookBuild {
 
 type Query {
   allRecipeBooks: [RecipeBook]!
-  userRecipeBooks(userId: String!): RecipeBook
+  userRecipeBooks: [RecipeBook]
 }
 
 type Mutation {

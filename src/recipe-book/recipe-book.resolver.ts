@@ -1,13 +1,24 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { RecipeBookService } from './recipe-book.service';
+import { BuildService } from '../build/build.service';
 
 import { resolvePermission } from 'src/utils/resolvePermission';
 import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
-import { Permission } from 'src/graphql';
+import { Permission, RecipeBook } from 'src/graphql';
 
 @Resolver('RecipeBook')
 export class RecipeBookResolver {
-  constructor(private readonly recipeBookService: RecipeBookService) {}
+  constructor(
+    private readonly recipeBookService: RecipeBookService,
+    private readonly buildService: BuildService,
+  ) {}
 
   @Mutation('createRecipeBook')
   create(
@@ -55,7 +66,7 @@ export class RecipeBookResolver {
       throw new Error('You do not have permission to do that, Dave');
     }
     if (!resolvePermission(buildPermission, Permission.MANAGER)) {
-      throw new Error('You do not have permission to do that, Dave');
+      throw new Error('You do not have permission to do that, Dave-o');
     }
     return this.recipeBookService.addBuildToRecipeBook({
       buildId,
@@ -115,7 +126,17 @@ export class RecipeBookResolver {
   }
 
   @Query('userRecipeBooks')
-  userRecipeBooks(@CurrentUserId() userId: string) {
-    return this.recipeBookService.userRecipeBooks(userId);
+  async userRecipeBooks(@CurrentUserId() userId: string) {
+    const res = await this.recipeBookService.userRecipeBooks(userId);
+
+    return res;
+  }
+
+  @ResolveField('build')
+  async build(
+    @Parent() recipeBook: RecipeBook,
+    @CurrentUserId() userId: string,
+  ) {
+    return await this.recipeBookService.build(recipeBook.id, userId);
   }
 }

@@ -67,12 +67,16 @@ export class RecipeBookService {
     buildId: string;
     recipeBookId: string;
   }) {
-    await this.prisma.recipeBookBuild.create({
+    const res = await this.prisma.recipeBookBuild.create({
       data: {
         recipeBookId,
         buildId,
       },
+      include: {
+        build: true,
+      },
     });
+    console.log(res);
     return {
       message: `Build Successfully Added`,
     };
@@ -156,8 +160,8 @@ export class RecipeBookService {
     };
   }
 
-  userRecipeBooks(userId: string) {
-    const sharedRecipeBooks = this.prisma.recipeBookUser.findMany({
+  async userRecipeBooks(userId: string) {
+    const bookList = await this.prisma.recipeBookUser.findMany({
       where: {
         userId: userId,
       },
@@ -165,7 +169,45 @@ export class RecipeBookService {
         recipeBook: true, // Include the RecipeBook model data
       },
     });
+    const sharedBooks = bookList.map((b) => {
+      return {
+        ...b.recipeBook,
+        permission: b.permission,
+      };
+    });
+    return sharedBooks;
+  }
 
-    return [sharedRecipeBooks];
+  async build(recipeBookId: string, userId: string) {
+    try {
+      // Query the RecipeBookBuild table to fetch builds associated with the specified recipe book
+      const builds = await this.prisma.recipeBookBuild.findMany({
+        where: {
+          recipeBookId: recipeBookId,
+        },
+        include: {
+          build: {
+            include: {
+              buildUser: {
+                where: {
+                  userId: userId,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return builds.map((book) => {
+        console.log('build:', book.build);
+        return {
+          ...book.build,
+          permission: book.build.buildUser[0].permission || 'VIEW',
+        };
+      }); // Extract the builds or return an empty array
+    } catch (error) {
+      console.error('Error fetching builds for recipe book:', error);
+      throw error;
+    }
   }
 }

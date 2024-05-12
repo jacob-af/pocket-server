@@ -120,7 +120,7 @@ export class UpdateRecipeInput {
 }
 
 export class TouchInput {
-    id?: Nullable<string>;
+    id: string;
     ingredientName: string;
     amount: number;
     unit: string;
@@ -168,7 +168,7 @@ export abstract class IQuery {
 
     abstract allRecipeBooks(): Nullable<RecipeBook>[] | Promise<Nullable<RecipeBook>[]>;
 
-    abstract userRecipeBooks(userId: string): Nullable<RecipeBook> | Promise<Nullable<RecipeBook>>;
+    abstract userRecipeBooks(): Nullable<Nullable<RecipeBook>[]> | Promise<Nullable<Nullable<RecipeBook>[]>>;
 
     abstract recipeList(): Nullable<ListItem>[] | Promise<Nullable<ListItem>[]>;
 
@@ -273,6 +273,18 @@ export class Build {
     archivedBuild?: Nullable<Nullable<ArchivedBuild>[]>;
 }
 
+export class BuildConstructor {
+    name: string;
+    buildName: string;
+    about?: Nullable<string>;
+    instructions?: Nullable<string>;
+    ice?: Nullable<string>;
+    glassware?: Nullable<string>;
+    touchArray: Nullable<CompleteTouch>[];
+    id: string;
+    permission: Permission;
+}
+
 export class ArchivedBuild {
     id: string;
     buildId: string;
@@ -334,7 +346,7 @@ export class RecipeBook {
     createdBy?: Nullable<User>;
     editedBy?: Nullable<User>;
     permission?: Nullable<Permission>;
-    build?: Nullable<Nullable<Build>[]>;
+    build?: Nullable<Build[]>;
 }
 
 export class RecipeBookUser {
@@ -384,10 +396,9 @@ export class ArchivedTouch {
 
 export class CompleteTouch {
     id: string;
-    ingredientName?: Nullable<string>;
-    amount?: Nullable<number>;
-    unit?: Nullable<string>;
-    cost?: Nullable<number>;
+    ingredientName: string;
+    amount: number;
+    unit: string;
 }
 
 export class User {

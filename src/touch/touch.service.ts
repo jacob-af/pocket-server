@@ -1,5 +1,6 @@
+import { ArchivedTouch, Touch, TouchInput } from '../graphql';
+
 import { Injectable } from '@nestjs/common';
-import { TouchInput, Touch, ArchivedTouch } from '../graphql';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -11,7 +12,10 @@ export class TouchService {
   }
 
   async touch(buildId: string) {
-    return await this.prisma.touch.findMany({ where: { buildId } });
+    return await this.prisma.touch.findMany({
+      where: { buildId },
+      orderBy: { order: 'asc' },
+    });
   }
 
   async findOne(id: string) {
