@@ -45,10 +45,11 @@ type FollowReturn {
   status: StatusMessage
 }
 
-type UserRelationship {
-  user: User!
-  followedBy: Boolean
-  following: Boolean
+type UserRelation {
+  id: String!
+  userName: String!
+  followedBy: Boolean!
+  following: Boolean!
 }
 
 type Query {
@@ -56,7 +57,7 @@ type Query {
   userById(id: ID!): User
   findFollows: [User]
   findFollowers: [User]
-  getUserRelationships: [UserRelationship]
+  getUserRelationships: [UserRelation]
 }
 
 type Mutation {

@@ -188,7 +188,7 @@ export abstract class IQuery {
 
     abstract findFollowers(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
 
-    abstract getUserRelationships(): Nullable<Nullable<UserRelationship>[]> | Promise<Nullable<Nullable<UserRelationship>[]>>;
+    abstract getUserRelationships(): Nullable<Nullable<UserRelation>[]> | Promise<Nullable<Nullable<UserRelation>[]>>;
 }
 
 export abstract class IMutation {
@@ -444,10 +444,11 @@ export class FollowReturn {
     status?: Nullable<StatusMessage>;
 }
 
-export class UserRelationship {
-    user: User;
-    followedBy?: Nullable<boolean>;
-    following?: Nullable<boolean>;
+export class UserRelation {
+    id: string;
+    userName: string;
+    followedBy: boolean;
+    following: boolean;
 }
 
 export type DateTime = any;
