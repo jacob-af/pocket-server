@@ -98,6 +98,7 @@ export class RecipeResolver {
 
   @ResolveField('createdBy')
   async createdBy(@Parent() recipe: Recipe) {
+    console.log(recipe.name);
     return this.userService.findOne(recipe.createdById);
   }
 }

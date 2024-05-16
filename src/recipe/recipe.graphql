@@ -9,7 +9,7 @@ type Recipe {
   editedBy: User
   editeById: String
   build: [Build]
-  userBuild: [Build]
+  userBuild: [Build!]!
 }
 
 input CreateRecipeInput {

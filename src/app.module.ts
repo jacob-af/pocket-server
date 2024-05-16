@@ -11,12 +11,12 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { IngredientModule } from './ingredient/ingredient.module';
 import { Module } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
+import { ProfileModule } from './profile/profile.module';
 import { RecipeBookModule } from './recipe-book/recipe-book.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { TouchModule } from './touch/touch.module';
 import { UserModule } from './user/user.module';
 import { join } from 'path';
-import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [

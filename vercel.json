@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "builds": [{ "src": "dist/src/main.js", "use": "@vercel/node" }],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "dist/src/main.js" }
+  ],
+  "env": {
+    "DATABASE_URL": "postgres://pocket_server_user:hpzfpv40i8nSU3gMOCUSpksRd1CifnF7@dpg-co63ah6v3ddc7399qlv0-a.ohio-postgres.render.com/pocket_server",
+    "ACCESS_TOKEN_SECRET": "p>sD2dDg;&(+`OcsevR,4D?*cxs5<ZE>*hc@Jk;6~!:*74!Zt{Y36>]&Y(!=+zq",
+    "REFRESH_TOKEN_SECRET": "O@-5yXtB&v=zUVts&Dwwh80.4mLXBtE).FVGX-')SN=5*#&*Rr+M'->hW%$4l&N"
+  }
+}

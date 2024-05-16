@@ -1,6 +1,5 @@
 import {
   CreateRecipeInput,
-  Recipe,
   StatusMessage,
   UpdateRecipeInput,
 } from '../graphql';
@@ -47,11 +46,11 @@ export class RecipeService {
     createManyRecipeInputs: CreateRecipeInput[],
     userId: string,
   ): Promise<StatusMessage> {
-    const successes: Recipe[] = [];
+    const successes = [];
     const errors: string[] = [];
     for (const recipe of createManyRecipeInputs) {
       try {
-        const newRecipe: Recipe = await this.create(recipe, userId);
+        const newRecipe = await this.create(recipe, userId);
         successes.push(newRecipe);
       } catch (error) {
         errors.push(recipe.recipeName);

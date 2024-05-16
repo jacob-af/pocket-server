@@ -1,13 +1,14 @@
 type RecipeBook {
   id: ID!
-  name: String
-  description: String
+  name: String!
+  description: String!
   createdAt: Date
+  createdById: String
   editedAt: Date
   createdBy: User
   editedBy: User
   permission: Permission
-  build: [Build!]
+  build: [Build!]!
 }
 
 type RecipeBookUser {
@@ -16,29 +17,32 @@ type RecipeBookUser {
   permission: Permission!
 }
 
-type RecipeBookBuild {
-  recipeBook: RecipeBook
-  build: Build
+type RecipeBookShare {
+  recipeBook: RecipeBookUser
+  status: StatusMessage
+}
+
+type UserBookPermission {
+  user: User!
+  permission: String
 }
 
 type Query {
   allRecipeBooks: [RecipeBook]!
   userRecipeBooks: [RecipeBook]
   recipeBook(name: String): RecipeBook
+  findFolloweddUsersBookPermission(recipeBookId: String!): [UserBookPermission]
 }
 
 type Mutation {
   createRecipeBook(name: String!, description: String): RecipeBook!
   updateRecipeBook(
-    recipeBookId: String!
+    id: String!
     name: String!
     permission: Permission!
     description: String
   ): RecipeBook!
-  removeRecipeBook(
-    recipeBookId: String!
-    permission: Permission!
-  ): StatusMessage!
+  removeRecipeBook(id: String!, permission: Permission!): StatusMessage!
 
   addBuildToRecipeBook(
     recipeBookId: String!
@@ -56,9 +60,9 @@ type Mutation {
   changeRecipeBookPermission(
     userId: String!
     recipeBookId: String!
-    permission: Permission
     userPermission: Permission
-  ): StatusMessage!
+    desiredPermission: Permission
+  ): RecipeBookShare!
 
   removeRecipeBookPermission(
     userId: String!

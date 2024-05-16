@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { RecipeBookResolver } from './recipe-book.resolver';
 import { RecipeBookService } from './recipe-book.service';
 import { TouchService } from 'src/touch/touch.service';
+import { UserService } from 'src/user/user.service';
 
 @Module({
   providers: [
@@ -11,6 +12,7 @@ import { TouchService } from 'src/touch/touch.service';
     RecipeBookService,
     BuildService,
     TouchService,
+    UserService,
     PrismaService,
   ],
 })

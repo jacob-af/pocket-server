@@ -1,6 +1,5 @@
 import {
   ArchivedBuild,
-  Build,
   ChangeBuildPermissionInput,
   CreateBuildInput,
   Permission,
@@ -34,7 +33,7 @@ export class BuildService {
   ) {
     console.log('arf');
     try {
-      const build: Build = await this.prisma.build.create({
+      const build = await this.prisma.build.create({
         data: {
           recipe: { connect: { name: name } },
           buildName,
@@ -295,7 +294,7 @@ export class BuildService {
     const builds = [];
     console.log('user builds route hit');
     for (const connection of buildList) {
-      const build: Build = await this.prisma.build.findUnique({
+      const build = await this.prisma.build.findUnique({
         where: { id: connection.buildId },
         include: {
           recipe: true,
@@ -333,7 +332,6 @@ export class BuildService {
       },
     });
     const buildsWithPermission = builds.map((build) => {
-      console.log(build);
       return {
         ...build,
         permission: build.buildUser[0].permission,

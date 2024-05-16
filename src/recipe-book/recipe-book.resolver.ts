@@ -7,7 +7,7 @@ import {
   Parent,
 } from '@nestjs/graphql';
 import { RecipeBookService } from './recipe-book.service';
-import { BuildService } from '../build/build.service';
+import { UserService } from '../user/user.service';
 
 import { resolvePermission } from 'src/utils/resolvePermission';
 import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
@@ -17,7 +17,7 @@ import { Permission, RecipeBook } from 'src/graphql';
 export class RecipeBookResolver {
   constructor(
     private readonly recipeBookService: RecipeBookService,
-    private readonly buildService: BuildService,
+    private readonly userService: UserService,
   ) {}
 
   @Mutation('createRecipeBook')
@@ -51,7 +51,10 @@ export class RecipeBookResolver {
   }
 
   @Mutation('removeRecipeBook')
-  remove(@Args('id') id: string) {
+  remove(@Args('id') id: string, @Args('permission') permission: Permission) {
+    if (!resolvePermission(permission, Permission.OWNER)) {
+      throw new Error('You do not have permission to do that, Dave');
+    }
     return this.recipeBookService.remove(id);
   }
 
@@ -92,7 +95,7 @@ export class RecipeBookResolver {
   @Mutation('changeRecipeBookPermission')
   changeRecipeBookPermission(
     @Args('userId') userId: string,
-    @Args('recipeBookId') recipeBookId,
+    @Args('recipeBookId') recipeBookId: string,
     @Args('userPermission') userPermission: Permission,
     @Args('desiredPermission') desiredPermission: Permission,
   ) {
@@ -114,9 +117,9 @@ export class RecipeBookResolver {
   removeRecipeBookPermission(
     @Args('userId') userId: string,
     @Args('recipeBookId') recipeBookId,
-    @Args('userPermission') userPermission: Permission,
+    @Args('permission') permission: Permission,
   ) {
-    if (!resolvePermission(userPermission, Permission.OWNER)) {
+    if (!resolvePermission(permission, Permission.MANAGER)) {
       throw new Error('You do not have permission to do that, Dave');
     }
     return this.recipeBookService.removeRecipeBookPermission({
@@ -138,11 +141,28 @@ export class RecipeBookResolver {
     return await this.recipeBookService.recipeBook(name);
   }
 
+  @Query('findFolloweddUsersBookPermission')
+  findFolloweddUsersBookPermission(
+    @CurrentUserId() userId: string,
+    @Args('recipeBookId') recipeBookId: string,
+  ) {
+    return this.recipeBookService.findFolloweddUsersBookPermission({
+      userId,
+      recipeBookId,
+    });
+  }
+
   @ResolveField('build')
   async build(
     @Parent() recipeBook: RecipeBook,
     @CurrentUserId() userId: string,
   ) {
     return await this.recipeBookService.build(recipeBook.id, userId);
+  }
+
+  @ResolveField('createdBy')
+  async createdBy(@Parent() recipeBook: RecipeBook) {
+    console.log(recipeBook);
+    return await this.userService.findOne(recipeBook.createdById);
   }
 }

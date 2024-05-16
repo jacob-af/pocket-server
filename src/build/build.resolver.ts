@@ -60,7 +60,6 @@ export class BuildResolver {
     @Args('recipeName') recipeName: string,
     @Args('buildName') buildName: string,
   ) {
-    console.log(recipeName, buildName);
     return await this.buildService.findOne(recipeName, buildName);
   }
 
@@ -165,7 +164,6 @@ export class BuildResolver {
 
   @ResolveField('recipe')
   async recipe(@Parent() build) {
-    console.log(build.recipeName);
     return this.recipeService.findOne(build.recipeName);
   }
 
