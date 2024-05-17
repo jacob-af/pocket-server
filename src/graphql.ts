@@ -406,11 +406,11 @@ export class Recipe {
 export class Touch {
     id: string;
     build?: Nullable<Build>;
-    order?: Nullable<number>;
-    amount?: Nullable<number>;
-    unit?: Nullable<string>;
+    order: number;
+    amount: number;
+    unit: string;
     version?: Nullable<number>;
-    ingredient?: Nullable<Ingredient>;
+    ingredient: Ingredient;
 }
 
 export class ArchivedTouch {

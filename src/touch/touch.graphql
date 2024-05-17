@@ -1,11 +1,11 @@
 type Touch {
   id: ID!
   build: Build
-  order: Int
-  amount: Float
-  unit: String
+  order: Int!
+  amount: Float!
+  unit: String!
   version: Int
-  ingredient: Ingredient
+  ingredient: Ingredient!
 }
 
 type ArchivedTouch {
