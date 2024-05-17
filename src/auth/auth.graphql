@@ -30,7 +30,34 @@ type Query {
 
 type Mutation {
   login(loginInput: LoginInput!): AuthPayload!
+  signin(loginInput: LoginInput!): AuthPayload!
+
+  googleSignIn(
+    googleUserId: String!
+    email: String!
+    name: String!
+    accessToken: String!
+    tokenExpiry: Date!
+    image: String
+  ): AuthPayload!
   signup(createUserInput: CreateUserInput!): AuthPayload!
   logout(userId: ID!): LogoutResponse!
   getNewTokens(refreshToken: String): AuthPayload!
+  createNewUser(email: String, userName: String): AuthPayload!
+  addPasswordAuth(id: String, password: String): AuthPayload!
+  addOauthAuth(
+    id: String
+    provider: String
+    providerUserId: String
+    accessToken: String
+    tokenExpiry: Date
+  ): AuthPayload!
+}
+
+type NewUser {
+  id: Int!
+  email: String!
+  name: String
+  createdAt: Date!
+  updatedAt: Date!
 }

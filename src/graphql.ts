@@ -172,6 +172,8 @@ export abstract class IQuery {
 
     abstract recipeBook(name?: Nullable<string>): Nullable<RecipeBook> | Promise<Nullable<RecipeBook>>;
 
+    abstract findFolloweddUsersBookPermission(recipeBookId: string): Nullable<Nullable<UserBookPermission>[]> | Promise<Nullable<Nullable<UserBookPermission>[]>>;
+
     abstract recipeList(): Nullable<ListItem>[] | Promise<Nullable<ListItem>[]>;
 
     abstract recipes(): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;
@@ -194,11 +196,21 @@ export abstract class IQuery {
 export abstract class IMutation {
     abstract login(loginInput: LoginInput): AuthPayload | Promise<AuthPayload>;
 
+    abstract signin(loginInput: LoginInput): AuthPayload | Promise<AuthPayload>;
+
+    abstract googleSignIn(googleUserId: string, email: string, name: string, accessToken: string, tokenExpiry: DateTime, image?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
+
     abstract signup(createUserInput: CreateUserInput): AuthPayload | Promise<AuthPayload>;
 
     abstract logout(userId: string): LogoutResponse | Promise<LogoutResponse>;
 
     abstract getNewTokens(refreshToken?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
+
+    abstract createNewUser(email?: Nullable<string>, userName?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
+
+    abstract addPasswordAuth(id?: Nullable<string>, password?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
+
+    abstract addOauthAuth(id?: Nullable<string>, provider?: Nullable<string>, providerUserId?: Nullable<string>, accessToken?: Nullable<string>, tokenExpiry?: Nullable<DateTime>): AuthPayload | Promise<AuthPayload>;
 
     abstract createBuild(createBuildInput?: Nullable<CreateBuildInput>): Nullable<Build> | Promise<Nullable<Build>>;
 
@@ -224,15 +236,15 @@ export abstract class IMutation {
 
     abstract createRecipeBook(name: string, description?: Nullable<string>): RecipeBook | Promise<RecipeBook>;
 
-    abstract updateRecipeBook(recipeBookId: string, name: string, permission: Permission, description?: Nullable<string>): RecipeBook | Promise<RecipeBook>;
+    abstract updateRecipeBook(id: string, name: string, permission: Permission, description?: Nullable<string>): RecipeBook | Promise<RecipeBook>;
 
-    abstract removeRecipeBook(recipeBookId: string, permission: Permission): StatusMessage | Promise<StatusMessage>;
+    abstract removeRecipeBook(id: string, permission: Permission): StatusMessage | Promise<StatusMessage>;
 
     abstract addBuildToRecipeBook(recipeBookId: string, buildId: string, buildPermission: Permission, bookPermission: Permission): StatusMessage | Promise<StatusMessage>;
 
     abstract removeBuildFromRecipeBook(recipeBookId: string, buildId: string, bookPermission: Permission): StatusMessage | Promise<StatusMessage>;
 
-    abstract changeRecipeBookPermission(userId: string, recipeBookId: string, permission?: Nullable<Permission>, userPermission?: Nullable<Permission>): StatusMessage | Promise<StatusMessage>;
+    abstract changeRecipeBookPermission(userId: string, recipeBookId: string, userPermission?: Nullable<Permission>, desiredPermission?: Nullable<Permission>): RecipeBookShare | Promise<RecipeBookShare>;
 
     abstract removeRecipeBookPermission(userId: string, recipeBookId: string, permission?: Nullable<Permission>): StatusMessage | Promise<StatusMessage>;
 
@@ -253,6 +265,14 @@ export abstract class IMutation {
     abstract blockUser(blockId: string): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
 
     abstract unblockUser(unblockId: string): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
+}
+
+export class NewUser {
+    id: number;
+    email: string;
+    name?: Nullable<string>;
+    createdAt: DateTime;
+    updatedAt: DateTime;
 }
 
 export class Build {
@@ -341,14 +361,15 @@ export class Profile {
 
 export class RecipeBook {
     id: string;
-    name?: Nullable<string>;
-    description?: Nullable<string>;
+    name: string;
+    description: string;
     createdAt?: Nullable<DateTime>;
+    createdById?: Nullable<string>;
     editedAt?: Nullable<DateTime>;
     createdBy?: Nullable<User>;
     editedBy?: Nullable<User>;
     permission?: Nullable<Permission>;
-    build?: Nullable<Build[]>;
+    build: Build[];
 }
 
 export class RecipeBookUser {
@@ -357,9 +378,14 @@ export class RecipeBookUser {
     permission: Permission;
 }
 
-export class RecipeBookBuild {
-    recipeBook?: Nullable<RecipeBook>;
-    build?: Nullable<Build>;
+export class RecipeBookShare {
+    recipeBook?: Nullable<RecipeBookUser>;
+    status?: Nullable<StatusMessage>;
+}
+
+export class UserBookPermission {
+    user: User;
+    permission?: Nullable<string>;
 }
 
 export class Recipe {
@@ -373,7 +399,7 @@ export class Recipe {
     editedBy?: Nullable<User>;
     editeById?: Nullable<string>;
     build?: Nullable<Nullable<Build>[]>;
-    userBuild?: Nullable<Nullable<Build>[]>;
+    userBuild: Build[];
 }
 
 export class Touch {

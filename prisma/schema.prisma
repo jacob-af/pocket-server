@@ -13,7 +13,7 @@ model User {
   userName           String           @unique @db.VarChar(255)
   dateJoined         DateTime         @default(now())
   lastEdited         DateTime         @default(now())
-  password           String           @db.VarChar(255)
+  password           String?          @db.VarChar(255)
   refreshToken       String?          @db.VarChar(255)
   followedBy         Follow[]         @relation("followedBy")
   following          Follow[]         @relation("following")
@@ -29,6 +29,34 @@ model User {
   recipeBookEditedBy RecipeBook[]     @relation("recipeBookEditedById")
   RecipeBookUser     RecipeBookUser[]
   Profile            Profile[]
+  authMethods        AuthMethod[]
+}
+
+model AuthMethod {
+  id           Int           @id @default(autoincrement())
+  userId       String
+  authType     String
+  user         User          @relation(fields: [userId], references: [id])
+  passwordAuth PasswordAuth?
+  oauthAuth    OAuthAuth?
+
+  @@unique([userId, authType])
+}
+
+model PasswordAuth {
+  authMethodId Int        @id
+  password     String
+  salt         String
+  authMethod   AuthMethod @relation(fields: [authMethodId], references: [id])
+}
+
+model OAuthAuth {
+  authMethodId   Int        @id
+  provider       String
+  providerUserId String     @unique
+  accessToken    String?
+  tokenExpiry    DateTime?
+  authMethod     AuthMethod @relation(fields: [authMethodId], references: [id])
 }
 
 model Profile {

@@ -16,7 +16,7 @@ export class ProfileService {
   }
 
   async updateProfile(userId: string, image: string) {
-    console.log(image);
+    console.log(image, 'image');
     return await this.prisma.profile.upsert({
       where: {
         userId,
