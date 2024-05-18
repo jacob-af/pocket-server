@@ -6,6 +6,7 @@ type Touch {
   unit: String!
   version: Int
   ingredient: Ingredient!
+  ingredientName: String
 }
 
 type ArchivedTouch {

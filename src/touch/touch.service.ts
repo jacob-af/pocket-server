@@ -1,4 +1,4 @@
-import { ArchivedTouch, Touch, TouchInput } from '../graphql';
+import { ArchivedTouch, TouchInput } from '../graphql';
 
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -77,12 +77,12 @@ export class TouchService {
     });
 
     const archivedTouchArray: Promise<ArchivedTouch>[] = touchToArchive.map(
-      async (touch: Touch, index: number) => {
+      async (touch, index: number) => {
         return await this.prisma.archivedTouch.create({
           data: {
             archivedBuild: { connect: { id: buildId } },
             order: index,
-            ingredient: { connect: { id: touch.ingredient.id } },
+            ingredient: { connect: { name: touch.ingredientName } },
             amount: touch.amount,
             unit: touch.unit,
             version,
@@ -91,7 +91,7 @@ export class TouchService {
       },
     );
 
-    const deletedArray = touchToArchive.map(async (touch: Touch) => {
+    const deletedArray = touchToArchive.map(async (touch) => {
       return this.prisma.touch.delete({
         where: { id: touch.id },
       });

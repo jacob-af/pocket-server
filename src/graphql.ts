@@ -25,12 +25,12 @@ export enum Permission {
 
 export class CreateUserInput {
     userName: string;
-    email: Email;
+    email: EmailAddress;
     password: string;
 }
 
 export class LoginInput {
-    email: Email;
+    email: EmailAddress;
     password: string;
 }
 
@@ -198,7 +198,7 @@ export abstract class IMutation {
 
     abstract signin(loginInput: LoginInput): AuthPayload | Promise<AuthPayload>;
 
-    abstract googleSignIn(googleUserId: string, email: string, name: string, accessToken: string, tokenExpiry: Date, image?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
+    abstract googleSignIn(googleUserId: string, email: string, name: string, accessToken: string, tokenExpiry: DateTime, image?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
 
     abstract signup(createUserInput: CreateUserInput): AuthPayload | Promise<AuthPayload>;
 
@@ -210,7 +210,7 @@ export abstract class IMutation {
 
     abstract addPasswordAuth(id?: Nullable<string>, password?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
 
-    abstract addOauthAuth(id?: Nullable<string>, provider?: Nullable<string>, providerUserId?: Nullable<string>, accessToken?: Nullable<string>, tokenExpiry?: Nullable<Date>): AuthPayload | Promise<AuthPayload>;
+    abstract addOauthAuth(id?: Nullable<string>, provider?: Nullable<string>, providerUserId?: Nullable<string>, accessToken?: Nullable<string>, tokenExpiry?: Nullable<DateTime>): AuthPayload | Promise<AuthPayload>;
 
     abstract createBuild(createBuildInput?: Nullable<CreateBuildInput>): Nullable<Build> | Promise<Nullable<Build>>;
 
@@ -271,16 +271,16 @@ export class NewUser {
     id: number;
     email: string;
     name?: Nullable<string>;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: DateTime;
+    updatedAt: DateTime;
 }
 
 export class Build {
     id: string;
     recipe: Recipe;
     buildName: string;
-    createdAt?: Nullable<Date>;
-    editedAt?: Nullable<Date>;
+    createdAt?: Nullable<DateTime>;
+    editedAt?: Nullable<DateTime>;
     createdBy?: Nullable<User>;
     createdById?: Nullable<string>;
     editedBy?: Nullable<User>;
@@ -312,7 +312,7 @@ export class ArchivedBuild {
     id: string;
     buildId: string;
     buildName: string;
-    createdAt?: Nullable<Date>;
+    createdAt?: Nullable<DateTime>;
     createdBy?: Nullable<User>;
     instructions?: Nullable<string>;
     notes?: Nullable<string>;
@@ -364,9 +364,9 @@ export class RecipeBook {
     id: string;
     name: string;
     description: string;
-    createdAt?: Nullable<Date>;
+    createdAt?: Nullable<DateTime>;
     createdById?: Nullable<string>;
-    editedAt?: Nullable<Date>;
+    editedAt?: Nullable<DateTime>;
     createdBy?: Nullable<User>;
     editedBy?: Nullable<User>;
     permission?: Nullable<Permission>;
@@ -391,8 +391,8 @@ export class UserBookPermission {
 
 export class Recipe {
     id: string;
-    createdAt?: Nullable<Date>;
-    editedAt?: Nullable<Date>;
+    createdAt?: Nullable<DateTime>;
+    editedAt?: Nullable<DateTime>;
     name: string;
     about?: Nullable<string>;
     createdBy?: Nullable<User>;
@@ -411,6 +411,7 @@ export class Touch {
     unit: string;
     version?: Nullable<number>;
     ingredient: Ingredient;
+    ingredientName?: Nullable<string>;
 }
 
 export class ArchivedTouch {
@@ -433,9 +434,9 @@ export class CompleteTouch {
 export class User {
     id: string;
     userName: string;
-    email?: Nullable<Email>;
-    dateJoined?: Nullable<Date>;
-    lastEdited?: Nullable<Date>;
+    email?: Nullable<EmailAddress>;
+    dateJoined?: Nullable<DateTime>;
+    lastEdited?: Nullable<DateTime>;
     following?: Nullable<Nullable<Following>[]>;
     followedBy?: Nullable<Nullable<Follower>[]>;
     myBuild?: Nullable<Nullable<Build>[]>;
@@ -447,18 +448,18 @@ export class User {
 export class Following {
     id: string;
     userName: string;
-    email?: Nullable<Email>;
-    dateJoined?: Nullable<Date>;
-    lastEdited?: Nullable<Date>;
+    email?: Nullable<EmailAddress>;
+    dateJoined?: Nullable<DateTime>;
+    lastEdited?: Nullable<DateTime>;
     relationship?: Nullable<Relationship>;
 }
 
 export class Follower {
     id: string;
     userName: string;
-    email?: Nullable<Email>;
-    dateJoined?: Nullable<Date>;
-    lastEdited?: Nullable<Date>;
+    email?: Nullable<EmailAddress>;
+    dateJoined?: Nullable<DateTime>;
+    lastEdited?: Nullable<DateTime>;
 }
 
 export class StatusMessage {
@@ -478,5 +479,6 @@ export class UserRelation {
     following: boolean;
 }
 
-export type Email = any;
+export type DateTime = any;
+export type EmailAddress = any;
 type Nullable<T> = T | null;
