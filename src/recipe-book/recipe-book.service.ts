@@ -208,7 +208,6 @@ export class RecipeBookService {
       });
 
       return builds.map((book) => {
-        console.log('build:', book.build.buildUser[0]);
         return book.build.buildUser[0] !== undefined
           ? {
               ...book.build,

@@ -137,7 +137,6 @@ export class RecipeBookResolver {
 
   @Query('recipeBook')
   async recipeBook(@Args('name') name: string) {
-    console.log(name);
     return await this.recipeBookService.recipeBook(name);
   }
 
@@ -162,7 +161,6 @@ export class RecipeBookResolver {
 
   @ResolveField('createdBy')
   async createdBy(@Parent() recipeBook: RecipeBook) {
-    console.log(recipeBook);
     return await this.userService.findOne(recipeBook.createdById);
   }
 }
