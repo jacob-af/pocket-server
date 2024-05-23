@@ -18,6 +18,7 @@ import {
 } from '../graphql';
 import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
 import { resolvePermission } from 'src/utils/resolvePermission';
+import { Public } from 'src/auth/decorators/public-decorators';
 
 @Resolver('Recipe')
 export class RecipeResolver {
@@ -44,27 +45,6 @@ export class RecipeResolver {
     return this.recipeService.createManyRecipes(createManyRecipeInputs, userId);
   }
 
-  @Query('recipes')
-  findAll() {
-    return this.recipeService.findAll();
-  }
-
-  @Query('recipeList')
-  recipeList() {
-    return this.recipeService.recipeList();
-  }
-
-  @Query('recipe')
-  findOne(@Args('name') name: string) {
-    console.log(name);
-    return this.recipeService.findOne(name);
-  }
-
-  @Query('userRecipe')
-  userRecipe() {
-    return this.recipeService.userRecipe();
-  }
-
   @Mutation('updateRecipe')
   update(
     @Args('updateRecipeInput') updateRecipeInput: UpdateRecipeInput,
@@ -86,19 +66,65 @@ export class RecipeResolver {
     return this.recipeService.remove(id);
   }
 
-  @ResolveField('build')
-  async build(@Parent() recipe: Recipe) {
-    return this.buildService.findAll({ recipeName: recipe.name });
+  //Queries
+
+  @Public()
+  @Query('publicRecipe')
+  publicRecipe(@Args('name') name: string) {
+    return this.recipeService.publicFindOne(name);
   }
 
+  @Public()
+  @Query('publicRecipeList')
+  publicRecipeList() {
+    return this.recipeService.allRecipes({
+      where: { build: { some: { isPublic: true } } },
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  @Query('publicRecipes')
+  publicRecipes(@Args('skip') skip: number, @Args('take') take: number) {
+    return this.recipeService.publicRecipes(skip, take);
+  }
+
+  @Query('recipe')
+  recipe(@Args('name') name: string) {
+    return this.recipeService.findOne(name);
+  }
+
+  @Query('userRecipeList')
+  userRecipeList(@CurrentUserId() userId: string) {
+    return this.recipeService.allRecipes({
+      where: {
+        build: { some: { buildUser: { some: { userId } } } },
+      },
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  @Query('userRecipes')
+  userRecipes(
+    @Args('skip') skip: number,
+    @Args('take') take: number,
+    @CurrentUserId() userId: string,
+  ) {
+    return this.recipeService.userRecipes(skip, take, userId);
+  }
+
+  @Public()
   @ResolveField('userBuild')
   async userBuild(@Parent() recipe: Recipe, @CurrentUserId() userId: string) {
-    return this.buildService.userBuilds2({ recipeName: recipe.name, userId });
+    return this.buildService.userBuilds(recipe.name, userId);
+  }
+
+  @ResolveField('publicBuild')
+  async publicBuild(@Parent() recipe: Recipe) {
+    return this.buildService.publicBuilds(recipe.name);
   }
 
   @ResolveField('createdBy')
   async createdBy(@Parent() recipe: Recipe) {
-    console.log(recipe.name);
     return this.userService.findOne(recipe.createdById);
   }
 }

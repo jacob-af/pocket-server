@@ -85,39 +85,90 @@ export class RecipeService {
     };
   }
 
-  async findAll() {
-    return this.prisma.recipe.findMany();
+  async remove(id: string) {
+    return await this.prisma.recipe.delete({ where: { id } });
   }
 
   async findOne(name: string) {
     return await this.prisma.recipe.findUnique({ where: { name } });
   }
 
-  async recipeList() {
-    return await this.prisma.recipe.findMany({
-      select: {
-        name: true,
-        id: true,
+  async publicFindOne(name: string) {
+    return await this.prisma.recipe.findFirst({
+      where: {
+        name,
+        build: {
+          some: {
+            isPublic: true,
+          },
+        },
       },
-      orderBy: { name: 'asc' },
     });
   }
 
-  async userRecipe() {
-    return await this.prisma.recipe.findMany({
+  //New code starts here
+  async allRecipes(options: object) {
+    return await this.prisma.recipe.findMany(options);
+  }
+
+  async publicRecipes(skip: number, take: number) {
+    console.log('lazy');
+    const recipes = await this.prisma.recipe.findMany({
       where: {
-        // Filter recipes that have at least one build
         build: {
-          some: {},
+          some: {
+            isPublic: true,
+          },
         },
       },
+      skip,
+      take,
       orderBy: {
         name: 'asc',
       },
     });
+
+    return recipes;
   }
 
-  async remove(id: string) {
-    return await this.prisma.recipe.delete({ where: { id } });
+  async userRecipes(skip: number, take: number, userId: string) {
+    console.log('lazy');
+    const recipes = await this.prisma.recipe.findMany({
+      where: {
+        build: {
+          some: {
+            OR: [
+              {
+                recipeBookBuild: {
+                  some: {
+                    recipeBook: {
+                      recipeBookUser: {
+                        some: {
+                          userId: userId,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                buildUser: {
+                  some: {
+                    userId: userId,
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      skip,
+      take,
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    return recipes;
   }
 }

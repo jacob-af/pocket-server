@@ -51,8 +51,11 @@ export class BuildResolver {
   }
 
   @Query('findAllBuilds')
-  findAll() {
-    return this.buildService.findAll();
+  findAll(
+    @Args('recipeName') recipeName: string,
+    @CurrentUserId() userId: string,
+  ) {
+    return this.buildService.findAll(recipeName, userId);
   }
 
   @Query('findOneBuild')
@@ -74,10 +77,10 @@ export class BuildResolver {
     });
   }
 
-  @Query('usersBuilds')
-  usersBuilds(@CurrentUserId() userId: string) {
-    return this.buildService.usersBuilds(userId);
-  }
+  // @Query('usersBuilds')
+  // usersBuilds(@CurrentUserId() userId: string) {
+  //   return this.buildService.usersBuilds(userId);
+  // }
 
   @Mutation('updateBuild')
   update(
@@ -107,7 +110,6 @@ export class BuildResolver {
     @Args('buildId') buildId: string,
     @Args('permission') permission: Permission,
   ) {
-    console.log(permission);
     if (!resolvePermission(permission, Permission.OWNER)) {
       throw new Error('You do not have permission to do that, Dave');
     }

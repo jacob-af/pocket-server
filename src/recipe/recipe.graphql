@@ -8,8 +8,8 @@ type Recipe {
   createdById: String
   editedBy: User
   editeById: String
-  build: [Build]
-  userBuild: [Build!]!
+  publicBuild: [Build]
+  userBuild: [Build]
 }
 
 input CreateRecipeInput {
@@ -26,10 +26,12 @@ input UpdateRecipeInput {
 }
 
 type Query {
-  recipeList: [ListItem]!
-  recipes: [Recipe]!
+  publicRecipe(name: String!): Recipe!
+  publicRecipeList: [Recipe]!
+  publicRecipes(skip: Int, take: Int): [Recipe]!
   recipe(name: String!): Recipe
-  userRecipe: [Recipe]
+  userRecipeList: [Recipe]!
+  userRecipes(skip: Int, take: Int): [Recipe]!
 }
 
 type Mutation {

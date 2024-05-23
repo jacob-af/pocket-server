@@ -27,6 +27,7 @@ export class BuildService {
       glassware,
       ice,
       image,
+      isPublic,
       touchArray,
     }: CreateBuildInput,
     userId: string,
@@ -41,6 +42,7 @@ export class BuildService {
           glassware,
           ice,
           image,
+          isPublic,
           createdBy: { connect: { id: userId } },
           editedBy: { connect: { id: userId } },
           version: 0,
@@ -53,7 +55,6 @@ export class BuildService {
           touch: true,
         },
       });
-      console.log(build.id);
       const {
         buildUser: { permission },
       } = await this.changeBuildPermission({
@@ -72,8 +73,42 @@ export class BuildService {
     }
   }
 
-  async findAll(options?: { [key: string]: string }) {
-    return await this.prisma.build.findMany({ where: options });
+  async findAll(recipeName: string, userId: string) {
+    const builds = await this.prisma.build.findMany({
+      where: {
+        recipeName: recipeName,
+        OR: [
+          // Direct association through BuildUser
+          {
+            buildUser: {
+              some: {
+                userId: userId,
+              },
+            },
+          },
+          // Indirect association through RecipeBookBuild and RecipeBookUser
+          {
+            recipeBookBuild: {
+              some: {
+                recipeBook: {
+                  recipeBookUser: {
+                    some: {
+                      userId: userId,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
+      },
+      include: {
+        createdBy: true, // Optional, include related user information
+        editedBy: true, // Optional, include related user information
+      },
+    });
+
+    return builds;
   }
 
   async findOne(recipeName: string, buildName: string) {
@@ -207,7 +242,7 @@ export class BuildService {
     const buildUser = await this.prisma.buildUser.findMany({
       where: { userId: userId },
     });
-    console.log(buildUser);
+
     return buildUser.map(async (each) => {
       const build = await this.prisma.build.findUnique({
         where: { id: each.buildId },
@@ -256,7 +291,6 @@ export class BuildService {
 
   async deleteBuildPermission(userId: string, buildId: string) {
     try {
-      console.log(userId, buildId);
       const buildUser = await this.prisma.buildUser.delete({
         where: {
           userId_buildId: {
@@ -282,63 +316,73 @@ export class BuildService {
     }
   }
 
-  async usersBuilds(userId: string) {
-    console.log(userId);
-    const buildList: {
-      userId: string;
-      buildId: string;
-      permission: string;
-    }[] = await this.prisma.buildUser.findMany({
-      where: { userId: userId },
+  async userBuilds(recipeName: string, userId: string) {
+    const builds = await this.prisma.build.findMany({
+      orderBy: {
+        buildName: 'asc',
+      },
+      where: {
+        recipeName: recipeName,
+        OR: [
+          { buildUser: { some: { userId } } },
+          {
+            recipeBookBuild: {
+              some: {
+                recipeBook: { recipeBookUser: { some: { userId } } },
+              },
+            },
+          },
+        ],
+      },
     });
-    const builds = [];
-    console.log('user builds route hit');
-    for (const connection of buildList) {
-      const build = await this.prisma.build.findUnique({
-        where: { id: connection.buildId },
-        include: {
-          recipe: true,
-          touch: true,
-        },
-      });
-      builds.push({ ...build, permission: connection.permission });
-    }
     return builds;
   }
 
-  async userBuilds2({
-    recipeName,
-    userId,
-  }: {
-    recipeName: string;
-    userId: string;
-  }) {
-    console.log(userId);
+  async publicBuilds(recipeName: string) {
     const builds = await this.prisma.build.findMany({
+      orderBy: {
+        buildName: 'asc',
+      },
       where: {
         recipeName: recipeName,
-        buildUser: {
-          some: {
-            userId: userId,
-          },
-        },
-      },
-      include: {
-        buildUser: {
-          where: {
-            userId: userId,
-          },
-        },
+        isPublic: true,
       },
     });
-    const buildsWithPermission = builds.map((build) => {
-      return {
-        ...build,
-        permission: build.buildUser[0].permission,
-      };
-    });
-    return buildsWithPermission;
+    return builds;
   }
+
+  // async userBuilds2({
+  //   recipeName,
+  //   userId,
+  // }: {
+  //   recipeName: string;
+  //   userId: string;
+  // }) {
+  //   const builds = await this.prisma.build.findMany({
+  //     where: {
+  //       recipeName: recipeName,
+  //       buildUser: {
+  //         some: {
+  //           userId: userId,
+  //         },
+  //       },
+  //     },
+  //     include: {
+  //       buildUser: {
+  //         where: {
+  //           userId: userId,
+  //         },
+  //       },
+  //     },
+  //   });
+  //   const buildsWithPermission = builds.map((build) => {
+  //     return {
+  //       ...build,
+  //       permission: build.buildUser[0].permission,
+  //     };
+  //   });
+  //   return buildsWithPermission;
+  // }
 
   async findFolloweddUsersBuildPermission({
     userId,
@@ -368,7 +412,7 @@ export class BuildService {
     });
 
     // Retrieve permission information for the specific build
-    console.log(buildId);
+
     const buildUserPermissions = await this.prisma.buildUser.findMany({
       where: {
         buildId,
@@ -377,7 +421,7 @@ export class BuildService {
         },
       },
     });
-    console.log('why', buildUserPermissions.length, 'just why');
+
     // Create a map for quick lookup of permissions by user ID
     const permissionMap = new Map<string, string | null>();
     buildUserPermissions.forEach((permission) => {
