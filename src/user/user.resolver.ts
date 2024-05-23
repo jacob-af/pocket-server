@@ -87,15 +87,15 @@ export class UserResolver {
     return await this.userService.findFollowers(id);
   }
 
-  @ResolveField('myBuild')
-  async myBuild(@Parent() user) {
-    return await this.buildService.findAll({ createdById: user.id });
-  }
+  // @ResolveField('myBuild')
+  // async myBuild(@Parent() user) {
+  //   return await this.buildService.findAll({ createdById: user.id });
+  // }
 
-  @ResolveField('buildEditedBy')
-  async buildEditedBy(@Parent() user) {
-    return await this.buildService.findAll({ editedById: user.id });
-  }
+  // @ResolveField('buildEditedBy')
+  // async buildEditedBy(@Parent() user) {
+  //   return await this.buildService.findAll({ editedById: user.id });
+  // }
 
   @ResolveField('allBuilds')
   async allBuilds(@Parent() user) {

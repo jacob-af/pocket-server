@@ -9,6 +9,7 @@ type RecipeBook {
   editedBy: User
   permission: Permission
   build: [Build!]!
+  publicBuild: [Build]
 }
 
 type RecipeBookUser {
@@ -28,10 +29,13 @@ type UserBookPermission {
 }
 
 type Query {
-  allRecipeBooks: [RecipeBook]!
-  userRecipeBooks: [RecipeBook]
-  recipeBook(name: String): RecipeBook
   findFolloweddUsersBookPermission(recipeBookId: String!): [UserBookPermission]
+  publicBook(name: String): RecipeBook!
+  publicBookList: [RecipeBook]!
+  publicBooks(skip: Int, take: Int): [RecipeBook]!
+  book(name: String): RecipeBook
+  userBookList: [RecipeBook]!
+  userBooks(skip: Int, take: Int): [RecipeBook]!
 }
 
 type Mutation {

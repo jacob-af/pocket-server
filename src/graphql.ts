@@ -41,6 +41,7 @@ export class CreateBuildInput {
     glassware?: Nullable<string>;
     ice?: Nullable<string>;
     image?: Nullable<string>;
+    isPublic?: Nullable<boolean>;
     touchArray: Nullable<TouchInput>[];
 }
 
@@ -154,10 +155,6 @@ export abstract class IQuery {
 
     abstract findOneBuild(recipeName: string, buildName: string): Nullable<Build> | Promise<Nullable<Build>>;
 
-    abstract usersBuilds(): Nullable<Nullable<Build>[]> | Promise<Nullable<Nullable<Build>[]>>;
-
-    abstract findBuildUsers(buildId: string): Nullable<Nullable<BuildUser>[]> | Promise<Nullable<Nullable<BuildUser>[]>>;
-
     abstract findFolloweddUsersBuildPermission(buildId: string): Nullable<Nullable<UserBuildPermission>[]> | Promise<Nullable<Nullable<UserBuildPermission>[]>>;
 
     abstract ingredients(): Nullable<Ingredient>[] | Promise<Nullable<Ingredient>[]>;
@@ -166,21 +163,31 @@ export abstract class IQuery {
 
     abstract getProfile(userId?: Nullable<string>): Profile | Promise<Profile>;
 
-    abstract allRecipeBooks(): Nullable<RecipeBook>[] | Promise<Nullable<RecipeBook>[]>;
-
-    abstract userRecipeBooks(): Nullable<Nullable<RecipeBook>[]> | Promise<Nullable<Nullable<RecipeBook>[]>>;
-
-    abstract recipeBook(name?: Nullable<string>): Nullable<RecipeBook> | Promise<Nullable<RecipeBook>>;
-
     abstract findFolloweddUsersBookPermission(recipeBookId: string): Nullable<Nullable<UserBookPermission>[]> | Promise<Nullable<Nullable<UserBookPermission>[]>>;
 
-    abstract recipeList(): Nullable<ListItem>[] | Promise<Nullable<ListItem>[]>;
+    abstract publicBook(name?: Nullable<string>): RecipeBook | Promise<RecipeBook>;
 
-    abstract recipes(): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;
+    abstract publicBookList(): Nullable<RecipeBook>[] | Promise<Nullable<RecipeBook>[]>;
+
+    abstract publicBooks(skip?: Nullable<number>, take?: Nullable<number>): Nullable<RecipeBook>[] | Promise<Nullable<RecipeBook>[]>;
+
+    abstract book(name?: Nullable<string>): Nullable<RecipeBook> | Promise<Nullable<RecipeBook>>;
+
+    abstract userBookList(): Nullable<RecipeBook>[] | Promise<Nullable<RecipeBook>[]>;
+
+    abstract userBooks(skip?: Nullable<number>, take?: Nullable<number>): Nullable<RecipeBook>[] | Promise<Nullable<RecipeBook>[]>;
+
+    abstract publicRecipe(name: string): Recipe | Promise<Recipe>;
+
+    abstract publicRecipeList(): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;
+
+    abstract publicRecipes(skip?: Nullable<number>, take?: Nullable<number>): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;
 
     abstract recipe(name: string): Nullable<Recipe> | Promise<Nullable<Recipe>>;
 
-    abstract userRecipe(): Nullable<Nullable<Recipe>[]> | Promise<Nullable<Nullable<Recipe>[]>>;
+    abstract userRecipeList(): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;
+
+    abstract userRecipes(skip?: Nullable<number>, take?: Nullable<number>): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;
 
     abstract allUsers(): Nullable<User>[] | Promise<Nullable<User>[]>;
 
@@ -302,6 +309,7 @@ export class BuildConstructor {
     instructions?: Nullable<string>;
     ice?: Nullable<string>;
     glassware?: Nullable<string>;
+    isPublic?: Nullable<boolean>;
     touchArray: Nullable<CompleteTouch>[];
     id: string;
     permission: Permission;
@@ -371,6 +379,7 @@ export class RecipeBook {
     editedBy?: Nullable<User>;
     permission?: Nullable<Permission>;
     build: Build[];
+    publicBuild?: Nullable<Nullable<Build>[]>;
 }
 
 export class RecipeBookUser {
@@ -399,8 +408,8 @@ export class Recipe {
     createdById?: Nullable<string>;
     editedBy?: Nullable<User>;
     editeById?: Nullable<string>;
-    build?: Nullable<Nullable<Build>[]>;
-    userBuild: Build[];
+    publicBuild?: Nullable<Nullable<Build>[]>;
+    userBuild?: Nullable<Nullable<Build>[]>;
 }
 
 export class Touch {

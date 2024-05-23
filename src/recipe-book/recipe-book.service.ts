@@ -164,7 +164,40 @@ export class RecipeBookService {
     };
   }
 
-  async userRecipeBooks(userId: string) {
+  async allBooks(options: object) {
+    return await this.prisma.recipeBook.findMany(options);
+  }
+
+  async findOne(name: string) {
+    return await this.prisma.recipeBook.findUnique({ where: { name } });
+  }
+
+  async publicBook(name: string) {
+    return await this.prisma.recipeBook.findFirst({
+      where: {
+        name,
+        isPublic: true,
+      },
+    });
+  }
+
+  async publicBooks(skip: number, take: number) {
+    console.log('lazy');
+    const books = await this.prisma.recipeBook.findMany({
+      where: {
+        isPublic: true,
+      },
+      skip,
+      take,
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    return books;
+  }
+
+  async userBooks(skip: number, take: number, userId: string) {
     const bookList = await this.prisma.recipeBookUser.findMany({
       where: {
         userId: userId,
@@ -172,6 +205,8 @@ export class RecipeBookService {
       include: {
         recipeBook: true, // Include the RecipeBook model data
       },
+      skip,
+      take,
     });
     console.log('yes, the user recipe books');
     const sharedBooks = bookList.map((b) => {
@@ -181,10 +216,6 @@ export class RecipeBookService {
       };
     });
     return sharedBooks;
-  }
-
-  async recipeBook(name: string) {
-    return await this.prisma.recipeBook.findUnique({ where: { name: name } });
   }
 
   async build(recipeBookId: string, userId: string) {
@@ -222,6 +253,19 @@ export class RecipeBookService {
       console.error('Error fetching builds for recipe book:', error);
       throw error;
     }
+  }
+
+  async publicBuild(id) {
+    return this.prisma.build.findMany({
+      where: {
+        isPublic: true,
+        recipeBookBuild: {
+          some: {
+            recipeBookId: id,
+          },
+        },
+      },
+    });
   }
 
   async findFolloweddUsersBookPermission({
@@ -298,8 +342,6 @@ export class RecipeBookService {
         });
       }
     }
-
-    // Return the list of user and permission pairs
     return userBookPermissions;
   }
 }

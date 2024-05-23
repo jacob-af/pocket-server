@@ -12,6 +12,7 @@ import { UserService } from '../user/user.service';
 import { resolvePermission } from 'src/utils/resolvePermission';
 import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
 import { Permission, RecipeBook } from 'src/graphql';
+import { Public } from 'src/auth/decorators/public-decorators';
 
 @Resolver('RecipeBook')
 export class RecipeBookResolver {
@@ -128,18 +129,6 @@ export class RecipeBookResolver {
     });
   }
 
-  @Query('userRecipeBooks')
-  async userRecipeBooks(@CurrentUserId() userId: string) {
-    const res = await this.recipeBookService.userRecipeBooks(userId);
-
-    return res;
-  }
-
-  @Query('recipeBook')
-  async recipeBook(@Args('name') name: string) {
-    return await this.recipeBookService.recipeBook(name);
-  }
-
   @Query('findFolloweddUsersBookPermission')
   findFolloweddUsersBookPermission(
     @CurrentUserId() userId: string,
@@ -151,12 +140,59 @@ export class RecipeBookResolver {
     });
   }
 
+  @Public()
+  @Query('publicBook')
+  publicBook(@Args('name') name: string) {
+    return this.recipeBookService.publicBook(name);
+  }
+
+  @Public()
+  @Query('publicBookList')
+  publicBookList() {
+    return this.recipeBookService.allBooks({
+      where: { isPublic: true },
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  @Public()
+  @Query('publicBooks')
+  publicBooks(@Args('skip') skip: number, @Args('take') take: number) {
+    return this.recipeBookService.publicBooks(skip, take);
+  }
+
+  @Query('book')
+  book(@Args('name') name: string) {
+    return this.recipeBookService.findOne(name);
+  }
+
+  @Query('userBookList')
+  userBookList(@CurrentUserId() userId: string) {
+    return this.recipeBookService.allBooks({
+      where: { recipeBookUser: { some: { userId } } },
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  @Query('userBooks')
+  userBooks(
+    @Args('skip') skip: number,
+    @Args('take') take: number,
+    @CurrentUserId() userId: string,
+  ) {
+    return this.recipeBookService.userBooks(skip, take, userId);
+  }
+
   @ResolveField('build')
   async build(
     @Parent() recipeBook: RecipeBook,
     @CurrentUserId() userId: string,
   ) {
     return await this.recipeBookService.build(recipeBook.id, userId);
+  }
+  @ResolveField('publicBuild')
+  async publicBuild(@Parent() recipeBook: RecipeBook) {
+    return await this.recipeBookService.publicBuild(recipeBook.id);
   }
 
   @ResolveField('createdBy')

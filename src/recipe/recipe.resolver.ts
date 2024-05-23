@@ -15,6 +15,7 @@ import {
   Recipe,
   StatusMessage,
   Permission,
+  RecipeBook,
 } from '../graphql';
 import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
 import { resolvePermission } from 'src/utils/resolvePermission';
@@ -71,7 +72,7 @@ export class RecipeResolver {
   @Public()
   @Query('publicRecipe')
   publicRecipe(@Args('name') name: string) {
-    return this.recipeService.publicFindOne(name);
+    return this.recipeService.publicRecipe(name);
   }
 
   @Public()
@@ -82,7 +83,7 @@ export class RecipeResolver {
       orderBy: { name: 'asc' },
     });
   }
-
+  @Public()
   @Query('publicRecipes')
   publicRecipes(@Args('skip') skip: number, @Args('take') take: number) {
     return this.recipeService.publicRecipes(skip, take);
@@ -119,8 +120,8 @@ export class RecipeResolver {
   }
 
   @ResolveField('publicBuild')
-  async publicBuild(@Parent() recipe: Recipe) {
-    return this.buildService.publicBuilds(recipe.name);
+  async publicBuild(@Parent() book: RecipeBook) {
+    return this.buildService.publicBuilds(book.name);
   }
 
   @ResolveField('createdBy')

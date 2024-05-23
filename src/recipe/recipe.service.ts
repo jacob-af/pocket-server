@@ -89,11 +89,15 @@ export class RecipeService {
     return await this.prisma.recipe.delete({ where: { id } });
   }
 
+  async allRecipes(options: object) {
+    return await this.prisma.recipe.findMany(options);
+  }
+
   async findOne(name: string) {
     return await this.prisma.recipe.findUnique({ where: { name } });
   }
 
-  async publicFindOne(name: string) {
+  async publicRecipe(name: string) {
     return await this.prisma.recipe.findFirst({
       where: {
         name,
@@ -104,11 +108,6 @@ export class RecipeService {
         },
       },
     });
-  }
-
-  //New code starts here
-  async allRecipes(options: object) {
-    return await this.prisma.recipe.findMany(options);
   }
 
   async publicRecipes(skip: number, take: number) {

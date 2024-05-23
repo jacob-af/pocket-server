@@ -6,6 +6,7 @@ import {
   Ingredient,
   StatusMessage,
 } from '../graphql';
+import { Public } from 'src/auth/decorators/public-decorators';
 
 @Resolver('Ingredient')
 export class IngredientResolver {
@@ -28,6 +29,7 @@ export class IngredientResolver {
     );
   }
 
+  @Public()
   @Query('ingredients')
   findAll() {
     return this.ingredientService.findAll();
