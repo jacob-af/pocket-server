@@ -91,4 +91,32 @@ export class IngredientService {
     });
     return `You have deleted #${response.name}`;
   }
+
+  // async getSiblingsInInventory(userId, ingredientName) {
+  //   const siblings = await this.prisma.ingredient.findMany({
+  //     where: {
+  //       parents: {
+  //         some: {
+  //           id: {
+  //             in: (
+  //               await this.prisma.ingredient.findUnique({
+  //                 where: { name: ingredientName },
+  //                 select: { parents: { select: { id: true } } },
+  //               })
+  //             ).parents.map((parent) => parent.id),
+  //           },
+  //         },
+  //       },
+  //       users: {
+  //         some: {
+  //           id: userId,
+  //         },
+  //       },
+  //     },
+  //   });
+
+  //   return siblings;
+  //}
 }
+
+// to be implemented
