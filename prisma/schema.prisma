@@ -112,13 +112,14 @@ model Build {
   glassware       String            @db.VarChar()
   ice             String            @db.VarChar(100)
   image           String?
+  isPublic        Boolean
   touch           Touch[]
   archivedBuild   ArchivedBuild[]
   buildUser       BuildUser[]
   version         Int
   recipe          Recipe?           @relation(fields: [recipeName], references: [name], onDelete: Cascade, onUpdate: Cascade)
   recipeName      String
-  RecipeBookBuild RecipeBookBuild[]
+  recipeBookBuild RecipeBookBuild[]
 
   @@unique([buildName, recipeName])
 }
