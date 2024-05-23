@@ -77,11 +77,6 @@ export class BuildResolver {
     });
   }
 
-  // @Query('usersBuilds')
-  // usersBuilds(@CurrentUserId() userId: string) {
-  //   return this.buildService.usersBuilds(userId);
-  // }
-
   @Mutation('updateBuild')
   update(
     @Args('updateBuildInput') updateBuildInput: UpdateBuildInput,

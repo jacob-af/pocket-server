@@ -133,23 +133,17 @@ input ChangeBuildPermissionInput {
 type Query {
   findAllBuilds: [Build]
   findOneBuild(recipeName: String!, buildName: String!): Build
-  usersBuilds: [Recipe]
-  findBuildUsers(buildId: String!): [BuildUser]
   findFolloweddUsersBuildPermission(buildId: String!): [UserBuildPermission]
 }
 
 type Mutation {
   createBuild(createBuildInput: CreateBuildInput): Build
-
   updateBuild(updateBuildInput: UpdateBuildInput): ArchiveResponse
   updateManyBuilds(updateManyBuildInput: [UpdateManyBuildInput]!): StatusMessage
-
   removeBuild(buildId: String, permission: Permission): Build
-
   changeBuildPermission(
     changeBuildPermissionInput: ChangeBuildPermissionInput
   ): BuildPermissionResponse
-
   deleteBuildPermission(
     changeBuildPermissionInput: ChangeBuildPermissionInput
   ): BuildPermissionResponse
