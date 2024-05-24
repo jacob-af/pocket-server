@@ -111,15 +111,30 @@ export class BuildService {
     return builds;
   }
 
-  async findOne(recipeName: string, buildName: string) {
-    return await this.prisma.build.findUnique({
+  async findOne(recipeName: string, buildName: string, userId: string) {
+    const build = await this.prisma.build.findUnique({
       where: {
         buildName_recipeName: {
           recipeName,
           buildName,
         },
       },
+      include: {
+        buildUser: {
+          where: {
+            userId: userId,
+          },
+          select: {
+            permission: true,
+          },
+        },
+      },
     });
+    console.log(build);
+    return {
+      ...build,
+      permission: build.buildUser[0].permission,
+    };
   }
 
   async update(
@@ -334,8 +349,24 @@ export class BuildService {
           },
         ],
       },
+      include: {
+        buildUser: {
+          where: {
+            userId: userId,
+          },
+          select: {
+            permission: true,
+          },
+        },
+      },
     });
-    return builds;
+    const buildWithPermission = builds.map((build) => {
+      return {
+        ...build,
+        permission: build.buildUser[0].permission,
+      };
+    });
+    return buildWithPermission;
   }
 
   async publicBuilds(recipeName: string) {

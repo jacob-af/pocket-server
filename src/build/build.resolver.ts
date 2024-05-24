@@ -62,8 +62,9 @@ export class BuildResolver {
   async findOne(
     @Args('recipeName') recipeName: string,
     @Args('buildName') buildName: string,
+    @CurrentUserId() userId: string,
   ) {
-    return await this.buildService.findOne(recipeName, buildName);
+    return await this.buildService.findOne(recipeName, buildName, userId);
   }
 
   @Query('findFolloweddUsersBuildPermission')

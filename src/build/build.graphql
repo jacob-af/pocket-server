@@ -24,12 +24,18 @@ type BuildConstructor {
   about: String
   instructions: String
   ice: String
+  image: String
   glassware: String
   isPublic: Boolean
+  recipe: RecipeName
   touchArray: [CompleteTouch]!
   id: String!
   permission: Permission!
   newRecipe: Boolean!
+}
+
+type RecipeName {
+  name: String
 }
 
 input CreateBuildInput {

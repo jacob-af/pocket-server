@@ -308,12 +308,18 @@ export class BuildConstructor {
     about?: Nullable<string>;
     instructions?: Nullable<string>;
     ice?: Nullable<string>;
+    image?: Nullable<string>;
     glassware?: Nullable<string>;
     isPublic?: Nullable<boolean>;
+    recipe?: Nullable<RecipeName>;
     touchArray: Nullable<CompleteTouch>[];
     id: string;
     permission: Permission;
     newRecipe: boolean;
+}
+
+export class RecipeName {
+    name?: Nullable<string>;
 }
 
 export class ArchivedBuild {
