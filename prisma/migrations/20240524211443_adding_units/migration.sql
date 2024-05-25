@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Touch" ADD COLUMN     "unitName" TEXT,
+ALTER COLUMN "unit" DROP NOT NULL,
+ALTER COLUMN "unit" SET DATA TYPE TEXT;
+
+-- AddForeignKey
+ALTER TABLE "Touch" ADD CONSTRAINT "Touch_unitName_fkey" FOREIGN KEY ("unitName") REFERENCES "Unit"("name") ON DELETE SET NULL ON UPDATE CASCADE;
