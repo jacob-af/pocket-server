@@ -202,6 +202,10 @@ export abstract class IQuery {
 
     abstract userRecipes(skip?: Nullable<number>, take?: Nullable<number>): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;
 
+    abstract findAllUnits(): Nullable<Nullable<Unit>[]> | Promise<Nullable<Nullable<Unit>[]>>;
+
+    abstract findSomeUnits(unitType?: Nullable<string>): Nullable<Nullable<Unit>[]> | Promise<Nullable<Nullable<Unit>[]>>;
+
     abstract allUsers(): Nullable<User>[] | Promise<Nullable<User>[]>;
 
     abstract userById(id: string): Nullable<User> | Promise<Nullable<User>>;
@@ -397,7 +401,7 @@ export class RecipeBook {
     createdBy?: Nullable<User>;
     editedBy?: Nullable<User>;
     permission?: Nullable<Permission>;
-    build: Build[];
+    userBuild: Build[];
     publicBuild?: Nullable<Nullable<Build>[]>;
 }
 

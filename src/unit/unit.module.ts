@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { UnitService } from './unit.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { UnitResolver } from './unit.resolver';
+import { UnitService } from './unit.service';
 
 @Module({
-  providers: [UnitResolver, UnitService],
+  providers: [UnitResolver, UnitService, PrismaService],
 })
 export class UnitModule {}

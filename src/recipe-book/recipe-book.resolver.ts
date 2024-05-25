@@ -183,8 +183,8 @@ export class RecipeBookResolver {
     return this.recipeBookService.userBooks(skip, take, userId);
   }
 
-  @ResolveField('build')
-  async build(
+  @ResolveField('userBuild')
+  async userBuild(
     @Parent() recipeBook: RecipeBook,
     @CurrentUserId() userId: string,
   ) {

@@ -60,43 +60,43 @@ export class RecipeResolver {
   }
 
   @Mutation('removeRecipe')
-  remove(@Args('id') id: string, permission: Permission) {
+  async remove(@Args('id') id: string, permission: Permission) {
     if (!resolvePermission(permission, Permission.MANAGER)) {
       throw new Error('You do not have permission to do that, Dave');
     }
-    return this.recipeService.remove(id);
+    return await this.recipeService.remove(id);
   }
 
   //Queries
 
   @Public()
   @Query('publicRecipe')
-  publicRecipe(@Args('name') name: string) {
-    return this.recipeService.publicRecipe(name);
+  async publicRecipe(@Args('name') name: string) {
+    return await this.recipeService.publicRecipe(name);
   }
 
   @Public()
   @Query('publicRecipeList')
-  publicRecipeList() {
-    return this.recipeService.allRecipes({
+  async publicRecipeList() {
+    return await this.recipeService.allRecipes({
       where: { build: { some: { isPublic: true } } },
       orderBy: { name: 'asc' },
     });
   }
   @Public()
   @Query('publicRecipes')
-  publicRecipes(@Args('skip') skip: number, @Args('take') take: number) {
-    return this.recipeService.publicRecipes(skip, take);
+  async ublicRecipes(@Args('skip') skip: number, @Args('take') take: number) {
+    return await this.recipeService.publicRecipes(skip, take);
   }
 
   @Query('recipe')
-  recipe(@Args('name') name: string) {
-    return this.recipeService.findOne(name);
+  async recipe(@Args('name') name: string) {
+    return await this.recipeService.findOne(name);
   }
 
   @Query('userRecipeList')
-  userRecipeList(@CurrentUserId() userId: string) {
-    return this.recipeService.allRecipes({
+  async userRecipeList(@CurrentUserId() userId: string) {
+    return await this.recipeService.allRecipes({
       where: {
         build: { some: { buildUser: { some: { userId } } } },
       },
@@ -105,12 +105,12 @@ export class RecipeResolver {
   }
 
   @Query('userRecipes')
-  userRecipes(
+  async userRecipes(
     @Args('skip') skip: number,
     @Args('take') take: number,
     @CurrentUserId() userId: string,
   ) {
-    return this.recipeService.userRecipes(skip, take, userId);
+    return await this.recipeService.userRecipes(skip, take, userId);
   }
 
   @Public()

@@ -8,7 +8,7 @@ type RecipeBook {
   createdBy: User
   editedBy: User
   permission: Permission
-  build: [Build!]!
+  userBuild: [Build!]!
   publicBuild: [Build]
 }
 

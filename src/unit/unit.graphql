@@ -13,3 +13,8 @@ type UnitConversion {
   toUnit: Unit
   factor: Float
 }
+
+type Query {
+  findAllUnits: [Unit]
+  findSomeUnits(unitType: String): [Unit]
+}
