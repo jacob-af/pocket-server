@@ -32,17 +32,17 @@ export class BuildService {
     }: CreateBuildInput,
     userId: string,
   ) {
-    console.log('arf');
+    console.log(isPublic);
     try {
       const build = await this.prisma.build.create({
         data: {
-          recipe: { connect: { name: name } },
+          recipe: { connect: { name } },
           buildName,
           instructions,
           glassware,
           ice,
           image,
-          isPublic,
+          isPublic: true,
           createdBy: { connect: { id: userId } },
           editedBy: { connect: { id: userId } },
           version: 0,
@@ -146,6 +146,7 @@ export class BuildService {
       ice,
       image,
       touchArray,
+      isPublic,
     }: UpdateBuildInput,
     userId: string,
   ) {
@@ -165,6 +166,7 @@ export class BuildService {
           glassware,
           ice,
           image,
+          isPublic,
           editedById: userId,
           touch: {
             create: this.touchService.touchArrayWithIndex(
@@ -225,6 +227,10 @@ export class BuildService {
         where: {
           buildId,
           version,
+        },
+        include: {
+          ingredient: true,
+          Unit: true,
         },
       });
       const arcBuild: ArchivedBuild = await this.prisma.archivedBuild.create({

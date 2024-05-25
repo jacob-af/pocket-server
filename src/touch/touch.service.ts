@@ -40,9 +40,9 @@ export class TouchService {
         data: {
           build: { connect: { id: buildId } },
           order: index,
-          ingredient: { connect: { name: touch.ingredientName } },
+          ingredient: { connect: { name: touch.ingredient.name } },
           amount: touch.amount,
-          unit: touch.unit,
+          Unit: { connect: { abbreviation: touch.Unit.abbreviation } },
           version,
         },
       });
@@ -57,12 +57,13 @@ export class TouchService {
         order: index,
         ingredient: {
           connectOrCreate: {
-            where: { name: touch.ingredientName },
-            create: { name: touch.ingredientName },
+            where: { name: touch.ingredient.name },
+            create: { name: touch.ingredient.name },
           },
         },
         amount: touch.amount,
-        unit: touch.unit,
+        unit: touch.Unit.abbreviation,
+        Unit: { connect: { abbreviation: touch.Unit.abbreviation } },
         version,
       };
     });
@@ -85,8 +86,10 @@ export class TouchService {
             ingredient: { connect: { name: touch.ingredientName } },
             amount: touch.amount,
             unit: touch.unit,
+            Unit: { connect: { abbreviation: touch.unit } },
             version,
           },
+          include: { Unit: true },
         });
       },
     );
@@ -98,5 +101,12 @@ export class TouchService {
     });
     console.log(deletedArray);
     return archivedTouchArray;
+  }
+
+  async Unit(abbreviation: string) {
+    const res = await this.prisma.unit.findUnique({
+      where: { abbreviation: abbreviation },
+    });
+    return res;
   }
 }

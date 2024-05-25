@@ -99,6 +99,7 @@ input CreateFirstBuildInput {
   instructions: String
   glassware: String
   ice: String
+  isPublic: Boolean
   touchArray: [TouchInput]!
 }
 
@@ -110,6 +111,7 @@ input UpdateBuildInput {
   glassware: String
   ice: String
   image: String
+  isPublic: Boolean
   touchArray: [TouchInput]!
   permission: Permission
 }

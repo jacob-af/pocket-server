@@ -32,4 +32,9 @@ export class TouchResolver {
   async ingredient(@Parent() touch) {
     return this.ingredientService.ingredient(touch.ingredientName);
   }
+
+  @ResolveField('Unit')
+  async Unit(@Parent() touch) {
+    return this.touchService.Unit(touch.unitAbb);
+  }
 }

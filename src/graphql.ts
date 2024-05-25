@@ -54,6 +54,7 @@ export class CreateFirstBuildInput {
     instructions?: Nullable<string>;
     glassware?: Nullable<string>;
     ice?: Nullable<string>;
+    isPublic?: Nullable<boolean>;
     touchArray: Nullable<TouchInput>[];
 }
 
@@ -65,6 +66,7 @@ export class UpdateBuildInput {
     glassware?: Nullable<string>;
     ice?: Nullable<string>;
     image?: Nullable<string>;
+    isPublic?: Nullable<boolean>;
     touchArray: Nullable<TouchInput>[];
     permission?: Nullable<Permission>;
 }
@@ -122,9 +124,20 @@ export class UpdateRecipeInput {
 
 export class TouchInput {
     id: string;
-    ingredientName: string;
+    ingredient: IngredientInput;
     amount: number;
-    unit: string;
+    Unit: UnitInput;
+    order?: Nullable<number>;
+}
+
+export class IngredientInput {
+    id?: Nullable<string>;
+    name: string;
+}
+
+export class UnitInput {
+    id?: Nullable<string>;
+    abbreviation: string;
 }
 
 export class UpdateUserInput {
@@ -423,7 +436,8 @@ export class Touch {
     build?: Nullable<Build>;
     order: number;
     amount: number;
-    unit: string;
+    unitAbb: string;
+    Unit: Unit;
     version?: Nullable<number>;
     ingredient: Ingredient;
     ingredientName?: Nullable<string>;
@@ -434,7 +448,8 @@ export class ArchivedTouch {
     archivedBuild?: Nullable<Build>;
     order?: Nullable<number>;
     amount?: Nullable<number>;
-    unit?: Nullable<string>;
+    Unit?: Nullable<Unit>;
+    unitAbb?: Nullable<string>;
     version?: Nullable<number>;
     ingredient?: Nullable<Ingredient>;
 }
@@ -444,6 +459,22 @@ export class CompleteTouch {
     ingredientName: string;
     amount: number;
     unit: string;
+}
+
+export class Unit {
+    id: string;
+    abbreviation: string;
+    name?: Nullable<string>;
+    conversions?: Nullable<number>;
+    conversionTo?: Nullable<UnitConversion>;
+    conversionFrom?: Nullable<UnitConversion>;
+}
+
+export class UnitConversion {
+    id: string;
+    fromUnit?: Nullable<Unit>;
+    toUnit?: Nullable<Unit>;
+    factor?: Nullable<number>;
 }
 
 export class User {

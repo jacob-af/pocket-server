@@ -1,0 +1,15 @@
+type Unit {
+  id: ID!
+  abbreviation: String!
+  name: String
+  conversions: Float
+  conversionTo: UnitConversion
+  conversionFrom: UnitConversion
+}
+
+type UnitConversion {
+  id: ID!
+  fromUnit: Unit
+  toUnit: Unit
+  factor: Float
+}
