@@ -38,16 +38,19 @@ export class RecipeResolver {
   }
 
   @Mutation('createManyRecipes')
-  createManyRecipes(
+  async createManyRecipes(
     @Args('createManyRecipeInputs')
     createManyRecipeInputs: CreateRecipeInput[],
     @CurrentUserId() userId: string,
   ): Promise<StatusMessage> {
-    return this.recipeService.createManyRecipes(createManyRecipeInputs, userId);
+    return await this.recipeService.createManyRecipes(
+      createManyRecipeInputs,
+      userId,
+    );
   }
 
   @Mutation('updateRecipe')
-  update(
+  async update(
     @Args('updateRecipeInput') updateRecipeInput: UpdateRecipeInput,
     @CurrentUserId() userId: string,
   ) {
@@ -56,7 +59,7 @@ export class RecipeResolver {
     ) {
       throw new Error('You do not have permission to do that, Dave');
     }
-    return this.recipeService.update(updateRecipeInput, userId);
+    return await this.recipeService.update(updateRecipeInput, userId);
   }
 
   @Mutation('removeRecipe')
