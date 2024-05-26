@@ -104,6 +104,10 @@ export class UpdateIngredientInput {
     description?: Nullable<string>;
 }
 
+export class InventoryInput {
+    id: string;
+}
+
 export class ProfileInput {
     userId: string;
     image?: Nullable<string>;
@@ -120,6 +124,30 @@ export class UpdateRecipeInput {
     name: string;
     about: string;
     build: UpdateBuildInput;
+}
+
+export class CreateStockInput {
+    price?: Nullable<number>;
+    amount?: Nullable<number>;
+    unit?: Nullable<UnitInput>;
+    buildRef?: Nullable<BuildRefInput>;
+    ingredient?: Nullable<IngredientInput>;
+    inventory?: Nullable<InventoryInput>;
+}
+
+export class UpdateStockInput {
+    id: string;
+    price?: Nullable<number>;
+    amount?: Nullable<number>;
+    unit?: Nullable<UnitInput>;
+    buildRef?: Nullable<BuildRefInput>;
+    ingredient?: Nullable<IngredientInput>;
+}
+
+export class BuildRefInput {
+    id: string;
+    buildName?: Nullable<string>;
+    permission?: Nullable<Permission>;
 }
 
 export class TouchInput {
@@ -174,6 +202,10 @@ export abstract class IQuery {
 
     abstract ingredient(id: number): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
 
+    abstract allInventory(): Nullable<Nullable<Inventory>[]> | Promise<Nullable<Nullable<Inventory>[]>>;
+
+    abstract oneInventory(inventoryId?: Nullable<string>): Nullable<Inventory> | Promise<Nullable<Inventory>>;
+
     abstract getProfile(userId?: Nullable<string>): Profile | Promise<Profile>;
 
     abstract findFolloweddUsersBookPermission(recipeBookId: string): Nullable<Nullable<UserBookPermission>[]> | Promise<Nullable<Nullable<UserBookPermission>[]>>;
@@ -201,6 +233,10 @@ export abstract class IQuery {
     abstract userRecipeList(): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;
 
     abstract userRecipes(skip?: Nullable<number>, take?: Nullable<number>): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;
+
+    abstract findAllStock(): Nullable<Nullable<Stock>[]> | Promise<Nullable<Nullable<Stock>[]>>;
+
+    abstract findOneStock(): Nullable<Stock> | Promise<Nullable<Stock>>;
 
     abstract findAllUnits(): Nullable<Nullable<Unit>[]> | Promise<Nullable<Nullable<Unit>[]>>;
 
@@ -256,6 +292,8 @@ export abstract class IMutation {
 
     abstract removeIngredient(id: string): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
 
+    abstract createInventory(name?: Nullable<string>, description?: Nullable<string>): Nullable<Inventory> | Promise<Nullable<Inventory>>;
+
     abstract updateProfile(image?: Nullable<string>): Profile | Promise<Profile>;
 
     abstract createRecipeBook(name: string, description?: Nullable<string>): RecipeBook | Promise<RecipeBook>;
@@ -264,7 +302,7 @@ export abstract class IMutation {
 
     abstract removeRecipeBook(id: string, permission: Permission): StatusMessage | Promise<StatusMessage>;
 
-    abstract addBuildToRecipeBook(recipeBookId: string, buildId: string, buildPermission: Permission, bookPermission: Permission): StatusMessage | Promise<StatusMessage>;
+    abstract addBuildToRecipeBook(recipeBookId: string, buildId: string, buildPermission: Permission, bookPermission: Permission): Build | Promise<Build>;
 
     abstract removeBuildFromRecipeBook(recipeBookId: string, buildId: string, bookPermission: Permission): StatusMessage | Promise<StatusMessage>;
 
@@ -279,6 +317,18 @@ export abstract class IMutation {
     abstract updateRecipe(updateRecipeInput: UpdateRecipeInput): Recipe | Promise<Recipe>;
 
     abstract removeRecipe(id: string): Nullable<Recipe> | Promise<Nullable<Recipe>>;
+
+    abstract createStock(createStock?: Nullable<CreateStockInput>): Nullable<Stock> | Promise<Nullable<Stock>>;
+
+    abstract createManyStock(createManyStock?: Nullable<Nullable<CreateStockInput>[]>): Nullable<Nullable<Stock>[]> | Promise<Nullable<Nullable<Stock>[]>>;
+
+    abstract updateStock(updateStock?: Nullable<UpdateStockInput>): Nullable<Stock> | Promise<Nullable<Stock>>;
+
+    abstract updateManyStock(updateManyStock?: Nullable<Nullable<UpdateStockInput>[]>): Nullable<Nullable<Stock>[]> | Promise<Nullable<Nullable<Stock>[]>>;
+
+    abstract changeStockPermission(stockId?: Nullable<string>, userId?: Nullable<string>, userPermission?: Nullable<Permission>, desiredPermission?: Nullable<Permission>): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
+
+    abstract removeStockPermission(stockId?: Nullable<string>, userId?: Nullable<string>, userPermission?: Nullable<Permission>): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
 
     abstract updateTouch(newTouchArray?: Nullable<Nullable<TouchInput>[]>, permission?: Nullable<Permission>, buildId?: Nullable<string>, version?: Nullable<number>): Nullable<Nullable<Touch>[]> | Promise<Nullable<Nullable<Touch>[]>>;
 
@@ -385,6 +435,23 @@ export class Ingredient {
     description?: Nullable<string>;
 }
 
+export class Inventory {
+    id: string;
+    name: string;
+    description?: Nullable<string>;
+    createdAt?: Nullable<DateTime>;
+    editedAt?: Nullable<DateTime>;
+    createdBy?: Nullable<User>;
+    editedBy?: Nullable<User>;
+    permission?: Nullable<Permission>;
+}
+
+export class InventoryUser {
+    user?: Nullable<User>;
+    inventory?: Nullable<Inventory>;
+    permission?: Nullable<Permission>;
+}
+
 export class Profile {
     id: string;
     image?: Nullable<string>;
@@ -435,6 +502,16 @@ export class Recipe {
     userBuild?: Nullable<Nullable<Build>[]>;
 }
 
+export class Stock {
+    price?: Nullable<number>;
+    amount?: Nullable<number>;
+    unit?: Nullable<Unit>;
+    buildRef?: Nullable<Build>;
+    ingredient?: Nullable<Ingredient>;
+    permission?: Nullable<Permission>;
+    inventory?: Nullable<Inventory>;
+}
+
 export class Touch {
     id: string;
     build?: Nullable<Build>;
@@ -460,9 +537,10 @@ export class ArchivedTouch {
 
 export class CompleteTouch {
     id: string;
-    ingredientName: string;
+    ingredient: Ingredient;
     amount: number;
-    unit: string;
+    Unit: Unit;
+    order?: Nullable<number>;
 }
 
 export class Unit {
