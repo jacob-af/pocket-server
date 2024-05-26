@@ -130,11 +130,11 @@ export class RecipeBookResolver {
   }
 
   @Query('findFolloweddUsersBookPermission')
-  findFolloweddUsersBookPermission(
+  async findFolloweddUsersBookPermission(
     @CurrentUserId() userId: string,
     @Args('recipeBookId') recipeBookId: string,
   ) {
-    return this.recipeBookService.findFolloweddUsersBookPermission({
+    return await this.recipeBookService.findFolloweddUsersBookPermission({
       userId,
       recipeBookId,
     });
@@ -142,14 +142,14 @@ export class RecipeBookResolver {
 
   @Public()
   @Query('publicBook')
-  publicBook(@Args('name') name: string) {
-    return this.recipeBookService.publicBook(name);
+  async publicBook(@Args('name') name: string) {
+    return await this.recipeBookService.publicBook(name);
   }
 
   @Public()
   @Query('publicBookList')
-  publicBookList() {
-    return this.recipeBookService.allBooks({
+  async publicBookList() {
+    return await this.recipeBookService.allBooks({
       where: { isPublic: true },
       orderBy: { name: 'asc' },
     });
@@ -157,30 +157,30 @@ export class RecipeBookResolver {
 
   @Public()
   @Query('publicBooks')
-  publicBooks(@Args('skip') skip: number, @Args('take') take: number) {
-    return this.recipeBookService.publicBooks(skip, take);
+  async publicBooks(@Args('skip') skip: number, @Args('take') take: number) {
+    return await this.recipeBookService.publicBooks(skip, take);
   }
 
   @Query('book')
-  book(@Args('name') name: string) {
-    return this.recipeBookService.findOne(name);
+  async book(@Args('name') name: string, @CurrentUserId() userId: string) {
+    return await this.recipeBookService.findOne(name, userId);
   }
 
   @Query('userBookList')
-  userBookList(@CurrentUserId() userId: string) {
-    return this.recipeBookService.allBooks({
+  async userBookList(@CurrentUserId() userId: string) {
+    return await this.recipeBookService.allBooks({
       where: { recipeBookUser: { some: { userId } } },
       orderBy: { name: 'asc' },
     });
   }
 
   @Query('userBooks')
-  userBooks(
+  async userBooks(
     @Args('skip') skip: number,
     @Args('take') take: number,
     @CurrentUserId() userId: string,
   ) {
-    return this.recipeBookService.userBooks(skip, take, userId);
+    return await this.recipeBookService.userBooks(skip, take, userId);
   }
 
   @ResolveField('userBuild')

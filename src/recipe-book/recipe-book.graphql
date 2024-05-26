@@ -53,7 +53,7 @@ type Mutation {
     buildId: String!
     buildPermission: Permission!
     bookPermission: Permission!
-  ): StatusMessage!
+  ): Build!
 
   removeBuildFromRecipeBook(
     recipeBookId: String!

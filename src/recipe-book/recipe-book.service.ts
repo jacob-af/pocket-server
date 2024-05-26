@@ -72,7 +72,7 @@ export class RecipeBookService {
     buildId: string;
     recipeBookId: string;
   }) {
-    await this.prisma.recipeBookBuild.create({
+    const res = await this.prisma.recipeBookBuild.create({
       data: {
         recipeBookId,
         buildId,
@@ -81,9 +81,7 @@ export class RecipeBookService {
         build: true,
       },
     });
-    return {
-      message: `Build Successfully Added`,
-    };
+    return res.build;
   }
 
   async removeBuildFromRecipeBook({
@@ -168,8 +166,30 @@ export class RecipeBookService {
     return await this.prisma.recipeBook.findMany(options);
   }
 
-  async findOne(name: string) {
-    return await this.prisma.recipeBook.findUnique({ where: { name } });
+  async findOne(name: string, userId: string) {
+    try {
+      const recipeBook = await this.prisma.recipeBook.findUnique({
+        where: {
+          name: name,
+        },
+      });
+      console.log(recipeBook);
+      const bookUser = await this.prisma.recipeBookUser.findUnique({
+        where: {
+          userId_recipeBookId: {
+            userId,
+            recipeBookId: recipeBook.id,
+          },
+        },
+      });
+      const book = {
+        ...recipeBook,
+        permission: bookUser.permission,
+      };
+      return book;
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async publicBook(name: string) {
