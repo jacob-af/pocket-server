@@ -40,10 +40,11 @@ input UnitInput {
 }
 
 type CompleteTouch {
-  id: ID!
-  ingredientName: String!
+  id: String!
+  ingredient: Ingredient!
   amount: Float!
-  unit: String!
+  Unit: Unit!
+  order: Int
 }
 
 # type Query {
