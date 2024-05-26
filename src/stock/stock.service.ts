@@ -1,5 +1,4 @@
-import { CreateStockInput, Permission } from 'src/graphql';
-
+import { CreateStockInput } from 'src/graphql';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 

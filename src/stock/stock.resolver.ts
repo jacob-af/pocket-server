@@ -7,9 +7,9 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 
-import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
+//import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
 import { StockService } from './stock.service';
-import { CreateStockInput, Permission } from 'src/graphql';
+import { CreateStockInput } from 'src/graphql';
 import { UnitService } from 'src/unit/unit.service';
 import { IngredientService } from 'src/ingredient/ingredient.service';
 import { BuildService } from 'src/build/build.service';
