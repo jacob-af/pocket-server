@@ -1,0 +1,30 @@
+type Inventory {
+  id: ID!
+  name: String!
+  description: String
+  createdAt: Date
+  editedAt: Date
+  createdBy: User
+  editedBy: User
+  permission: Permission
+  #storage: [Storage]
+}
+
+type InventoryUser {
+  user: User
+  inventory: Inventory
+  permission: Permission
+}
+
+input InventoryInput {
+  id: ID!
+}
+
+type Query {
+  allInventory: [Inventory]
+  oneInventory(inventoryId: String): Inventory
+}
+
+type Mutation {
+  createInventory(name: String, description: String): Inventory
+}

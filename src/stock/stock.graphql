@@ -1,0 +1,56 @@
+type Stock {
+  price: Float
+  amount: Float
+  unit: Unit
+  buildRef: Build
+  ingredient: Ingredient
+  permission: Permission
+  inventory: Inventory
+}
+
+input CreateStockInput {
+  price: Float
+  amount: Float
+  unit: UnitInput
+  buildRef: BuildRefInput
+  ingredient: IngredientInput
+  inventory: InventoryInput
+}
+
+input UpdateStockInput {
+  id: ID!
+  price: Float
+  amount: Float
+  unit: UnitInput
+  buildRef: BuildRefInput
+  ingredient: IngredientInput
+}
+
+input BuildRefInput {
+  id: String!
+  buildName: String
+  permission: Permission
+}
+
+type Query {
+  findAllStock: [Stock]
+  findOneStock: Stock
+}
+
+type Mutation {
+  createStock(createStock: CreateStockInput): Stock
+  createManyStock(createManyStock: [CreateStockInput]): [Stock]
+  updateStock(updateStock: UpdateStockInput): Stock
+  updateManyStock(updateManyStock: [UpdateStockInput]): [Stock]
+  changeStockPermission(
+    stockId: String
+    userId: String
+    userPermission: Permission
+    desiredPermission: Permission
+  ): StatusMessage
+  removeStockPermission(
+    stockId: String
+    userId: String
+    userPermission: Permission
+  ): StatusMessage
+}

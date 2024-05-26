@@ -28,8 +28,14 @@ model User {
   RecipeBook         RecipeBook[]
   recipeBookEditedBy RecipeBook[]     @relation("recipeBookEditedById")
   RecipeBookUser     RecipeBookUser[]
+  inventory          Inventory[]      @relation("inventoryCreatedById")
+  inventoryEditedBy  Inventory[]      @relation("inventoryEditedById")
+  inventoryUser      InventoryUser[]
   Profile            Profile[]
   authMethods        AuthMethod[]
+  storageUser        StorageUser[]
+  storage            Storage[]
+  storageEditedBy    Storage[]        @relation("storageEditedById")
 }
 
 model AuthMethod {
@@ -120,6 +126,7 @@ model Build {
   recipe          Recipe?           @relation(fields: [recipeName], references: [name], onDelete: Cascade, onUpdate: Cascade)
   recipeName      String
   recipeBookBuild RecipeBookBuild[]
+  Stock           Stock[]
 
   @@unique([buildName, recipeName])
 }
@@ -186,6 +193,7 @@ model Ingredient {
   parents       IngredientRelation[] @relation("IngredientParent")
   children      IngredientRelation[] @relation("IngredientChild")
   archivedTouch ArchivedTouch[]
+  stock         Stock[]
 }
 
 // Intermediate join table for the many-to-many relationship
@@ -208,6 +216,7 @@ model Unit {
   convertedFrom UnitConversion[] @relation("UnitConversionTo")
   Touch         Touch[]
   ArchivedTouch ArchivedTouch[]
+  Stock         Stock[]
 }
 
 model UnitConversion {
@@ -254,4 +263,82 @@ model RecipeBookBuild {
   build        Build      @relation(fields: [buildId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   @@id([buildId, recipeBookId])
+}
+
+model Inventory {
+  id               String             @id @default(uuid())
+  name             String             @db.VarChar(255)
+  description      String
+  createdAt        DateTime           @default(now())
+  editedAt         DateTime           @default(now())
+  createdById      String
+  editedById       String
+  createdBy        User?              @relation("inventoryCreatedById", fields: [createdById], references: [id])
+  editedBy         User?              @relation("inventoryEditedById", fields: [editedById], references: [id])
+  inventoryStorage InventoryStorage[]
+  inventoryUser    InventoryUser[]
+  inStock          Stock[]
+  //  crewInventory       CrewInventory[]
+}
+
+model InventoryUser {
+  userId      String
+  inventoryId String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  permission  String
+
+  @@id([userId, inventoryId])
+}
+
+model InventoryStorage {
+  inventoryId String
+  storageId   String
+  storage     Storage   @relation(fields: [storageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([inventoryId, storageId])
+}
+
+model Storage {
+  id          String             @id @default(uuid())
+  name        String             @db.VarChar(255)
+  description String             @default("") @db.VarChar(255)
+  createdAt   DateTime           @default(now())
+  editedAt    DateTime           @default(now())
+  createdById String
+  editedById  String
+  createdBy   User?              @relation(fields: [createdById], references: [id])
+  editedBy    User?              @relation("storageEditedById", fields: [editedById], references: [id])
+  inventory   InventoryStorage[]
+
+  //crewStorage       CrewStorage[]
+  StorageUser StorageUser[]
+}
+
+model StorageUser {
+  userId     String
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storageId  String
+  storage    Storage @relation(fields: [storageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  permission String
+
+  @@id([userId, storageId])
+}
+
+model Stock {
+  price          Float      @db.Real
+  amount         Float      @db.Real
+  unit           Unit       @relation(fields: [unitAbb], references: [abbreviation])
+  buildRef       Build?     @relation(fields: [buildId], references: [id])
+  createdAt      DateTime   @default(now())
+  editedAt       DateTime   @default(now())
+  ingredientName String
+  unitAbb        String
+  buildId        String?
+  ingredient     Ingredient @relation(fields: [ingredientName], references: [name])
+  inventory      Inventory  @relation(fields: [inventoryId], references: [id])
+  inventoryId    String
+
+  @@id([inventoryId, ingredientName])
 }

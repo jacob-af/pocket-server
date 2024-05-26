@@ -8,4 +8,11 @@ export class UnitService {
   async findAll(options: object | null) {
     return await this.prisma.unit.findMany(options);
   }
+
+  async findOne(unitAbb: string) {
+    console.log(unitAbb);
+    return await this.prisma.unit.findUnique({
+      where: { abbreviation: unitAbb },
+    });
+  }
 }
