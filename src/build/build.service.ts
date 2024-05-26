@@ -137,6 +137,13 @@ export class BuildService {
     };
   }
 
+  async findBuildById(buildId: string) {
+    if (!!buildId) {
+      return await this.prisma.build.findUnique({ where: { id: buildId } });
+    }
+    return null;
+  }
+
   async update(
     {
       buildId,
