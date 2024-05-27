@@ -134,171 +134,54 @@ async function main() {
   const conversions = await prisma.unitConversion.createMany({
     data: [
       // Conversions for weight
-      {
-        fromUnitId: (await prisma.unit.findUnique({ where: { name: 'gram' } }))
-          .id,
-        toUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'kilogram' } })
-        ).id,
-        factor: 0.001,
-      },
-      {
-        fromUnitId: (await prisma.unit.findUnique({ where: { name: 'gram' } }))
-          .id,
-        toUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'milligram' } })
-        ).id,
-        factor: 1000,
-      },
-      {
-        fromUnitId: (await prisma.unit.findUnique({ where: { name: 'gram' } }))
-          .id,
-        toUnitId: (await prisma.unit.findUnique({ where: { name: 'pound' } }))
-          .id,
-        factor: 0.00220462,
-      },
-      {
-        fromUnitId: (await prisma.unit.findUnique({ where: { name: 'gram' } }))
-          .id,
-        toUnitId: (await prisma.unit.findUnique({ where: { name: 'ounce' } }))
-          .id,
-        factor: 0.035274,
-      },
+      { fromUnitName: 'g', toUnitName: 'kg', factor: 0.001 },
+      { fromUnitName: 'kg', toUnitName: 'g', factor: 1000 },
+      { fromUnitName: 'g', toUnitName: 'mg', factor: 1000 },
+      { fromUnitName: 'mg', toUnitName: 'g', factor: 0.001 },
+      { fromUnitName: 'g', toUnitName: 'lb', factor: 0.00220462 },
+      { fromUnitName: 'lb', toUnitName: 'g', factor: 453.592 },
+      { fromUnitName: 'g', toUnitName: 'ounce', factor: 0.035274 },
+      { fromUnitName: 'ounce', toUnitName: 'g', factor: 28.3495 },
       // Conversions for volume
-      {
-        fromUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'milliliter' } })
-        ).id,
-        toUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'teaspoon' } })
-        ).id,
-        factor: 0.202884,
-      },
-      {
-        fromUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'milliliter' } })
-        ).id,
-        toUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'tablespoon' } })
-        ).id,
-        factor: 0.067628,
-      },
-      {
-        fromUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'milliliter' } })
-        ).id,
-        toUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'fluid ounce' } })
-        ).id,
-        factor: 0.033814,
-      },
-      {
-        fromUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'milliliter' } })
-        ).id,
-        toUnitId: (await prisma.unit.findUnique({ where: { name: 'cup' } })).id,
-        factor: 0.00422675,
-      },
-      {
-        fromUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'milliliter' } })
-        ).id,
-        toUnitId: (await prisma.unit.findUnique({ where: { name: 'pint' } }))
-          .id,
-        factor: 0.00211338,
-      },
-      {
-        fromUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'milliliter' } })
-        ).id,
-        toUnitId: (await prisma.unit.findUnique({ where: { name: 'quart' } }))
-          .id,
-        factor: 0.00105669,
-      },
-      {
-        fromUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'milliliter' } })
-        ).id,
-        toUnitId: (await prisma.unit.findUnique({ where: { name: 'gallon' } }))
-          .id,
-        factor: 0.000264172,
-      },
-      {
-        fromUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'milliliter' } })
-        ).id,
-        toUnitId: (await prisma.unit.findUnique({ where: { name: 'liter' } }))
-          .id,
-        factor: 0.001,
-      },
-      {
-        fromUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'milliliter' } })
-        ).id,
-        toUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'centiliter' } })
-        ).id,
-        factor: 0.1,
-      },
-      // Special volume unit conversions
-      {
-        fromUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'barspoon' } })
-        ).id,
-        toUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'fluid ounce' } })
-        ).id,
-        factor: 1 / 8,
-      },
-      {
-        fromUnitId: (await prisma.unit.findUnique({ where: { name: 'dash' } }))
-          .id,
-        toUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'fluid ounce' } })
-        ).id,
-        factor: 1 / 32,
-      },
-      {
-        fromUnitId: (await prisma.unit.findUnique({ where: { name: 'drop' } }))
-          .id,
-        toUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'fluid ounce' } })
-        ).id,
-        factor: 1 / 480,
-      },
-      {
-        fromUnitId: (await prisma.unit.findUnique({ where: { name: 'pinch' } }))
-          .id,
-        toUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'fluid ounce' } })
-        ).id,
-        factor: 1 / 96,
-      },
-      {
-        fromUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'splash' } })
-        ).id,
-        toUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'fluid ounce' } })
-        ).id,
-        factor: 1,
-      },
-      {
-        fromUnitId: (await prisma.unit.findUnique({ where: { name: 'count' } }))
-          .id,
-        toUnitId: (
-          await prisma.unit.findUnique({ where: { name: 'fluid ounce' } })
-        ).id,
-        factor: 1 / 4,
-      },
-      // Conversions for items
-      {
-        fromUnitId: (await prisma.unit.findUnique({ where: { name: 'each' } }))
-          .id,
-        toUnitId: (await prisma.unit.findUnique({ where: { name: 'dozen' } }))
-          .id,
-        factor: 1 / 12,
-      },
+      { fromUnitName: 'ml', toUnitName: 'tsp', factor: 0.202884 },
+      { fromUnitName: 'tsp', toUnitName: 'ml', factor: 4.92892 },
+      { fromUnitName: 'ml', toUnitName: 'tbsp', factor: 0.067628 },
+      { fromUnitName: 'tbsp', toUnitName: 'ml', factor: 14.7868 },
+      { fromUnitName: 'ml', toUnitName: 'oz', factor: 0.033814 },
+      { fromUnitName: 'oz', toUnitName: 'ml', factor: 29.5735 },
+      { fromUnitName: 'ml', toUnitName: 'cup', factor: 0.00422675 },
+      { fromUnitName: 'cup', toUnitName: 'ml', factor: 240 },
+      { fromUnitName: 'ml', toUnitName: 'pt', factor: 0.00211338 },
+      { fromUnitName: 'pt', toUnitName: 'ml', factor: 473.176 },
+      { fromUnitName: 'ml', toUnitName: 'qt', factor: 0.00105669 },
+      { fromUnitName: 'qt', toUnitName: 'ml', factor: 946.353 },
+      { fromUnitName: 'ml', toUnitName: 'gal', factor: 0.000264172 },
+      { fromUnitName: 'gal', toUnitName: 'ml', factor: 3785.41 },
+      { fromUnitName: 'ml', toUnitName: 'l', factor: 0.001 },
+      { fromUnitName: 'l', toUnitName: 'ml', factor: 1000 },
+      { fromUnitName: 'ml', toUnitName: 'cl', factor: 0.1 },
+      { fromUnitName: 'cl', toUnitName: 'ml', factor: 10 },
+      { fromUnitName: 'ml', toUnitName: 'bsp', factor: 0.033814 / 8 },
+      { fromUnitName: 'bsp', toUnitName: 'ml', factor: 29.5735 / 8 },
+      { fromUnitName: 'ml', toUnitName: 'dash', factor: 0.033814 / 32 },
+      { fromUnitName: 'dash', toUnitName: 'ml', factor: 29.5735 / 32 },
+      { fromUnitName: 'ml', toUnitName: 'drop', factor: 0.033814 / 480 },
+      { fromUnitName: 'drop', toUnitName: 'ml', factor: 29.5735 / 480 },
+      { fromUnitName: 'ml', toUnitName: 'pinch', factor: 0.033814 / 96 },
+      { fromUnitName: 'pinch', toUnitName: 'ml', factor: 29.5735 / 96 },
+      { fromUnitName: 'ml', toUnitName: 'splsh', factor: 0.033814 },
+      { fromUnitName: 'splsh', toUnitName: 'ml', factor: 29.5735 },
+      { fromUnitName: 'ml', toUnitName: 'count', factor: 0.033814 / 4 },
+      { fromUnitName: 'count', toUnitName: 'ml', factor: 29.5735 / 4 },
+      // Special volume unit conversions to ounces
+      { fromUnitName: 'tsp', toUnitName: 'oz', factor: 0.166667 },
+      { fromUnitName: 'tbsp', toUnitName: 'oz', factor: 0.5 },
+      { fromUnitName: 'cup', toUnitName: 'oz', factor: 8 },
+      { fromUnitName: 'pt', toUnitName: 'oz', factor: 16 },
+      { fromUnitName: 'qt', toUnitName: 'oz', factor: 32 },
+      { fromUnitName: 'gal', toUnitName: 'oz', factor: 128 },
+      { fromUnitName: 'l', toUnitName: 'oz', factor: 33.814 },
+      { fromUnitName: 'cl', toUnitName: 'oz', factor: 0.33814 },
     ],
     skipDuplicates: true,
   });

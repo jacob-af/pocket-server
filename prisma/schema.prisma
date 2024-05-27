@@ -220,14 +220,14 @@ model Unit {
 }
 
 model UnitConversion {
-  id         Int    @id @default(autoincrement())
-  fromUnitId String
-  toUnitId   String
-  factor     Float
-  fromUnit   Unit   @relation("UnitConversionFrom", fields: [fromUnitId], references: [id])
-  toUnit     Unit   @relation("UnitConversionTo", fields: [toUnitId], references: [id])
+  id           Int    @id @default(autoincrement())
+  fromUnitName String
+  toUnitName   String
+  factor       Float
+  fromUnit     Unit   @relation("UnitConversionFrom", fields: [fromUnitName], references: [abbreviation])
+  toUnit       Unit   @relation("UnitConversionTo", fields: [toUnitName], references: [abbreviation])
 
-  @@unique([fromUnitId, toUnitId])
+  @@unique([fromUnitName, toUnitName])
 }
 
 model RecipeBook {
