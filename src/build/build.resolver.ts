@@ -21,6 +21,8 @@ import {
 import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
 import { resolvePermission } from '../utils/resolvePermission';
 import { UserService } from 'src/user/user.service';
+import { StockService } from 'src/stock/stock.service';
+import { UnitService } from 'src/unit/unit.service';
 
 @Resolver('Build')
 export class BuildResolver {
@@ -29,6 +31,8 @@ export class BuildResolver {
     private touchService: TouchService,
     private recipeService: RecipeService,
     private userService: UserService,
+    private stockService: StockService,
+    private unitService: UnitService,
   ) {}
 
   @Mutation('createBuild')
@@ -68,14 +72,40 @@ export class BuildResolver {
   }
 
   @Query('findFolloweddUsersBuildPermission')
-  findFolloweddUsersBuildPermission(
+  async findFolloweddUsersBuildPermission(
     @CurrentUserId() userId: string,
     @Args('buildId') buildId: string,
   ) {
-    return this.buildService.findFolloweddUsersBuildPermission({
+    return await this.buildService.findFolloweddUsersBuildPermission({
       userId,
       buildId,
     });
+  }
+
+  @Query('costBuild')
+  async costBuild(
+    @Args('buildId') buildId: string,
+    @Args('inventoryId') inventoryId: string,
+  ) {
+    const { touch } = await this.buildService.findBuildById(buildId);
+    const totalCost = await touch.reduce(async (accPromise, t) => {
+      const acc = await accPromise;
+
+      const stock = await this.stockService.findOne(
+        t.ingredientName,
+        inventoryId,
+      );
+      const ppo = await this.stockService.pricePerOunce(stock);
+      const { convertedAmount } = await this.unitService.convertUnits(
+        t.amount,
+        t.unitAbb,
+        'oz',
+      );
+
+      return acc + ppo * convertedAmount;
+    }, Promise.resolve(0));
+
+    return { cost: totalCost };
   }
 
   @Mutation('updateBuild')

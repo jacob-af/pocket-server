@@ -138,8 +138,12 @@ export class BuildService {
   }
 
   async findBuildById(buildId: string) {
+    console.log(buildId);
     if (!!buildId) {
-      return await this.prisma.build.findUnique({ where: { id: buildId } });
+      return await this.prisma.build.findUnique({
+        where: { id: buildId },
+        include: { touch: true },
+      });
     }
     return null;
   }

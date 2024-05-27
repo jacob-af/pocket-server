@@ -127,27 +127,18 @@ export class UpdateRecipeInput {
 }
 
 export class CreateStockInput {
-    price?: Nullable<number>;
-    amount?: Nullable<number>;
-    unit?: Nullable<UnitInput>;
-    buildRef?: Nullable<BuildRefInput>;
-    ingredient?: Nullable<IngredientInput>;
-    inventory?: Nullable<InventoryInput>;
-}
-
-export class UpdateStockInput {
-    id: string;
-    price?: Nullable<number>;
-    amount?: Nullable<number>;
-    unit?: Nullable<UnitInput>;
-    buildRef?: Nullable<BuildRefInput>;
-    ingredient?: Nullable<IngredientInput>;
+    amount: number;
+    ingredientName: string;
+    price: number;
+    unitAbb: string;
+    buildName?: Nullable<string>;
+    recipeName?: Nullable<string>;
 }
 
 export class BuildRefInput {
     id: string;
     buildName?: Nullable<string>;
-    permission?: Nullable<Permission>;
+    recipeName?: Nullable<string>;
 }
 
 export class TouchInput {
@@ -198,6 +189,8 @@ export abstract class IQuery {
 
     abstract findFolloweddUsersBuildPermission(buildId: string): Nullable<Nullable<UserBuildPermission>[]> | Promise<Nullable<Nullable<UserBuildPermission>[]>>;
 
+    abstract costBuild(buildId?: Nullable<string>, inventoryId?: Nullable<string>): Nullable<Cost> | Promise<Nullable<Cost>>;
+
     abstract ingredients(): Nullable<Ingredient>[] | Promise<Nullable<Ingredient>[]>;
 
     abstract ingredient(id: number): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
@@ -236,11 +229,13 @@ export abstract class IQuery {
 
     abstract findAllStock(): Nullable<Nullable<Stock>[]> | Promise<Nullable<Nullable<Stock>[]>>;
 
-    abstract findOneStock(): Nullable<Stock> | Promise<Nullable<Stock>>;
+    abstract findOneStock(ingredientName?: Nullable<string>, inventoryId?: Nullable<string>): Nullable<Stock> | Promise<Nullable<Stock>>;
 
     abstract findAllUnits(): Nullable<Nullable<Unit>[]> | Promise<Nullable<Nullable<Unit>[]>>;
 
     abstract findSomeUnits(unitType?: Nullable<string>): Nullable<Nullable<Unit>[]> | Promise<Nullable<Nullable<Unit>[]>>;
+
+    abstract convertUnit(amount?: Nullable<number>, unitName?: Nullable<string>, desiredUnitName?: Nullable<string>): Nullable<ConversionResult> | Promise<Nullable<ConversionResult>>;
 
     abstract allUsers(): Nullable<User>[] | Promise<Nullable<User>[]>;
 
@@ -318,13 +313,11 @@ export abstract class IMutation {
 
     abstract removeRecipe(id: string): Nullable<Recipe> | Promise<Nullable<Recipe>>;
 
-    abstract createStock(createStock?: Nullable<CreateStockInput>): Nullable<Stock> | Promise<Nullable<Stock>>;
+    abstract createStock(createStock?: Nullable<CreateStockInput>, inventoryId?: Nullable<string>): Nullable<Stock> | Promise<Nullable<Stock>>;
 
-    abstract createManyStock(createManyStock?: Nullable<Nullable<CreateStockInput>[]>): Nullable<Nullable<Stock>[]> | Promise<Nullable<Nullable<Stock>[]>>;
+    abstract createManyStocks(createManyStocks?: Nullable<Nullable<CreateStockInput>[]>, inventoryId?: Nullable<string>): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
 
-    abstract updateStock(updateStock?: Nullable<UpdateStockInput>): Nullable<Stock> | Promise<Nullable<Stock>>;
-
-    abstract updateManyStock(updateManyStock?: Nullable<Nullable<UpdateStockInput>[]>): Nullable<Nullable<Stock>[]> | Promise<Nullable<Nullable<Stock>[]>>;
+    abstract updateStock(updateStock?: Nullable<CreateStockInput>): Nullable<Stock> | Promise<Nullable<Stock>>;
 
     abstract changeStockPermission(stockId?: Nullable<string>, userId?: Nullable<string>, userPermission?: Nullable<Permission>, desiredPermission?: Nullable<Permission>): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
 
@@ -424,6 +417,10 @@ export class BuildPermissionResponse {
     status?: Nullable<StatusMessage>;
 }
 
+export class Cost {
+    cost: number;
+}
+
 export class ListItem {
     id: string;
     name: string;
@@ -508,8 +505,8 @@ export class Stock {
     unit?: Nullable<Unit>;
     buildRef?: Nullable<Build>;
     ingredient?: Nullable<Ingredient>;
-    permission?: Nullable<Permission>;
     inventory?: Nullable<Inventory>;
+    pricePerOunce?: Nullable<number>;
 }
 
 export class Touch {
@@ -557,6 +554,13 @@ export class UnitConversion {
     fromUnit?: Nullable<Unit>;
     toUnit?: Nullable<Unit>;
     factor?: Nullable<number>;
+}
+
+export class ConversionResult {
+    originalAmount: number;
+    convertedAmount: number;
+    originalUnit: string;
+    convertedUnit: string;
 }
 
 export class User {

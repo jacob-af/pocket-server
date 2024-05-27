@@ -94,6 +94,10 @@ input RecipeNameInput {
   name: String!
 }
 
+type Cost {
+  cost: Float!
+}
+
 input CreateFirstBuildInput {
   buildName: String!
   instructions: String
@@ -142,6 +146,7 @@ type Query {
   findAllBuilds: [Build]
   findOneBuild(recipeName: String!, buildName: String!): Build
   findFolloweddUsersBuildPermission(buildId: String!): [UserBuildPermission]
+  costBuild(buildId: String, inventoryId: String): Cost
 }
 
 type Mutation {
