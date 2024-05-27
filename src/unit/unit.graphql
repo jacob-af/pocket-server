@@ -14,7 +14,19 @@ type UnitConversion {
   factor: Float
 }
 
+type ConversionResult {
+  originalAmount: Float!
+  convertedAmount: Float!
+  originalUnit: String!
+  convertedUnit: String!
+}
+
 type Query {
   findAllUnits: [Unit]
   findSomeUnits(unitType: String): [Unit]
+  convertUnit(
+    amount: Float
+    unitName: String
+    desiredUnitName: String
+  ): ConversionResult
 }

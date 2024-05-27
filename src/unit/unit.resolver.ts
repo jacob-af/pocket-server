@@ -1,6 +1,7 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 
 import { UnitService } from './unit.service';
+import { ConversionResult } from 'src/graphql';
 
 @Resolver('Unit')
 export class UnitResolver {
@@ -20,5 +21,18 @@ export class UnitResolver {
         OR: [{ unitType }, { unitType: 'common' }],
       },
     });
+  }
+
+  @Query(() => ConversionResult)
+  async convertUnit(
+    @Args('amount') amount: number,
+    @Args('unitName') unitName: string,
+    @Args('desiredUnitName') desiredUnitName: string,
+  ): Promise<ConversionResult> {
+    return await this.unitService.convertUnits(
+      amount,
+      unitName,
+      desiredUnitName,
+    );
   }
 }

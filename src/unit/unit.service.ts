@@ -15,4 +15,36 @@ export class UnitService {
       where: { abbreviation: unitAbb },
     });
   }
+
+  async convertUnits(
+    amount: number,
+    unitName: string,
+    desiredUnitName: string,
+  ) {
+    const conversion = await this.prisma.unitConversion.findUnique({
+      where: {
+        fromUnitName_toUnitName: {
+          fromUnitName: unitName,
+          toUnitName: desiredUnitName,
+        },
+      },
+      select: {
+        factor: true,
+      },
+    });
+
+    if (!conversion) {
+      throw new Error(
+        `Conversion from ${unitName} to ${desiredUnitName} not found`,
+      );
+    }
+
+    const convertedAmount = amount * conversion.factor;
+    return {
+      originalAmount: amount,
+      convertedAmount: convertedAmount,
+      originalUnit: unitName,
+      convertedUnit: desiredUnitName,
+    };
+  }
 }
