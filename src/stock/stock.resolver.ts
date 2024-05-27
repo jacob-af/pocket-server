@@ -13,6 +13,7 @@ import { CreateStockInput } from 'src/graphql';
 import { UnitService } from 'src/unit/unit.service';
 import { IngredientService } from 'src/ingredient/ingredient.service';
 import { BuildService } from 'src/build/build.service';
+import { InventoryService } from 'src/inventory/inventory.service';
 
 @Resolver('Stock')
 export class StockResolver {
@@ -21,6 +22,7 @@ export class StockResolver {
     private readonly unitService: UnitService,
     private readonly ingredientService: IngredientService,
     private readonly buildService: BuildService,
+    private readonly inventoryService: InventoryService,
   ) {}
 
   @Query('findAllStock')
@@ -28,19 +30,34 @@ export class StockResolver {
     return await this.stockService.findAll();
   }
 
+  @Query('findOneStock')
+  async findOneStock(
+    @Args('ingredientName') ingredientName: string,
+    @Args('inventoryId') inventoryId: string,
+  ) {
+    return await this.stockService.findOne(ingredientName, inventoryId);
+  }
+
   @Mutation('createStock')
   async createStock(
     @Args('createStock') createStock: CreateStockInput,
-    //@CurrentUserId() userId: string,
+    @Args('inventoryId') inventoryId: string,
   ) {
     console.log(createStock);
-    const stock = await this.stockService.create(createStock);
-    // const permission = await this.stockService.changePermission(
-    //   stock.id,
-    //   userId,
-    //   Permission.OWNER,
-    // );
+    const stock = await this.stockService.create(createStock, inventoryId);
 
+    return stock;
+  }
+
+  @Mutation('createManyStocks')
+  async createManyStocks(
+    @Args('createManyStocks') createManyStocks: CreateStockInput[],
+    @Args('inventoryId') inventoryId: string,
+  ) {
+    const stock = await this.stockService.createMany(
+      createManyStocks,
+      inventoryId,
+    );
     return {
       ...stock,
       //permission,
@@ -57,9 +74,19 @@ export class StockResolver {
     console.log(stock);
     return this.ingredientService.ingredient(stock.ingredientName);
   }
+  @ResolveField('inventory')
+  async inventory(@Parent() stock) {
+    console.log(stock);
+    return this.inventoryService.findOne(stock.inventoryId);
+  }
   @ResolveField('buildRef')
   async buildRef(@Parent() stock) {
     console.log(stock);
     return this.buildService.findBuildById(stock.buildId);
+  }
+
+  @ResolveField()
+  async pricePerOunce(@Parent() stock) {
+    return await this.stockService.pricePerOunce(stock);
   }
 }

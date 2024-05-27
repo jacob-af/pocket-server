@@ -4,44 +4,38 @@ type Stock {
   unit: Unit
   buildRef: Build
   ingredient: Ingredient
-  permission: Permission
   inventory: Inventory
+  pricePerOunce: Float
 }
 
 input CreateStockInput {
-  price: Float
-  amount: Float
-  unit: UnitInput
-  buildRef: BuildRefInput
-  ingredient: IngredientInput
-  inventory: InventoryInput
-}
-
-input UpdateStockInput {
-  id: ID!
-  price: Float
-  amount: Float
-  unit: UnitInput
-  buildRef: BuildRefInput
-  ingredient: IngredientInput
+  amount: Float!
+  ingredientName: String!
+  price: Float!
+  unitAbb: String!
+  buildName: String
+  recipeName: String
 }
 
 input BuildRefInput {
   id: String!
   buildName: String
-  permission: Permission
+  recipeName: String
 }
 
 type Query {
   findAllStock: [Stock]
-  findOneStock: Stock
+  findOneStock(ingredientName: String, inventoryId: String): Stock
 }
 
 type Mutation {
-  createStock(createStock: CreateStockInput): Stock
-  createManyStock(createManyStock: [CreateStockInput]): [Stock]
-  updateStock(updateStock: UpdateStockInput): Stock
-  updateManyStock(updateManyStock: [UpdateStockInput]): [Stock]
+  createStock(createStock: CreateStockInput, inventoryId: String): Stock
+  createManyStocks(
+    createManyStocks: [CreateStockInput]
+    inventoryId: String
+  ): StatusMessage
+  updateStock(updateStock: CreateStockInput): Stock
+
   changeStockPermission(
     stockId: String
     userId: String
