@@ -87,25 +87,29 @@ export class BuildResolver {
     @Args('buildId') buildId: string,
     @Args('inventoryId') inventoryId: string,
   ) {
-    const { touch } = await this.buildService.findBuildById(buildId);
-    const totalCost = await touch.reduce(async (accPromise, t) => {
-      const acc = await accPromise;
+    try {
+      const { touch } = await this.buildService.findBuildById(buildId);
+      const totalCost = await touch.reduce(async (accPromise, t) => {
+        const acc = await accPromise;
 
-      const stock = await this.stockService.findOne(
-        t.ingredientName,
-        inventoryId,
-      );
-      const ppo = await this.stockService.pricePerOunce(stock);
-      const { convertedAmount } = await this.unitService.convertUnits(
-        t.amount,
-        t.unitAbb,
-        'oz',
-      );
+        const stock = await this.stockService.findOne(
+          t.ingredientName,
+          inventoryId,
+        );
+        const ppo = await this.stockService.pricePerOunce(stock);
+        const { convertedAmount } = await this.unitService.convertUnits(
+          t.amount,
+          t.unitAbb,
+          'oz',
+        );
 
-      return acc + ppo * convertedAmount;
-    }, Promise.resolve(0));
+        return acc + ppo * convertedAmount;
+      }, Promise.resolve(0));
 
-    return { cost: totalCost };
+      return { cost: totalCost };
+    } catch (err) {
+      throw err;
+    }
   }
 
   @Mutation('updateBuild')

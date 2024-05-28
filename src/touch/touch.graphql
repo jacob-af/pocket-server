@@ -23,15 +23,10 @@ type ArchivedTouch {
 
 input TouchInput {
   id: String!
-  ingredient: IngredientInput!
+  ingredient: UpdateIngredientInput!
   amount: Float!
   Unit: UnitInput!
   order: Int
-}
-
-input IngredientInput {
-  id: String
-  name: String!
 }
 
 input UnitInput {

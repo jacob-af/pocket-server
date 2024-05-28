@@ -25,9 +25,27 @@ export class IngredientService {
   ): Promise<StatusMessage> {
     const successes: Ingredient[] = [];
     const errors: string[] = [];
-    //console.log(createManyIngredientInputs);
+    console.log('hello');
     for (const ingredient of createManyIngredientInputs) {
       try {
+        if (ingredient.parent) {
+          // Check if parent exists
+          const parentExists = await this.prisma.ingredient.findUnique({
+            where: { name: ingredient.parent },
+          });
+
+          // Create parent if it doesn't exist
+          if (!parentExists) {
+            await this.prisma.ingredient.create({
+              data: {
+                name: ingredient.parent,
+                description: 'Parent ingredient created automatically',
+              },
+            });
+          }
+        }
+
+        // Proceed with upsert operation for the ingredient
         const result = await this.prisma.ingredient.upsert({
           where: {
             name: ingredient.name,
@@ -40,28 +58,32 @@ export class IngredientService {
             description: ingredient.description,
           },
         });
+
+        // const parent = await this.prisma.ingredientRelation.create({
+        //   data: {
+        //     parentName: ingredient.parent,
+        //     childName: ingredient.name,
+        //   },
+        // });
         successes.push(result);
-        console.log(successes.length, errors.length);
+        console.log(parent);
+        console.log(successes);
       } catch (err) {
-        console.log(err.message);
         errors.push(ingredient.name);
       }
     }
-
-    console.log(successes.length);
+    console.log(successes.length, errors.length);
     if (successes.length > 0 && errors.length === 0) {
       return {
         message: `Successfully added ${successes.length} ingredients with no errors`,
       };
-    } else if (successes.length > 0 && errors.length === 0) {
+    } else if (successes.length > 0) {
       return {
-        message: `Successfully added ${successes} ingredients. The following ingredients  count not be added: ${errors.join(
-          ', ',
-        )}.`,
+        message: `Successfully added ${successes.length} ingredients. The following ingredients could not be added: ${errors.join(', ')}.`,
       };
     } else {
       return {
-        message: 'something has gone horrifically wrong',
+        message: 'Something has gone horrifically wrong',
       };
     }
   }

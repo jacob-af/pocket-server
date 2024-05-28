@@ -8,12 +8,14 @@ type Ingredient {
 input CreateIngredientInput {
   name: String!
   description: String
+  parent: String
 }
 
 input UpdateIngredientInput {
   id: ID!
   name: String!
   description: String
+  parent: String
 }
 
 type Query {

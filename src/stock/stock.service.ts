@@ -73,6 +73,7 @@ export class StockService {
           amount: stock.amount,
           unit: { connect: { abbreviation: stock.unitAbb } },
           price: stock.price,
+          editedAt: new Date(),
         };
 
         if (stock.buildName && stock.recipeName) {

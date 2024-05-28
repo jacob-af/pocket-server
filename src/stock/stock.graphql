@@ -34,8 +34,6 @@ type Mutation {
     createManyStocks: [CreateStockInput]
     inventoryId: String
   ): StatusMessage
-  updateStock(updateStock: CreateStockInput): Stock
-
   changeStockPermission(
     stockId: String
     userId: String

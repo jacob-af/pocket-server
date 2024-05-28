@@ -96,12 +96,14 @@ export class ChangeBuildPermissionInput {
 export class CreateIngredientInput {
     name: string;
     description?: Nullable<string>;
+    parent?: Nullable<string>;
 }
 
 export class UpdateIngredientInput {
     id: string;
     name: string;
     description?: Nullable<string>;
+    parent?: Nullable<string>;
 }
 
 export class InventoryInput {
@@ -143,15 +145,10 @@ export class BuildRefInput {
 
 export class TouchInput {
     id: string;
-    ingredient: IngredientInput;
+    ingredient: UpdateIngredientInput;
     amount: number;
     Unit: UnitInput;
     order?: Nullable<number>;
-}
-
-export class IngredientInput {
-    id?: Nullable<string>;
-    name: string;
 }
 
 export class UnitInput {
@@ -316,8 +313,6 @@ export abstract class IMutation {
     abstract createStock(createStock?: Nullable<CreateStockInput>, inventoryId?: Nullable<string>): Nullable<Stock> | Promise<Nullable<Stock>>;
 
     abstract createManyStocks(createManyStocks?: Nullable<Nullable<CreateStockInput>[]>, inventoryId?: Nullable<string>): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
-
-    abstract updateStock(updateStock?: Nullable<CreateStockInput>): Nullable<Stock> | Promise<Nullable<Stock>>;
 
     abstract changeStockPermission(stockId?: Nullable<string>, userId?: Nullable<string>, userPermission?: Nullable<Permission>, desiredPermission?: Nullable<Permission>): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
 
