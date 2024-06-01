@@ -39,7 +39,7 @@ type RecipeName {
 }
 
 input CreateBuildInput {
-  recipe: RecipeNameInput!
+  recipe: RecipeInput!
   buildName: String!
   instructions: String
   glassware: String
@@ -90,10 +90,6 @@ type BuildPermissionResponse {
   status: StatusMessage
 }
 
-input RecipeNameInput {
-  name: String!
-}
-
 type Cost {
   cost: Float!
 }
@@ -108,7 +104,7 @@ input CreateFirstBuildInput {
 }
 
 input UpdateBuildInput {
-  recipe: RecipeNameInput!
+  recipe: RecipeInput!
   buildId: String!
   buildName: String
   instructions: String

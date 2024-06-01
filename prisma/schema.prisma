@@ -163,11 +163,10 @@ model Touch {
   buildId        String
   order          Int
   amount         Float      @db.Real
-  unit           String?    @db.VarChar(50)
   ingredientName String
   ingredient     Ingredient @relation(fields: [ingredientName], references: [name], onDelete: NoAction, onUpdate: NoAction)
   version        Int        @default(0)
-  Unit           Unit?      @relation(fields: [unitAbb], references: [abbreviation])
+  unit           Unit?      @relation(fields: [unitAbb], references: [abbreviation])
   unitAbb        String?
 }
 
@@ -177,11 +176,10 @@ model ArchivedTouch {
   archivedBuildId String
   order           Int?
   amount          Float         @db.Real
-  unit            String?       @db.VarChar(50)
   ingredientName  String
   ingredient      Ingredient?   @relation(fields: [ingredientName], references: [name], onDelete: NoAction, onUpdate: NoAction)
   version         Int
-  Unit            Unit?         @relation(fields: [unitAbb], references: [abbreviation])
+  unit            Unit?         @relation(fields: [unitAbb], references: [abbreviation])
   unitAbb         String?
 }
 

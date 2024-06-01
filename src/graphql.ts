@@ -35,7 +35,7 @@ export class LoginInput {
 }
 
 export class CreateBuildInput {
-    recipe: RecipeNameInput;
+    recipe: RecipeInput;
     buildName: string;
     instructions?: Nullable<string>;
     glassware?: Nullable<string>;
@@ -43,10 +43,6 @@ export class CreateBuildInput {
     image?: Nullable<string>;
     isPublic?: Nullable<boolean>;
     touchArray: Nullable<TouchInput>[];
-}
-
-export class RecipeNameInput {
-    name: string;
 }
 
 export class CreateFirstBuildInput {
@@ -59,7 +55,7 @@ export class CreateFirstBuildInput {
 }
 
 export class UpdateBuildInput {
-    recipe: RecipeNameInput;
+    recipe: RecipeInput;
     buildId: string;
     buildName?: Nullable<string>;
     instructions?: Nullable<string>;
@@ -100,7 +96,7 @@ export class CreateIngredientInput {
 }
 
 export class UpdateIngredientInput {
-    id: string;
+    id?: Nullable<string>;
     name: string;
     description?: Nullable<string>;
     parent?: Nullable<string>;
@@ -119,6 +115,12 @@ export class CreateRecipeInput {
     recipeName: string;
     about: string;
     build: CreateFirstBuildInput;
+}
+
+export class RecipeInput {
+    id?: Nullable<string>;
+    name: string;
+    about?: Nullable<string>;
 }
 
 export class UpdateRecipeInput {
@@ -144,10 +146,10 @@ export class BuildRefInput {
 }
 
 export class TouchInput {
-    id: string;
+    id?: Nullable<string>;
     ingredient: UpdateIngredientInput;
     amount: number;
-    Unit: UnitInput;
+    unit: UnitInput;
     order?: Nullable<number>;
 }
 
@@ -510,7 +512,7 @@ export class Touch {
     order: number;
     amount: number;
     unitAbb: string;
-    Unit: Unit;
+    unit: Unit;
     version?: Nullable<number>;
     ingredient: Ingredient;
     ingredientName?: Nullable<string>;
@@ -521,7 +523,7 @@ export class ArchivedTouch {
     archivedBuild?: Nullable<Build>;
     order?: Nullable<number>;
     amount?: Nullable<number>;
-    Unit?: Nullable<Unit>;
+    unit?: Nullable<Unit>;
     unitAbb?: Nullable<string>;
     version?: Nullable<number>;
     ingredient?: Nullable<Ingredient>;
@@ -531,7 +533,7 @@ export class CompleteTouch {
     id: string;
     ingredient: Ingredient;
     amount: number;
-    Unit: Unit;
+    unit: Unit;
     order?: Nullable<number>;
 }
 

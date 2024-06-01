@@ -84,7 +84,6 @@ export class UserService {
           },
         },
       });
-      console.log(users);
       // Map the users and determine if they are followed by or following the userId
       const mappedUsers: UserRelation[] = users.map((user) => ({
         id: user.id,

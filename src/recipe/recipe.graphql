@@ -18,6 +18,12 @@ input CreateRecipeInput {
   build: CreateFirstBuildInput!
 }
 
+input RecipeInput {
+  id: String
+  name: String!
+  about: String
+}
+
 input UpdateRecipeInput {
   id: ID!
   name: String!

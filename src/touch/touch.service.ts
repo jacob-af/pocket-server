@@ -42,7 +42,7 @@ export class TouchService {
           order: index,
           ingredient: { connect: { name: touch.ingredient.name } },
           amount: touch.amount,
-          Unit: { connect: { abbreviation: touch.Unit.abbreviation } },
+          unit: { connect: { abbreviation: touch.unit.abbreviation } },
           version,
         },
       });
@@ -62,14 +62,13 @@ export class TouchService {
           },
         },
         amount: touch.amount,
-        unit: touch.Unit.abbreviation,
-        Unit: { connect: { abbreviation: touch.Unit.abbreviation } },
+        Unit: { connect: { abbreviation: touch.unit.abbreviation } },
         version,
       };
     });
   }
 
-  async archiveTouchArray(buildId, version) {
+  async archiveTouchArray(buildId: string, version: number) {
     const touchToArchive = await this.prisma.touch.findMany({
       where: {
         buildId,
@@ -85,11 +84,10 @@ export class TouchService {
             order: index,
             ingredient: { connect: { name: touch.ingredientName } },
             amount: touch.amount,
-            unit: touch.unit,
-            Unit: { connect: { abbreviation: touch.unit } },
+            unit: { connect: { abbreviation: touch.unitAbb } },
             version,
           },
-          include: { Unit: true },
+          include: { unit: true },
         });
       },
     );

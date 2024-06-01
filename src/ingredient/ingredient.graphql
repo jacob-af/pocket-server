@@ -12,7 +12,7 @@ input CreateIngredientInput {
 }
 
 input UpdateIngredientInput {
-  id: ID!
+  id: ID
   name: String!
   description: String
   parent: String

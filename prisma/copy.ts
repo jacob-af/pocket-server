@@ -5,10 +5,10 @@ const prisma = new PrismaClient();
 async function main() {
   const updateUnits = await prisma.touch.updateMany({
     where: {
-      unit: 'dsh',
+      unitAbb: 'dsh',
     },
     data: {
-      unit: 'dash',
+      unitAbb: 'dash',
     },
   });
 

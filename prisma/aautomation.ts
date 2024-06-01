@@ -10,7 +10,7 @@ async function main() {
     await prisma.touch.update({
       where: { id: touch.id },
       data: {
-        unitAbb: touch.unit,
+        unitAbb: touch.unitAbb,
       },
     });
   }

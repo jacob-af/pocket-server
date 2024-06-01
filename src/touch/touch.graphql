@@ -4,7 +4,7 @@ type Touch {
   order: Int!
   amount: Float!
   unitAbb: String!
-  Unit: Unit!
+  unit: Unit!
   version: Int
   ingredient: Ingredient!
   ingredientName: String
@@ -15,17 +15,17 @@ type ArchivedTouch {
   archivedBuild: Build
   order: Int
   amount: Float
-  Unit: Unit
+  unit: Unit
   unitAbb: String
   version: Int
   ingredient: Ingredient
 }
 
 input TouchInput {
-  id: String!
+  id: String
   ingredient: UpdateIngredientInput!
   amount: Float!
-  Unit: UnitInput!
+  unit: UnitInput!
   order: Int
 }
 
@@ -38,7 +38,7 @@ type CompleteTouch {
   id: String!
   ingredient: Ingredient!
   amount: Float!
-  Unit: Unit!
+  unit: Unit!
   order: Int
 }
 

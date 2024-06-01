@@ -305,6 +305,7 @@ export class AuthService {
   }
 
   async updateRefreshToken(userId: string, refreshToken: string) {
+    console.log('refresh');
     const hRefreshToken = await bcrypt.hash(refreshToken, 10);
     await this.prisma.user.update({
       where: { id: userId },
@@ -328,6 +329,7 @@ export class AuthService {
       user.email,
     );
     await this.updateRefreshToken(user.id, refreshToken);
+    console.log(refreshToken);
     return {
       user,
       accessToken,

@@ -241,7 +241,7 @@ export class BuildService {
         },
         include: {
           ingredient: true,
-          Unit: true,
+          unit: true,
         },
       });
       const arcBuild: ArchivedBuild = await this.prisma.archivedBuild.create({
@@ -398,39 +398,6 @@ export class BuildService {
     });
     return builds;
   }
-
-  // async userBuilds2({
-  //   recipeName,
-  //   userId,
-  // }: {
-  //   recipeName: string;
-  //   userId: string;
-  // }) {
-  //   const builds = await this.prisma.build.findMany({
-  //     where: {
-  //       recipeName: recipeName,
-  //       buildUser: {
-  //         some: {
-  //           userId: userId,
-  //         },
-  //       },
-  //     },
-  //     include: {
-  //       buildUser: {
-  //         where: {
-  //           userId: userId,
-  //         },
-  //       },
-  //     },
-  //   });
-  //   const buildsWithPermission = builds.map((build) => {
-  //     return {
-  //       ...build,
-  //       permission: build.buildUser[0].permission,
-  //     };
-  //   });
-  //   return buildsWithPermission;
-  // }
 
   async findFolloweddUsersBuildPermission({
     userId,
