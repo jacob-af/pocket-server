@@ -202,7 +202,6 @@ export class RecipeBookService {
   }
 
   async publicBooks(skip: number, take: number) {
-    console.log('lazy');
     const books = await this.prisma.recipeBook.findMany({
       where: {
         isPublic: true,

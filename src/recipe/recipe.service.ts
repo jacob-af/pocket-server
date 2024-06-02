@@ -111,7 +111,6 @@ export class RecipeService {
   }
 
   async publicRecipes(skip: number, take: number) {
-    console.log('lazy');
     const recipes = await this.prisma.recipe.findMany({
       where: {
         build: {
@@ -131,7 +130,6 @@ export class RecipeService {
   }
 
   async userRecipes(skip: number, take: number, userId: string) {
-    console.log('lazy');
     const recipes = await this.prisma.recipe.findMany({
       where: {
         build: {
