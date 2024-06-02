@@ -166,7 +166,7 @@ export class BuildService {
         buildId,
         userId,
       );
-
+      console.log(image);
       const build = await this.prisma.build.update({
         where: {
           id: buildId,
