@@ -62,7 +62,7 @@ export class TouchService {
           },
         },
         amount: touch.amount,
-        Unit: { connect: { abbreviation: touch.unit.abbreviation } },
+        unit: { connect: { abbreviation: touch.unit.abbreviation } },
         version,
       };
     });
