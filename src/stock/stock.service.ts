@@ -22,6 +22,19 @@ export class StockService {
     });
   }
 
+  async findMany(inventoryId: string, skip: number, take: number) {
+    return await this.prisma.stock.findMany({
+      where: {
+        inventoryId,
+      },
+      orderBy: {
+        ingredient: { name: 'asc' },
+      },
+      skip,
+      take,
+    });
+  }
+
   async create(createStock: CreateStockInput, inventoryId: string) {
     console.log(createStock);
 

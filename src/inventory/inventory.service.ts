@@ -16,6 +16,23 @@ export class InventoryService {
     });
   }
 
+  async userInventory(userId: string) {
+    const userInv = await this.prisma.inventoryUser.findMany({
+      where: { userId: userId },
+      include: { inventory: true },
+      orderBy: { inventory: { name: 'asc' } },
+    });
+    console.log(userInv);
+    const inventories = userInv.map((ui) => {
+      return {
+        ...ui.inventory,
+        permission: ui.permission,
+      };
+    });
+    console.log(inventories);
+    return inventories;
+  }
+
   async create(name: string, description: string, userId) {
     return await this.prisma.inventory.create({
       data: { name, description, createdById: userId, editedById: userId },

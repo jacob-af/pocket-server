@@ -7,6 +7,7 @@ type Inventory {
   createdBy: User
   editedBy: User
   permission: Permission
+  stock: [Stock]
   #storage: [Storage]
 }
 
@@ -23,6 +24,7 @@ input InventoryInput {
 type Query {
   allInventory: [Inventory]
   oneInventory(inventoryId: String): Inventory
+  userInventory: [Inventory]
 }
 
 type Mutation {

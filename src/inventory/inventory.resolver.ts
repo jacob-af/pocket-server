@@ -2,18 +2,27 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { InventoryService } from './inventory.service';
 import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
 import { Permission } from 'src/graphql';
+import { StockService } from 'src/stock/stock.service';
 
 @Resolver('Inventory')
 export class InventoryResolver {
-  constructor(private readonly inventoryService: InventoryService) {}
+  constructor(
+    private readonly inventoryService: InventoryService,
+    private readonly stockService: StockService,
+  ) {}
 
   @Query('allInventory')
   async allInventory() {
-    await this.inventoryService.findAll();
+    return await this.inventoryService.findAll();
   }
   @Query('oneInventory')
   async oneInventory(@Args('inventoryId') inventoryId: string) {
-    await this.inventoryService.findOne(inventoryId);
+    return await this.inventoryService.findOne(inventoryId);
+  }
+
+  @Query('userInventory')
+  async userInventory(@CurrentUserId() userId: string) {
+    return await this.inventoryService.userInventory(userId);
   }
 
   @Mutation('createInventory')

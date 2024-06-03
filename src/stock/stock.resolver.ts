@@ -37,6 +37,14 @@ export class StockResolver {
   ) {
     return await this.stockService.findOne(ingredientName, inventoryId);
   }
+  @Query('findManyStocks')
+  async findManyStocks(
+    @Args('inventoryId') inventoryId: string,
+    @Args('skip') skip: number,
+    @Args('take') take: number,
+  ) {
+    return await this.stockService.findMany(inventoryId, skip, take);
+  }
 
   @Mutation('createStock')
   async createStock(
@@ -66,22 +74,18 @@ export class StockResolver {
 
   @ResolveField('unit')
   async unit(@Parent() stock) {
-    console.log(stock);
     return this.unitService.findOne(stock.unitAbb);
   }
   @ResolveField('ingredient')
   async ingredient(@Parent() stock) {
-    console.log(stock);
     return this.ingredientService.ingredient(stock.ingredientName);
   }
   @ResolveField('inventory')
   async inventory(@Parent() stock) {
-    console.log(stock);
     return this.inventoryService.findOne(stock.inventoryId);
   }
   @ResolveField('buildRef')
   async buildRef(@Parent() stock) {
-    console.log(stock);
     return this.buildService.findBuildById(stock.buildId);
   }
 

@@ -25,6 +25,7 @@ input BuildRefInput {
 
 type Query {
   findAllStock: [Stock]
+  findManyStocks(inventoryId: String, skip: Int, take: Int): [Stock]
   findOneStock(ingredientName: String, inventoryId: String): Stock
 }
 
