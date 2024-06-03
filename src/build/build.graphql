@@ -39,6 +39,7 @@ type RecipeName {
 }
 
 input CreateBuildInput {
+  id: String
   recipe: RecipeInput!
   buildName: String!
   instructions: String
@@ -104,9 +105,10 @@ input CreateFirstBuildInput {
 }
 
 input UpdateBuildInput {
+  id: String
   recipe: RecipeInput!
   buildId: String!
-  buildName: String
+  buildName: String!
   instructions: String
   glassware: String
   ice: String
@@ -149,6 +151,10 @@ type Mutation {
   createBuild(createBuildInput: CreateBuildInput): Build
   updateBuild(updateBuildInput: UpdateBuildInput): ArchiveResponse
   updateManyBuilds(updateManyBuildInput: [UpdateManyBuildInput]!): StatusMessage
+  uploadBook(
+    bookId: String!
+    updateManyBuildInput: [UpdateBuildInput]!
+  ): StatusMessage
   removeBuild(buildId: String, permission: Permission): Build
   changeBuildPermission(
     changeBuildPermissionInput: ChangeBuildPermissionInput

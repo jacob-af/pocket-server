@@ -4,12 +4,12 @@ import {
   CreateBuildInput,
   Permission,
   UpdateBuildInput,
-  UpdateManyBuildInput,
   UserBuildPermission,
 } from '../graphql';
 
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { RecipeBookService } from 'src/recipe-book/recipe-book.service';
 import { TouchService } from '../touch//touch.service';
 
 @Injectable()
@@ -17,6 +17,7 @@ export class BuildService {
   constructor(
     private prisma: PrismaService,
     private touchService: TouchService,
+    private recipeBookService: RecipeBookService,
   ) {}
 
   async create(
@@ -147,6 +148,27 @@ export class BuildService {
     }
     return null;
   }
+  async findBuildByIdWithPermission(buildId: string, userId) {
+    console.log(buildId);
+    if (!!buildId) {
+      const build = await this.prisma.build.findUnique({
+        where: { id: buildId },
+        include: {
+          buildUser: {
+            where: {
+              userId: userId,
+            },
+            select: {
+              permission: true,
+            },
+          },
+        },
+      });
+      console.log(build);
+      return build.buildUser[0].permission;
+    }
+    return null;
+  }
 
   async update(
     {
@@ -192,7 +214,7 @@ export class BuildService {
       return {
         build,
         status: {
-          message: 'Against all sanity, you did it!',
+          message: 'You win!',
         },
       };
     } catch (err) {
@@ -206,20 +228,56 @@ export class BuildService {
     }
   }
 
-  async updateMany(
-    updateManyBuildsInput: UpdateManyBuildInput[],
+  async uploadBook(
+    bookId: string,
+    updateManyBuildInput: UpdateBuildInput[],
     userId: string,
   ) {
-    console.log(updateManyBuildsInput, userId);
-
-    // updateManyBuildsInput.forEach((recipe) => {
-    //   if (recipe.build.buildId) {
-    //     const permission = this.prisma.buildUser.findUnique({
-    //       where: { userId: userId },
-    //     });
-    //   }
-    // });
-    return { message: 'no' };
+    try {
+      const success = updateManyBuildInput.map(async (build) => {
+        let newBuild = { id: '' };
+        if (build.buildId !== '') {
+          const permission = await this.findBuildByIdWithPermission(
+            build.buildId,
+            userId,
+          );
+          if (permission === 'OWNER' || 'MANAGER') {
+            const added = await this.recipeBookService.addBuildToRecipeBook({
+              buildId: build.buildId,
+              recipeBookId: bookId,
+            });
+            console.log(added, ': added');
+            return await this.update(build, userId);
+          } else {
+            return null;
+          }
+        } else {
+          const buildWithId = await this.findOne(
+            build.recipe.name,
+            build.buildName,
+            userId,
+          );
+          if (buildWithId === null) {
+            newBuild = await this.create(build, userId);
+            await this.recipeBookService.addBuildToRecipeBook({
+              buildId: newBuild.id,
+              recipeBookId: bookId,
+            });
+          } else {
+            newBuild = buildWithId;
+            await this.recipeBookService.addBuildToRecipeBook({
+              buildId: buildWithId.id,
+              recipeBookId: bookId,
+            });
+          }
+          return newBuild;
+        }
+      });
+      console.log(success);
+      return { message: 'ding' };
+    } catch (error) {
+      return { message: error.message };
+    }
   }
 
   async remove(buildId: string) {
@@ -378,6 +436,12 @@ export class BuildService {
       },
     });
     const buildWithPermission = builds.map((build) => {
+      if (build.buildUser.length === 0) {
+        return {
+          ...build,
+          permission: 'VIEW',
+        };
+      }
       return {
         ...build,
         permission: build.buildUser[0].permission,

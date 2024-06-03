@@ -35,6 +35,7 @@ export class LoginInput {
 }
 
 export class CreateBuildInput {
+    id?: Nullable<string>;
     recipe: RecipeInput;
     buildName: string;
     instructions?: Nullable<string>;
@@ -55,9 +56,10 @@ export class CreateFirstBuildInput {
 }
 
 export class UpdateBuildInput {
+    id?: Nullable<string>;
     recipe: RecipeInput;
     buildId: string;
-    buildName?: Nullable<string>;
+    buildName: string;
     instructions?: Nullable<string>;
     glassware?: Nullable<string>;
     ice?: Nullable<string>;
@@ -198,6 +200,8 @@ export abstract class IQuery {
 
     abstract oneInventory(inventoryId?: Nullable<string>): Nullable<Inventory> | Promise<Nullable<Inventory>>;
 
+    abstract userInventory(): Nullable<Nullable<Inventory>[]> | Promise<Nullable<Nullable<Inventory>[]>>;
+
     abstract getProfile(userId?: Nullable<string>): Profile | Promise<Profile>;
 
     abstract findFolloweddUsersBookPermission(recipeBookId: string): Nullable<Nullable<UserBookPermission>[]> | Promise<Nullable<Nullable<UserBookPermission>[]>>;
@@ -227,6 +231,8 @@ export abstract class IQuery {
     abstract userRecipes(skip?: Nullable<number>, take?: Nullable<number>): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;
 
     abstract findAllStock(): Nullable<Nullable<Stock>[]> | Promise<Nullable<Nullable<Stock>[]>>;
+
+    abstract findManyStocks(inventoryId?: Nullable<string>, skip?: Nullable<number>, take?: Nullable<number>): Nullable<Nullable<Stock>[]> | Promise<Nullable<Nullable<Stock>[]>>;
 
     abstract findOneStock(ingredientName?: Nullable<string>, inventoryId?: Nullable<string>): Nullable<Stock> | Promise<Nullable<Stock>>;
 
@@ -271,6 +277,8 @@ export abstract class IMutation {
     abstract updateBuild(updateBuildInput?: Nullable<UpdateBuildInput>): Nullable<ArchiveResponse> | Promise<Nullable<ArchiveResponse>>;
 
     abstract updateManyBuilds(updateManyBuildInput: Nullable<UpdateManyBuildInput>[]): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
+
+    abstract uploadBook(bookId: string, updateManyBuildInput: Nullable<UpdateBuildInput>[]): Nullable<StatusMessage> | Promise<Nullable<StatusMessage>>;
 
     abstract removeBuild(buildId?: Nullable<string>, permission?: Nullable<Permission>): Nullable<Build> | Promise<Nullable<Build>>;
 
@@ -438,6 +446,7 @@ export class Inventory {
     createdBy?: Nullable<User>;
     editedBy?: Nullable<User>;
     permission?: Nullable<Permission>;
+    stock?: Nullable<Nullable<Stock>[]>;
 }
 
 export class InventoryUser {

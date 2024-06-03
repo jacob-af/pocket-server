@@ -12,11 +12,9 @@ import { RecipeService } from '../recipe/recipe.service';
 import {
   CreateBuildInput,
   UpdateBuildInput,
-  UpdateManyBuildInput,
   ChangeBuildPermissionInput,
   Build,
   Permission,
-  StatusMessage,
 } from '../graphql';
 import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
 import { resolvePermission } from '../utils/resolvePermission';
@@ -52,6 +50,15 @@ export class BuildResolver {
       },
       userId,
     );
+  }
+
+  @Mutation('uploadBook')
+  uploadBook(
+    @Args('bookId') bookId: string,
+    @Args('updateManyBuildInput') updateManyBuildInput: UpdateBuildInput[],
+    @CurrentUserId() userId: string,
+  ) {
+    return this.buildService.uploadBook(bookId, updateManyBuildInput, userId);
   }
 
   @Query('findAllBuilds')
@@ -125,14 +132,6 @@ export class BuildResolver {
     } catch (err) {
       throw new Error('Something has gone wrong with your update');
     }
-  }
-
-  @Mutation('updateManyBuilds')
-  async updateManyBuilds(
-    @Args('updateManyBuildInput') updateManyBuildInput: UpdateManyBuildInput[],
-    @CurrentUserId() userId: string,
-  ): Promise<StatusMessage> {
-    return await this.buildService.updateMany(updateManyBuildInput, userId);
   }
 
   @Mutation('removeBuild')

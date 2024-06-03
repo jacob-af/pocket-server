@@ -1,15 +1,11 @@
 import { Permission, UserBookPermission } from '../graphql';
 
-import { BuildService } from 'src/build/build.service';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class RecipeBookService {
-  constructor(
-    private prisma: PrismaService,
-    private buildService: BuildService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async create({
     name,
@@ -72,8 +68,18 @@ export class RecipeBookService {
     buildId: string;
     recipeBookId: string;
   }) {
-    const res = await this.prisma.recipeBookBuild.create({
-      data: {
+    const res = await this.prisma.recipeBookBuild.upsert({
+      where: {
+        buildId_recipeBookId: {
+          recipeBookId,
+          buildId,
+        },
+      },
+      update: {
+        recipeBookId,
+        buildId,
+      },
+      create: {
         recipeBookId,
         buildId,
       },
@@ -81,6 +87,7 @@ export class RecipeBookService {
         build: true,
       },
     });
+    console.log(res);
     return res.build;
   }
 
@@ -252,6 +259,13 @@ export class RecipeBookService {
                   userId: userId,
                 },
               },
+            },
+          },
+        },
+        orderBy: {
+          build: {
+            recipe: {
+              name: 'asc',
             },
           },
         },

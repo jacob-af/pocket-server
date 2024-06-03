@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
-import { TouchService } from './touch.service';
-import { TouchResolver } from './touch.resolver';
 import { BuildService } from '../build/build.service';
 import { IngredientService } from '../ingredient/ingredient.service';
+import { Module } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { RecipeBookService } from 'src/recipe-book/recipe-book.service';
+import { TouchResolver } from './touch.resolver';
+import { TouchService } from './touch.service';
 
 @Module({
   providers: [
@@ -12,6 +13,7 @@ import { PrismaService } from '../prisma/prisma.service';
     BuildService,
     IngredientService,
     PrismaService,
+    RecipeBookService,
   ],
 })
 export class TouchModule {}

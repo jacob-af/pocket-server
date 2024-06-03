@@ -111,6 +111,7 @@ export class RecipeService {
   }
 
   async publicRecipes(skip: number, take: number) {
+    console.log('lazy');
     const recipes = await this.prisma.recipe.findMany({
       where: {
         build: {
@@ -164,8 +165,31 @@ export class RecipeService {
       orderBy: {
         name: 'asc',
       },
+      include: {
+        build: {
+          include: {
+            buildUser: {
+              where: {
+                userId: userId,
+              },
+              select: {
+                permission: true,
+              },
+            },
+          },
+        },
+      },
     });
+    const updatedRecipes = recipes.map((recipe) => ({
+      ...recipe,
+      build: recipe.build.map((build) => ({
+        ...build,
+        permission:
+          build.buildUser.length > 0 ? build.buildUser[0].permission : 'View',
+      })),
+    }));
+    console.log(updatedRecipes);
 
-    return recipes;
+    return updatedRecipes;
   }
 }
