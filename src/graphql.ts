@@ -153,6 +153,7 @@ export class TouchInput {
     amount: number;
     unit: UnitInput;
     order?: Nullable<number>;
+    cost?: Nullable<number>;
 }
 
 export class UnitInput {
@@ -235,6 +236,8 @@ export abstract class IQuery {
     abstract findManyStocks(inventoryId?: Nullable<string>, skip?: Nullable<number>, take?: Nullable<number>): Nullable<Nullable<Stock>[]> | Promise<Nullable<Nullable<Stock>[]>>;
 
     abstract findOneStock(ingredientName?: Nullable<string>, inventoryId?: Nullable<string>): Nullable<Stock> | Promise<Nullable<Stock>>;
+
+    abstract costTouchArray(touches?: Nullable<Nullable<TouchInput>[]>, inventoryId?: Nullable<string>): Nullable<Nullable<Touch>[]> | Promise<Nullable<Nullable<Touch>[]>>;
 
     abstract findAllUnits(): Nullable<Nullable<Unit>[]> | Promise<Nullable<Nullable<Unit>[]>>;
 
@@ -363,6 +366,7 @@ export class Build {
     image?: Nullable<string>;
     permission?: Nullable<Permission>;
     touch: Touch[];
+    touchWithCost?: Nullable<Nullable<Touch>[]>;
     version?: Nullable<number>;
     archivedBuild?: Nullable<Nullable<ArchivedBuild>[]>;
 }
@@ -525,6 +529,7 @@ export class Touch {
     version?: Nullable<number>;
     ingredient: Ingredient;
     ingredientName?: Nullable<string>;
+    cost?: Nullable<number>;
 }
 
 export class ArchivedTouch {

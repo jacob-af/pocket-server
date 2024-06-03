@@ -5,10 +5,13 @@ import {
   // Args,
   ResolveField,
   Parent,
+  Query,
+  Args,
 } from '@nestjs/graphql';
 import { TouchService } from './touch.service';
 import { BuildService } from '../build/build.service';
 import { IngredientService } from '../ingredient/ingredient.service';
+import { TouchInput } from 'src/graphql';
 
 @Resolver('Touch')
 export class TouchResolver {
@@ -18,15 +21,14 @@ export class TouchResolver {
     private readonly ingredientService: IngredientService,
   ) {}
 
-  // @Query('findAll')
-  // findAll() {
-  //   return this.touchService.findAll();
-  // }
-
-  // @Query('touches')
-  // findOne(@Args('id') id: string) {
-  //   return this.touchService.findOne(id);
-  // }
+  @Query('costTouchArray')
+  costTouchArray(
+    @Args('touches') touches: TouchInput[],
+    @Args('inventoryId') inventoryId: string,
+  ) {
+    console.log('hello');
+    return this.touchService.costTouchArray(touches, inventoryId);
+  }
 
   @ResolveField('ingredient')
   async ingredient(@Parent() touch) {

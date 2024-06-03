@@ -8,6 +8,7 @@ type Touch {
   version: Int
   ingredient: Ingredient!
   ingredientName: String
+  cost: Float
 }
 
 type ArchivedTouch {
@@ -27,6 +28,7 @@ input TouchInput {
   amount: Float!
   unit: UnitInput!
   order: Int
+  cost: Float
 }
 
 input UnitInput {
@@ -42,10 +44,9 @@ type CompleteTouch {
   order: Int
 }
 
-# type Query {
-#   findAll: Touch
-#   touches(option): [Touch]
-# }
+type Query {
+  costTouchArray(touches: [TouchInput], inventoryId: String): [Touch]
+}
 
 type Mutation {
   updateTouch(

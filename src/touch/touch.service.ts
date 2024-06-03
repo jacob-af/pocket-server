@@ -2,10 +2,16 @@ import { ArchivedTouch, TouchInput } from '../graphql';
 
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { StockService } from 'src/stock/stock.service';
+import { UnitService } from 'src/unit/unit.service';
 
 @Injectable()
 export class TouchService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private stockService: StockService,
+    private unitService: UnitService,
+  ) {}
 
   create() {
     return 'This action adds a new touch';
@@ -16,6 +22,18 @@ export class TouchService {
       where: { buildId },
       orderBy: { order: 'asc' },
     });
+  }
+
+  async touchWithCost(buildId: string, inventoryId: string) {
+    const touches = await this.prisma.touch.findMany({
+      where: { buildId },
+      orderBy: { order: 'asc' },
+      include: {
+        ingredient: true,
+        unit: true,
+      },
+    });
+    return this.costTouchArray(touches, inventoryId);
   }
 
   async findOne(id: string) {
@@ -66,6 +84,45 @@ export class TouchService {
         version,
       };
     });
+  }
+
+  async costTouchArray(touches: TouchInput[], inventoryId: string) {
+    console.log(touches);
+    const touchesWithCost = touches.map(async (touch) => {
+      let cost: number = 0;
+      try {
+        const stock = await this.stockService.findOne(
+          touch.ingredient.name,
+          inventoryId,
+        );
+        if (!stock) {
+          console.warn(
+            `Stock not found for ingredient: ${touch.ingredient.name}`,
+          );
+          return { ...touch, cost: 0 };
+        }
+        const ppo = await this.stockService.pricePerOunce(stock);
+        const { convertedAmount } = await this.unitService.convertUnits(
+          touch.amount,
+          touch.unit.abbreviation,
+          'oz',
+        );
+        if (ppo && convertedAmount) {
+          cost = ppo * convertedAmount;
+        }
+      } catch (error) {
+        console.error(`Failed to calculate cost for touch ${touch.id}:`, error);
+        cost = 0;
+      }
+      return {
+        ...touch,
+        cost,
+      };
+    });
+
+    const result = await Promise.all(touchesWithCost);
+    console.log(result);
+    return result;
   }
 
   async archiveTouchArray(buildId: string, version: number) {

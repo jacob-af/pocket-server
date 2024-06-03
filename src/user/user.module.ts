@@ -4,7 +4,9 @@ import { Module } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ProfileService } from 'src/profile/profile.service';
 import { RecipeBookService } from 'src/recipe-book/recipe-book.service';
+import { StockService } from 'src/stock/stock.service';
 import { TouchService } from '../touch/touch.service';
+import { UnitService } from 'src/unit/unit.service';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
 
@@ -12,8 +14,10 @@ import { UserService } from './user.service';
   providers: [
     UserResolver,
     UserService,
+    UnitService,
     BuildService,
     RecipeBookService,
+    StockService,
     TouchService,
     ProfileService,
     PrismaService,

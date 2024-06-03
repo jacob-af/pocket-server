@@ -14,6 +14,7 @@ type Build {
   image: String
   permission: Permission
   touch: [Touch!]!
+  touchWithCost(inventoryId: String): [Touch]
   version: Int
   archivedBuild: [ArchivedBuild]
 }

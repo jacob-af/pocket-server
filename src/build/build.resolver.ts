@@ -192,6 +192,13 @@ export class BuildResolver {
   async touch(@Parent() build: Build) {
     return this.touchService.touch(build.id);
   }
+  @ResolveField('touchWithCost')
+  async touchWithCost(
+    @Parent() build: Build,
+    @Args('inventoryId') inventoryId: string,
+  ) {
+    return this.touchService.touchWithCost(build.id, inventoryId);
+  }
 
   @ResolveField('recipe')
   async recipe(@Parent() build) {
