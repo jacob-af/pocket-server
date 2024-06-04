@@ -2,6 +2,7 @@ type Ingredient {
   id: ID!
   name: String!
   description: String
+  pricePerOunce(inventoryId: String): Float
   #touch: [Touch]
 }
 
@@ -21,6 +22,7 @@ input UpdateIngredientInput {
 type Query {
   ingredients: [Ingredient]!
   ingredient(id: Int!): Ingredient
+  stockList(inventoryId: String): [Ingredient]
 }
 
 type Mutation {

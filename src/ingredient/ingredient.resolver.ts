@@ -1,4 +1,11 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { IngredientService } from './ingredient.service';
 import {
   CreateIngredientInput,
@@ -7,10 +14,14 @@ import {
   StatusMessage,
 } from '../graphql';
 import { Public } from 'src/auth/decorators/public-decorators';
+import { StockService } from 'src/stock/stock.service';
 
 @Resolver('Ingredient')
 export class IngredientResolver {
-  constructor(private readonly ingredientService: IngredientService) {}
+  constructor(
+    private readonly ingredientService: IngredientService,
+    private readonly stockService: StockService,
+  ) {}
 
   @Mutation('createIngredient')
   create(
@@ -40,6 +51,11 @@ export class IngredientResolver {
     return this.ingredientService.ingredient(name);
   }
 
+  @Query('stockList')
+  async stockList(@Args('inventoryId') inventoryId: string) {
+    return await this.ingredientService.stockList(inventoryId);
+  }
+
   @Mutation('updateIngredient')
   update(
     @Args('updateIngredientInput') updateIngredientInput: UpdateIngredientInput,
@@ -48,7 +64,17 @@ export class IngredientResolver {
   }
 
   @Mutation('removeIngredient')
-  remove(@Args('id') id: string) {
+  async remove(@Args('id') id: string) {
     return this.ingredientService.remove(id);
+  }
+
+  @ResolveField('pricePerOunce')
+  async pricePerOunce(
+    @Parent() ingredient: Ingredient,
+    @Args('inventoryId') inventoryId: string,
+  ) {
+    const stock = await this.stockService.findOne(ingredient.name, inventoryId);
+
+    return this.stockService.pricePerOunce(stock);
   }
 }

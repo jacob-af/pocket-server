@@ -197,6 +197,8 @@ export abstract class IQuery {
 
     abstract ingredient(id: number): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
 
+    abstract stockList(inventoryId?: Nullable<string>): Nullable<Nullable<Ingredient>[]> | Promise<Nullable<Nullable<Ingredient>[]>>;
+
     abstract allInventory(): Nullable<Nullable<Inventory>[]> | Promise<Nullable<Nullable<Inventory>[]>>;
 
     abstract oneInventory(inventoryId?: Nullable<string>): Nullable<Inventory> | Promise<Nullable<Inventory>>;
@@ -439,6 +441,7 @@ export class Ingredient {
     id: string;
     name: string;
     description?: Nullable<string>;
+    pricePerOunce?: Nullable<number>;
 }
 
 export class Inventory {

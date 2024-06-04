@@ -2,6 +2,7 @@ import {
   CreateIngredientInput,
   Ingredient,
   StatusMessage,
+  Stock,
   UpdateIngredientInput,
 } from '../graphql';
 
@@ -100,6 +101,19 @@ export class IngredientService {
     return await this.prisma.ingredient.findUnique({ where: { name } });
   }
 
+  async stockList(inventoryId: string) {
+    const stockList = await this.prisma.stock.findMany({
+      where: { inventoryId },
+      include: { ingredient: true },
+      orderBy: {
+        ingredient: { name: 'asc' },
+      },
+    });
+    return stockList.map((stock: Stock) => {
+      return stock.ingredient;
+    });
+  }
+
   async update(updateIngredientInput: UpdateIngredientInput) {
     return await this.prisma.ingredient.update({
       where: { id: updateIngredientInput.id },
@@ -113,32 +127,31 @@ export class IngredientService {
     });
     return `You have deleted #${response.name}`;
   }
-
-  // async getSiblingsInInventory(userId, ingredientName) {
-  //   const siblings = await this.prisma.ingredient.findMany({
-  //     where: {
-  //       parents: {
-  //         some: {
-  //           id: {
-  //             in: (
-  //               await this.prisma.ingredient.findUnique({
-  //                 where: { name: ingredientName },
-  //                 select: { parents: { select: { id: true } } },
-  //               })
-  //             ).parents.map((parent) => parent.id),
-  //           },
-  //         },
-  //       },
-  //       users: {
-  //         some: {
-  //           id: userId,
-  //         },
-  //       },
-  //     },
-  //   });
-
-  //   return siblings;
-  //}
 }
 
 // to be implemented
+// async getSiblingsInInventory(userId, ingredientName) {
+//   const siblings = await this.prisma.ingredient.findMany({
+//     where: {
+//       parents: {
+//         some: {
+//           id: {
+//             in: (
+//               await this.prisma.ingredient.findUnique({
+//                 where: { name: ingredientName },
+//                 select: { parents: { select: { id: true } } },
+//               })
+//             ).parents.map((parent) => parent.id),
+//           },
+//         },
+//       },
+//       users: {
+//         some: {
+//           id: userId,
+//         },
+//       },
+//     },
+//   });
+
+//   return siblings;
+//}
