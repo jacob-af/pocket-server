@@ -2,24 +2,26 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { RecipeBookResolver } from './recipe-book.resolver';
 import { RecipeBookService } from './recipe-book.service';
-import { UserService } from '../user/user.service'; // Ensure the import path is correct
+import { UserService } from '../user/user.service';
 
 describe('RecipeBookResolver', () => {
   let resolver: RecipeBookResolver;
 
   beforeEach(async () => {
-    // Create a mock for UserService
-    const mockUserService = {
+    const mockRecipeBookService = {
       // Mock any methods used by the RecipeBookResolver
-      getUserById: jest.fn().mockResolvedValue({ id: '1', name: 'Test User' }),
-      // Add other methods as necessary
+      findOne: jest.fn().mockResolvedValue({ id: '1', name: 'Test User' }),
     };
+    const mockUserService = {};
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RecipeBookResolver,
-        RecipeBookService,
-        { provide: UserService, useValue: mockUserService }, // Provide the mock
+        {
+          provide: RecipeBookService,
+          useValue: mockRecipeBookService,
+        },
+        { provide: UserService, useValue: mockUserService },
       ],
     }).compile();
 
