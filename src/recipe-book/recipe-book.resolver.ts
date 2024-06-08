@@ -9,10 +9,10 @@ import {
 import { RecipeBookService } from './recipe-book.service';
 import { UserService } from '../user/user.service';
 
-import { resolvePermission } from 'src/utils/resolvePermission';
-import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
-import { Permission, RecipeBook } from 'src/graphql';
-import { Public } from 'src/auth/decorators/public-decorators';
+import { resolvePermission } from '../utils/resolvePermission';
+import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
+import { Permission, RecipeBook } from '../graphql';
+import { Public } from '../auth/decorators/public-decorators';
 
 @Resolver('RecipeBook')
 export class RecipeBookResolver {

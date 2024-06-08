@@ -1,7 +1,7 @@
 type Ingredient {
   id: ID!
   name: String!
-  description: String
+  description: String!
   pricePerOunce(inventoryId: String): Float
   #touch: [Touch]
 }
@@ -32,5 +32,5 @@ type Mutation {
   ): StatusMessage!
 
   updateIngredient(updateIngredientInput: UpdateIngredientInput!): Ingredient!
-  removeIngredient(id: String!): Ingredient
+  removeIngredient(id: String!): StatusMessage!
 }

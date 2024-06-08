@@ -1,17 +1,8 @@
-import {
-  Resolver,
-  // Query,
-  // Mutation,
-  // Args,
-  ResolveField,
-  Parent,
-  Query,
-  Args,
-} from '@nestjs/graphql';
+import { Resolver, ResolveField, Parent, Query, Args } from '@nestjs/graphql';
 import { TouchService } from './touch.service';
 import { BuildService } from '../build/build.service';
 import { IngredientService } from '../ingredient/ingredient.service';
-import { TouchInput } from 'src/graphql';
+import { TouchInput } from '../graphql';
 
 @Resolver('Touch')
 export class TouchResolver {

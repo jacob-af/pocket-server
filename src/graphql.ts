@@ -25,12 +25,12 @@ export enum Permission {
 
 export class CreateUserInput {
     userName: string;
-    email: EmailAddress;
+    email: Email;
     password: string;
 }
 
 export class LoginInput {
-    email: EmailAddress;
+    email: Email;
     password: string;
 }
 
@@ -263,7 +263,7 @@ export abstract class IMutation {
 
     abstract signin(loginInput: LoginInput): AuthPayload | Promise<AuthPayload>;
 
-    abstract googleSignIn(googleUserId: string, email: string, name: string, accessToken: string, tokenExpiry: DateTime, image?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
+    abstract googleSignIn(googleUserId: string, email: string, name: string, accessToken: string, tokenExpiry: Date, image?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
 
     abstract signup(createUserInput: CreateUserInput): AuthPayload | Promise<AuthPayload>;
 
@@ -275,7 +275,7 @@ export abstract class IMutation {
 
     abstract addPasswordAuth(id?: Nullable<string>, password?: Nullable<string>): AuthPayload | Promise<AuthPayload>;
 
-    abstract addOauthAuth(id?: Nullable<string>, provider?: Nullable<string>, providerUserId?: Nullable<string>, accessToken?: Nullable<string>, tokenExpiry?: Nullable<DateTime>): AuthPayload | Promise<AuthPayload>;
+    abstract addOauthAuth(id?: Nullable<string>, provider?: Nullable<string>, providerUserId?: Nullable<string>, accessToken?: Nullable<string>, tokenExpiry?: Nullable<Date>): AuthPayload | Promise<AuthPayload>;
 
     abstract createBuild(createBuildInput?: Nullable<CreateBuildInput>): Nullable<Build> | Promise<Nullable<Build>>;
 
@@ -297,7 +297,7 @@ export abstract class IMutation {
 
     abstract updateIngredient(updateIngredientInput: UpdateIngredientInput): Ingredient | Promise<Ingredient>;
 
-    abstract removeIngredient(id: string): Nullable<Ingredient> | Promise<Nullable<Ingredient>>;
+    abstract removeIngredient(id: string): StatusMessage | Promise<StatusMessage>;
 
     abstract createInventory(name?: Nullable<string>, description?: Nullable<string>): Nullable<Inventory> | Promise<Nullable<Inventory>>;
 
@@ -348,16 +348,16 @@ export class NewUser {
     id: number;
     email: string;
     name?: Nullable<string>;
-    createdAt: DateTime;
-    updatedAt: DateTime;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export class Build {
     id: string;
     recipe: Recipe;
     buildName: string;
-    createdAt?: Nullable<DateTime>;
-    editedAt?: Nullable<DateTime>;
+    createdAt?: Nullable<Date>;
+    editedAt?: Nullable<Date>;
     createdBy?: Nullable<User>;
     createdById?: Nullable<string>;
     editedBy?: Nullable<User>;
@@ -397,7 +397,7 @@ export class ArchivedBuild {
     id: string;
     buildId: string;
     buildName: string;
-    createdAt?: Nullable<DateTime>;
+    createdAt?: Nullable<Date>;
     createdBy?: Nullable<User>;
     instructions?: Nullable<string>;
     notes?: Nullable<string>;
@@ -440,7 +440,7 @@ export class ListItem {
 export class Ingredient {
     id: string;
     name: string;
-    description?: Nullable<string>;
+    description: string;
     pricePerOunce?: Nullable<number>;
 }
 
@@ -448,8 +448,8 @@ export class Inventory {
     id: string;
     name: string;
     description?: Nullable<string>;
-    createdAt?: Nullable<DateTime>;
-    editedAt?: Nullable<DateTime>;
+    createdAt?: Nullable<Date>;
+    editedAt?: Nullable<Date>;
     createdBy?: Nullable<User>;
     editedBy?: Nullable<User>;
     permission?: Nullable<Permission>;
@@ -466,15 +466,17 @@ export class Profile {
     id: string;
     image?: Nullable<string>;
     user?: Nullable<User>;
+    prefferedBook?: Nullable<RecipeBook>;
+    preferredInventory?: Nullable<Inventory>;
 }
 
 export class RecipeBook {
     id: string;
     name: string;
     description: string;
-    createdAt?: Nullable<DateTime>;
+    createdAt?: Nullable<Date>;
     createdById?: Nullable<string>;
-    editedAt?: Nullable<DateTime>;
+    editedAt?: Nullable<Date>;
     createdBy?: Nullable<User>;
     editedBy?: Nullable<User>;
     permission?: Nullable<Permission>;
@@ -500,8 +502,8 @@ export class UserBookPermission {
 
 export class Recipe {
     id: string;
-    createdAt?: Nullable<DateTime>;
-    editedAt?: Nullable<DateTime>;
+    createdAt?: Nullable<Date>;
+    editedAt?: Nullable<Date>;
     name: string;
     about?: Nullable<string>;
     createdBy?: Nullable<User>;
@@ -580,36 +582,39 @@ export class ConversionResult {
 export class User {
     id: string;
     userName: string;
-    email?: Nullable<EmailAddress>;
-    dateJoined?: Nullable<DateTime>;
-    lastEdited?: Nullable<DateTime>;
+    email: Email;
+    dateJoined: Date;
+    lastEdited: Date;
     following?: Nullable<Nullable<Following>[]>;
     followedBy?: Nullable<Nullable<Follower>[]>;
     myBuild?: Nullable<Nullable<Build>[]>;
     allBuilds?: Nullable<Nullable<Build>[]>;
     buildEditedBy?: Nullable<Nullable<Build>[]>;
     profile?: Nullable<Profile>;
+    password?: Nullable<string>;
+    refreshToken?: Nullable<string>;
 }
 
 export class Following {
     id: string;
     userName: string;
-    email?: Nullable<EmailAddress>;
-    dateJoined?: Nullable<DateTime>;
-    lastEdited?: Nullable<DateTime>;
+    email?: Nullable<Email>;
+    dateJoined?: Nullable<Date>;
+    lastEdited?: Nullable<Date>;
     relationship?: Nullable<Relationship>;
 }
 
 export class Follower {
     id: string;
     userName: string;
-    email?: Nullable<EmailAddress>;
-    dateJoined?: Nullable<DateTime>;
-    lastEdited?: Nullable<DateTime>;
+    email?: Nullable<Email>;
+    dateJoined?: Nullable<Date>;
+    lastEdited?: Nullable<Date>;
 }
 
 export class StatusMessage {
-    message?: Nullable<string>;
+    message: string;
+    code?: Nullable<string>;
 }
 
 export class FollowReturn {
@@ -625,6 +630,5 @@ export class UserRelation {
     following: boolean;
 }
 
-export type DateTime = any;
-export type EmailAddress = any;
+export type Email = any;
 type Nullable<T> = T | null;

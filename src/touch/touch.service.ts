@@ -2,8 +2,8 @@ import { ArchivedTouch, TouchInput } from '../graphql';
 
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { StockService } from 'src/stock/stock.service';
-import { UnitService } from 'src/unit/unit.service';
+import { StockService } from '../stock/stock.service';
+import { UnitService } from '../unit/unit.service';
 
 @Injectable()
 export class TouchService {

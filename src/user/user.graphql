@@ -1,7 +1,7 @@
 type User {
   id: ID!
   userName: String!
-  email: Email
+  email: Email!
   dateJoined: Date
   lastEdited: Date
   following: [Following]
@@ -9,7 +9,6 @@ type User {
   myBuild: [Build]
   allBuilds: [Build]
   buildEditedBy: [Build]
-
   profile: Profile
 }
 
@@ -37,7 +36,8 @@ type Follower {
 }
 
 type StatusMessage {
-  message: String
+  message: String!
+  code: String
 }
 
 type FollowReturn {

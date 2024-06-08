@@ -13,8 +13,8 @@ import {
   Ingredient,
   StatusMessage,
 } from '../graphql';
-import { Public } from 'src/auth/decorators/public-decorators';
-import { StockService } from 'src/stock/stock.service';
+import { Public } from '../auth/decorators/public-decorators';
+import { StockService } from '../stock/stock.service';
 
 @Resolver('Ingredient')
 export class IngredientResolver {
@@ -64,8 +64,8 @@ export class IngredientResolver {
   }
 
   @Mutation('removeIngredient')
-  async remove(@Args('id') id: string) {
-    return this.ingredientService.remove(id);
+  async remove(@Args('id') id: string): Promise<StatusMessage> {
+    return await this.ingredientService.remove(id);
   }
 
   @ResolveField('pricePerOunce')

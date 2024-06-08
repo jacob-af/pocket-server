@@ -122,10 +122,14 @@ export class IngredientService {
   }
 
   async remove(id: string) {
-    const response: Ingredient = await this.prisma.ingredient.delete({
-      where: { id },
-    });
-    return `You have deleted #${response.name}`;
+    try {
+      await this.prisma.ingredient.delete({
+        where: { id },
+      });
+      return { message: `You have deleted the ingredient with ID ${id}` };
+    } catch (e) {
+      return { message: e.message };
+    }
   }
 }
 

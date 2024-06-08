@@ -1,7 +1,7 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 
 import { UnitService } from './unit.service';
-import { ConversionResult } from 'src/graphql';
+import { ConversionResult } from '../graphql';
 
 @Resolver('Unit')
 export class UnitResolver {

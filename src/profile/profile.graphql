@@ -2,6 +2,8 @@ type Profile {
   id: ID!
   image: String
   user: User
+  prefferedBook: RecipeBook
+  preferredInventory: Inventory
 }
 
 input ProfileInput {

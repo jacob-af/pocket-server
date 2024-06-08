@@ -1,8 +1,8 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { InventoryService } from './inventory.service';
-import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
-import { Permission } from 'src/graphql';
-import { StockService } from 'src/stock/stock.service';
+import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
+import { Permission } from '../graphql';
+import { StockService } from '../stock/stock.service';
 
 @Resolver('Inventory')
 export class InventoryResolver {

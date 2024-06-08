@@ -11,8 +11,8 @@ model User {
   id                 String           @id @default(uuid())
   email              String           @unique @db.VarChar(100)
   userName           String           @unique @db.VarChar(255)
-  dateJoined         DateTime         @default(now())
-  lastEdited         DateTime         @default(now())
+  dateJoined         DateTime?        @default(now())
+  lastEdited         DateTime?        @default(now())
   password           String?          @db.VarChar(255)
   refreshToken       String?          @db.VarChar(255)
   followedBy         Follow[]         @relation("followedBy")
@@ -31,7 +31,7 @@ model User {
   inventory          Inventory[]      @relation("inventoryCreatedById")
   inventoryEditedBy  Inventory[]      @relation("inventoryEditedById")
   inventoryUser      InventoryUser[]
-  Profile            Profile[]
+  profile            Profile[]
   authMethods        AuthMethod[]
   storageUser        StorageUser[]
   storage            Storage[]
@@ -66,10 +66,14 @@ model OAuthAuth {
 }
 
 model Profile {
-  id     String  @id @default(uuid())
-  image  String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId String  @unique
+  id                   String      @id @default(uuid())
+  image                String?
+  user                 User        @relation(fields: [userId], references: [id])
+  userId               String      @unique
+  preferredBook        RecipeBook? @relation(fields: [preferredBookId], references: [id])
+  preferredInventory   Inventory?  @relation(fields: [preferredInventoryId], references: [id])
+  preferredBookId      String?
+  preferredInventoryId String?
 }
 
 model Follow {
@@ -242,6 +246,7 @@ model RecipeBook {
   recipeBookBuild RecipeBookBuild[]
   recipeBookUser  RecipeBookUser[]
   //crewRecipeBook  CrewRecipeBook[]
+  Profile         Profile[]
 }
 
 model RecipeBookUser {
@@ -277,6 +282,7 @@ model Inventory {
   inventoryUser    InventoryUser[]
   inStock          Stock[]
   //  crewInventory       CrewInventory[]
+  Profile          Profile[]
 }
 
 model InventoryUser {
@@ -334,8 +340,8 @@ model Stock {
   ingredientName String
   unitAbb        String
   buildId        String?
-  ingredient     Ingredient @relation(fields: [ingredientName], references: [name])
-  inventory      Inventory  @relation(fields: [inventoryId], references: [id])
+  ingredient     Ingredient @relation(fields: [ingredientName], references: [name], onDelete: Cascade, onUpdate: Cascade)
+  inventory      Inventory  @relation(fields: [inventoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   inventoryId    String
 
   @@id([inventoryId, ingredientName])

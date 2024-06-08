@@ -13,20 +13,20 @@ export class AuthResolver {
 
   @Public()
   @Mutation('signup')
-  signup(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.authService.createUser(createUserInput);
+  async signup(@Args('createUserInput') createUserInput: CreateUserInput) {
+    return await this.authService.createUser(createUserInput);
   }
 
   @Public()
   @Mutation('login')
-  login(@Args('loginInput') loginInput: LoginInput) {
+  async login(@Args('loginInput') loginInput: LoginInput) {
     console.log('ding');
-    return this.authService.loginUser(loginInput);
+    return await this.authService.loginUser(loginInput);
   }
 
   @Mutation('logout')
-  logout(@CurrentUserId() userId: string) {
-    return this.authService.logout(userId);
+  async logout(@CurrentUserId() userId: string) {
+    return await this.authService.logout(userId);
   }
 
   //start new edit

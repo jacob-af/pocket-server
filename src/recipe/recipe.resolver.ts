@@ -18,8 +18,8 @@ import {
   RecipeBook,
 } from '../graphql';
 import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
-import { resolvePermission } from 'src/utils/resolvePermission';
-import { Public } from 'src/auth/decorators/public-decorators';
+import { resolvePermission } from '../utils/resolvePermission';
+import { Public } from '../auth/decorators/public-decorators';
 
 @Resolver('Recipe')
 export class RecipeResolver {

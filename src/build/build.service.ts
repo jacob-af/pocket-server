@@ -9,7 +9,7 @@ import {
 
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { RecipeBookService } from 'src/recipe-book/recipe-book.service';
+import { RecipeBookService } from '../recipe-book/recipe-book.service';
 import { TouchService } from '../touch//touch.service';
 
 @Injectable()

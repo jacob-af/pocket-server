@@ -18,9 +18,9 @@ import {
 } from '../graphql';
 import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
 import { resolvePermission } from '../utils/resolvePermission';
-import { UserService } from 'src/user/user.service';
-import { StockService } from 'src/stock/stock.service';
-import { UnitService } from 'src/unit/unit.service';
+import { UserService } from '../user/user.service';
+import { StockService } from '../stock/stock.service';
+import { UnitService } from '../unit/unit.service';
 
 @Resolver('Build')
 export class BuildResolver {

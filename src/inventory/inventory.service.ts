@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Permission } from 'src/graphql';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Permission } from '../graphql';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class InventoryService {

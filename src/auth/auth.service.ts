@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 //import { CreateUser } from './dto/create-user.input';
 //import { UpdateAuthInput } from './dto/update-auth.input';
-import { CreateUserInput, LoginInput } from '../graphql';
+import { CreateUserInput, LoginInput, User } from '../graphql';
 
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -23,7 +23,7 @@ export class AuthService {
 
   async createUser(createUserInput: CreateUserInput) {
     const hpassword = await bcrypt.hash(createUserInput.password, 10);
-    const user = await this.prisma.user.create({
+    const user: User = await this.prisma.user.create({
       data: {
         userName: createUserInput.userName,
         password: hpassword,
@@ -168,7 +168,7 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
 
-    return this.prisma.authMethod.create({
+    return await this.prisma.authMethod.create({
       data: {
         user: { connect: { id: id } },
         authType: 'password',
@@ -187,7 +187,6 @@ export class AuthService {
     provider: string,
     providerUserId: string,
     accessToken: string,
-
     tokenExpiry: Date,
   ) {
     return this.prisma.authMethod.create({
@@ -221,7 +220,7 @@ export class AuthService {
       include: { authMethod: true },
     });
     console.log(image, 'image');
-    let user;
+    let user: User;
     if (oauthAuth) {
       // User exists, update tokens
       user = await this.prisma.user.update({
@@ -272,7 +271,13 @@ export class AuthService {
     );
     await this.updateRefreshToken(user.id, refreshToken);
     return {
-      user,
+      user: {
+        id: user.id,
+        userName: user.userName,
+        email: user.email,
+        dateJoined: user.dateJoined,
+        lastEdited: user.lastEdited,
+      },
       accessToken,
       refreshToken,
     };
@@ -330,7 +335,11 @@ export class AuthService {
     await this.updateRefreshToken(user.id, refreshToken);
     console.log(refreshToken);
     return {
-      user,
+      user: {
+        id: user.id,
+        email: user.email,
+        userName: user.userName,
+      },
       accessToken,
       refreshToken,
     };

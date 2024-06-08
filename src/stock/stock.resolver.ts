@@ -9,11 +9,11 @@ import {
 
 //import { CurrentUserId } from 'src/auth/decorators/currentUserId-decorator';
 import { StockService } from './stock.service';
-import { CreateStockInput } from 'src/graphql';
-import { UnitService } from 'src/unit/unit.service';
-import { IngredientService } from 'src/ingredient/ingredient.service';
-import { BuildService } from 'src/build/build.service';
-import { InventoryService } from 'src/inventory/inventory.service';
+import { CreateStockInput } from '../graphql';
+import { UnitService } from '../unit/unit.service';
+import { IngredientService } from '../ingredient/ingredient.service';
+import { BuildService } from '../build/build.service';
+import { InventoryService } from '../inventory/inventory.service';
 
 @Resolver('Stock')
 export class StockResolver {
