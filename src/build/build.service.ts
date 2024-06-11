@@ -22,7 +22,7 @@ export class BuildService {
 
   async create(
     {
-      recipe: { name },
+      recipe: { name, about },
       buildName,
       instructions,
       glassware,
@@ -33,17 +33,26 @@ export class BuildService {
     }: CreateBuildInput,
     userId: string,
   ) {
-    console.log(isPublic);
     try {
       const build = await this.prisma.build.create({
         data: {
-          recipe: { connect: { name } },
+          recipe: {
+            connectOrCreate: {
+              where: { name },
+              create: {
+                name,
+                about,
+                createdBy: { connect: { id: userId } },
+                editedBy: { connect: { id: userId } },
+              },
+            },
+          },
           buildName,
           instructions,
           glassware,
           ice,
           image,
-          isPublic: true,
+          isPublic,
           createdBy: { connect: { id: userId } },
           editedBy: { connect: { id: userId } },
           version: 0,
@@ -69,7 +78,7 @@ export class BuildService {
         permission,
       };
     } catch (err) {
-      console.log(err.messagen);
+      console.log(err.message, ': create Build');
       return err;
     }
   }
@@ -113,29 +122,36 @@ export class BuildService {
   }
 
   async findOne(recipeName: string, buildName: string, userId: string) {
-    const build = await this.prisma.build.findUnique({
-      where: {
-        buildName_recipeName: {
-          recipeName,
-          buildName,
-        },
-      },
-      include: {
-        buildUser: {
-          where: {
-            userId: userId,
-          },
-          select: {
-            permission: true,
+    try {
+      const build = await this.prisma.build.findUnique({
+        where: {
+          buildName_recipeName: {
+            recipeName,
+            buildName,
           },
         },
-      },
-    });
-    console.log(build);
-    return {
-      ...build,
-      permission: build.buildUser[0].permission,
-    };
+        include: {
+          buildUser: {
+            where: {
+              userId: userId,
+            },
+            select: {
+              permission: true,
+            },
+          },
+        },
+      });
+      if (build === null) {
+        return null;
+      }
+      return {
+        ...build,
+        permission: build.buildUser[0].permission,
+      };
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
   }
 
   async findBuildById(buildId: string) {
@@ -234,9 +250,11 @@ export class BuildService {
     userId: string,
   ) {
     try {
+      console.log(updateManyBuildInput[0]);
       const success = updateManyBuildInput.map(async (build) => {
         let newBuild = { id: '' };
-        if (build.buildId !== '') {
+        console.log(build.buildId, 'build Id');
+        if (!!build.buildId) {
           const permission = await this.findBuildByIdWithPermission(
             build.buildId,
             userId,
@@ -252,17 +270,23 @@ export class BuildService {
             return null;
           }
         } else {
+          console.log(build.recipe.name, build.buildName, userId);
           const buildWithId = await this.findOne(
             build.recipe.name,
             build.buildName,
             userId,
           );
           if (buildWithId === null) {
-            newBuild = await this.create(build, userId);
-            await this.recipeBookService.addBuildToRecipeBook({
-              buildId: newBuild.id,
-              recipeBookId: bookId,
-            });
+            try {
+              newBuild = await this.create(build, userId);
+              console.log(newBuild.id, 'new Build');
+              await this.recipeBookService.addBuildToRecipeBook({
+                buildId: newBuild.id,
+                recipeBookId: bookId,
+              });
+            } catch (err) {
+              console.log(err.message, 'id check');
+            }
           } else {
             newBuild = buildWithId;
             await this.recipeBookService.addBuildToRecipeBook({
