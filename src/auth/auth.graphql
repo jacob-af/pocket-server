@@ -4,6 +4,12 @@ type AuthPayload {
   user: User!
 }
 
+type AuthResponse {
+  id: Int!
+  userId: String!
+  authType: String!
+}
+
 input CreateUserInput {
   userName: String!
   email: Email!
@@ -44,14 +50,14 @@ type Mutation {
   logout(userId: ID!): LogoutResponse!
   getNewTokens(refreshToken: String): AuthPayload!
   createNewUser(email: String, userName: String): AuthPayload!
-  addPasswordAuth(id: String, password: String): AuthPayload!
+  addPasswordAuth(id: String, password: String): AuthResponse!
   addOauthAuth(
     id: String
     provider: String
     providerUserId: String
     accessToken: String
     tokenExpiry: Date
-  ): AuthPayload!
+  ): AuthResponse!
 }
 
 type NewUser {

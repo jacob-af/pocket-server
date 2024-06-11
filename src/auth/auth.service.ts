@@ -36,7 +36,11 @@ export class AuthService {
     );
     await this.updateRefreshToken(user.id, refreshToken);
     return {
-      user,
+      user: {
+        id: user.id,
+        email: user.email,
+        userName: user.userName,
+      },
       accessToken,
       refreshToken,
     };
@@ -168,7 +172,7 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
 
-    return await this.prisma.authMethod.create({
+    const res = await this.prisma.authMethod.create({
       data: {
         user: { connect: { id: id } },
         authType: 'password',
@@ -180,6 +184,8 @@ export class AuthService {
         },
       },
     });
+    console.log(res);
+    return res;
   }
 
   async addOAuthAuth(
@@ -275,8 +281,6 @@ export class AuthService {
         id: user.id,
         userName: user.userName,
         email: user.email,
-        dateJoined: user.dateJoined,
-        lastEdited: user.lastEdited,
       },
       accessToken,
       refreshToken,

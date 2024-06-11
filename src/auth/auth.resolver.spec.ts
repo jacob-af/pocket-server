@@ -1,4 +1,9 @@
-import { AuthPayload, CreateUserInput, LoginInput } from '../graphql';
+import {
+  AuthPayload,
+  AuthResponse,
+  CreateUserInput,
+  LoginInput,
+} from '../graphql';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AuthResolver } from './auth.resolver';
@@ -161,37 +166,29 @@ describe('AuthResolver', () => {
     const accessToken = 'accessToken';
     const tokenExpiry = new Date();
 
-    const expectedResult: AuthPayload = {
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
-      user: {
-        id: '1',
-        userName: 'Test User',
-        email: 'test@example.com',
-        dateJoined: new Date('2024-06-08T12:03:09.495Z'),
-        lastEdited: new Date('2024-06-08T12:03:09.495Z'),
-      },
+    const expectedResult: AuthResponse = {
+      id: 1,
+      userId: '1',
+      authType: '1',
     };
 
-    jest
-      .spyOn(authService, 'addOAuthAuth')
-      .mockResolvedValue({ id: 1, userId: '1', authType: '1' });
+    jest.spyOn(authService, 'addOAuthAuth').mockResolvedValue(expectedResult);
 
     const result = await resolver.addOAuthAuth(
+      accessToken,
       id,
       provider,
       providerUserId,
-      accessToken,
       tokenExpiry,
     ); // Await the result
     expect(result).toEqual(expectedResult);
-    expect(authService.addOAuthAuth).toHaveBeenCalledWith({
+    expect(authService.addOAuthAuth).toHaveBeenCalledWith(
+      accessToken,
       id,
       provider,
       providerUserId,
-      accessToken,
       tokenExpiry,
-    });
+    );
   });
 
   describe('signin', () => {
