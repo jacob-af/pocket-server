@@ -6,10 +6,10 @@ jest.mock('@prisma/client', () => {
   const actualPrismaClient = jest.requireActual('@prisma/client');
   return {
     ...actualPrismaClient,
-    PrismaClient: jest.fn().mockImplementation(() => ({
-      $connect: jest.fn(),
-      $disconnect: jest.fn(),
-    })),
+    PrismaClient: class extends actualPrismaClient.PrismaClient {
+      $connect = jest.fn();
+      $disconnect = jest.fn();
+    },
   };
 });
 
