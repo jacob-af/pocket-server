@@ -190,7 +190,7 @@ model ArchivedTouch {
 model Ingredient {
   id            String               @id @default(uuid())
   name          String               @unique @db.VarChar(255)
-  description   String?
+  description   String               @default("")
   touch         Touch[]
   parents       IngredientRelation[] @relation("IngredientParent")
   children      IngredientRelation[] @relation("IngredientChild")
@@ -263,7 +263,7 @@ model RecipeBookBuild {
   buildId      String
   recipeBookId String
   recipeBook   RecipeBook @relation(fields: [recipeBookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  build        Build      @relation(fields: [buildId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  build        Build      @relation(fields: [buildId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([buildId, recipeBookId])
 }
