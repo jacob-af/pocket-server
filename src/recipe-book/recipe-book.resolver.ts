@@ -25,11 +25,13 @@ export class RecipeBookResolver {
   create(
     @Args('name') name: string,
     @Args('description') description: string,
+    @Args('isPublic') isPublic: boolean,
     @CurrentUserId() userId: string,
   ) {
     return this.recipeBookService.create({
       name,
       description,
+      isPublic,
       userId,
     });
   }
@@ -181,6 +183,16 @@ export class RecipeBookResolver {
     @CurrentUserId() userId: string,
   ) {
     return await this.recipeBookService.userBooks(skip, take, userId);
+  }
+
+  @Query('allBookList')
+  async allBookList(@CurrentUserId() userId: string) {
+    return await this.recipeBookService.allBooks({
+      where: {
+        OR: [{ recipeBookUser: { some: { userId } } }, { isPublic: true }],
+      },
+      orderBy: { name: 'asc' },
+    });
   }
 
   @ResolveField('userBuild')

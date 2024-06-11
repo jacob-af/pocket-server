@@ -8,8 +8,28 @@ describe('RecipeBookService', () => {
   let prisma: PrismaService;
 
   beforeEach(async () => {
+    const mockPrismaService = {
+      recipeBook: {
+        create: jest.fn().mockImplementation((data) => ({
+          ...data,
+          id: '1',
+          userBuild: [],
+        })),
+      },
+      recipeBookUser: {
+        upsert: jest.fn().mockImplementation((data) => ({
+          ...data,
+          id: '1',
+        })),
+      },
+      // Add other properties and methods as required by your service
+    };
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [RecipeBookService],
+      providers: [
+        RecipeBookService,
+        { provide: PrismaService, useValue: mockPrismaService },
+      ],
     }).compile();
 
     service = module.get<RecipeBookService>(RecipeBookService);
@@ -21,27 +41,43 @@ describe('RecipeBookService', () => {
   });
 
   describe('create', () => {
-    it('should create a recipe bookl', async () => {
+    it('should create a recipe book', async () => {
       const createRecipeBookInput = {
-        userId: 'userid',
         name: 'recipe book',
         description: 'a recipe book',
-        isPublic: true, // Assuming these fields are also required
-        createdAt: new Date(),
-        editedAt: new Date(),
-        createdById: 'userid',
-        editedById: 'userid',
+        isPublic: true,
+        createdBy: { connect: { id: 'userid' } },
+        editedBy: { connect: { id: 'userid' } },
       };
+
       const result = {
         ...createRecipeBookInput,
         id: '1',
         userBuild: [],
+        createdById: 'userid',
+        editedById: 'userid',
+        createdAt: new Date(),
+        editedAt: new Date(),
       };
       jest.spyOn(prisma.recipeBook, 'create').mockResolvedValue(result);
 
-      expect(await service.create(createRecipeBookInput)).toBe(result);
+      await expect(
+        service.create({
+          name: 'recipe book',
+          description: 'a recipe book',
+          isPublic: true,
+          userId: 'userid',
+        }),
+      ).resolves.toEqual(result);
+
       expect(prisma.recipeBook.create).toHaveBeenCalledWith({
-        data: createRecipeBookInput,
+        data: {
+          name: 'recipe book',
+          description: 'a recipe book',
+          isPublic: true,
+          createdBy: { connect: { id: 'userid' } },
+          editedBy: { connect: { id: 'userid' } },
+        },
       });
     });
   });

@@ -10,16 +10,19 @@ export class RecipeBookService {
   async create({
     name,
     description,
+    isPublic,
     userId,
   }: {
     name: string;
     description: string;
+    isPublic: boolean;
     userId: string;
   }) {
     const recipeBook = await this.prisma.recipeBook.create({
       data: {
         name,
         description,
+        isPublic,
         createdBy: { connect: { id: userId } },
         editedBy: { connect: { id: userId } },
       },
