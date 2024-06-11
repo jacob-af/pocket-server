@@ -1,13 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ProfileService {
-  constructor(
-    private prisma: PrismaService,
-    private touchService: UserService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async getProfile(userId: string) {
     return await this.prisma.profile.findUnique({
