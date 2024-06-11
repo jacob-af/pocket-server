@@ -13,10 +13,6 @@ export class TouchService {
     private unitService: UnitService,
   ) {}
 
-  create() {
-    return 'This action adds a new touch';
-  }
-
   async touch(buildId: string) {
     return await this.prisma.touch.findMany({
       where: { buildId },
@@ -40,14 +36,6 @@ export class TouchService {
     return await this.prisma.touch.findUnique({ where: { id: id } });
   }
 
-  update() {
-    return `This action updates a #$ touch`;
-  }
-
-  remove() {
-    return `This action removes a  touch`;
-  }
-
   async createTouchArray(
     buildId: string,
     touchArray: TouchInput[],
@@ -66,7 +54,7 @@ export class TouchService {
       });
       return newTouch;
     });
-    return newTouchArray;
+    return Promise.all(newTouchArray);
   }
 
   touchArrayWithIndex(touchArray: TouchInput[], version: number) {

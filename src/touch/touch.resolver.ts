@@ -13,12 +13,12 @@ export class TouchResolver {
   ) {}
 
   @Query('costTouchArray')
-  costTouchArray(
+  async costTouchArray(
     @Args('touches') touches: TouchInput[],
     @Args('inventoryId') inventoryId: string,
   ) {
     console.log('hello');
-    return this.touchService.costTouchArray(touches, inventoryId);
+    return await this.touchService.costTouchArray(touches, inventoryId);
   }
 
   @ResolveField('ingredient')
