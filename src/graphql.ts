@@ -211,7 +211,7 @@ export abstract class IQuery {
 
     abstract userInventory(): Nullable<Nullable<Inventory>[]> | Promise<Nullable<Nullable<Inventory>[]>>;
 
-    abstract getProfile(userId?: Nullable<string>): Profile | Promise<Profile>;
+    abstract getProfile(): Profile | Promise<Profile>;
 
     abstract findFolloweddUsersBookPermission(recipeBookId: string): Nullable<Nullable<UserBookPermission>[]> | Promise<Nullable<Nullable<UserBookPermission>[]>>;
 
@@ -374,6 +374,7 @@ export class Build {
     glassware?: Nullable<string>;
     ice?: Nullable<string>;
     image?: Nullable<string>;
+    isPublic?: Nullable<boolean>;
     permission?: Nullable<Permission>;
     touch: Touch[];
     touchWithCost?: Nullable<Nullable<Touch>[]>;
@@ -474,8 +475,10 @@ export class Profile {
     id: string;
     image?: Nullable<string>;
     user?: Nullable<User>;
-    prefferedBook?: Nullable<RecipeBook>;
+    preferredBook?: Nullable<RecipeBook>;
+    preferredBookName?: Nullable<string>;
     preferredInventory?: Nullable<Inventory>;
+    preferredInventoryId?: Nullable<string>;
 }
 
 export class RecipeBook {

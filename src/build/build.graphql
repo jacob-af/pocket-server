@@ -12,6 +12,7 @@ type Build {
   glassware: String
   ice: String
   image: String
+  isPublic: Boolean
   permission: Permission
   touch: [Touch!]!
   touchWithCost(inventoryId: String): [Touch]

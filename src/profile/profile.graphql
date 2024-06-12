@@ -2,8 +2,10 @@ type Profile {
   id: ID!
   image: String
   user: User
-  prefferedBook: RecipeBook
+  preferredBook: RecipeBook
+  preferredBookName: String
   preferredInventory: Inventory
+  preferredInventoryId: String
 }
 
 input ProfileInput {
@@ -12,7 +14,7 @@ input ProfileInput {
 }
 
 type Query {
-  getProfile(userId: String): Profile!
+  getProfile: Profile!
 }
 
 type Mutation {
