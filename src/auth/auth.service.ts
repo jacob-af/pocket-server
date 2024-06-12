@@ -245,6 +245,13 @@ export class AuthService {
               },
             },
           },
+          profile: {
+            upsert: {
+              where: { userId: oauthAuth.authMethod.userId },
+              create: { image },
+              update: { image },
+            },
+          },
         },
       });
     } else {
@@ -264,6 +271,11 @@ export class AuthService {
                   tokenExpiry,
                 },
               },
+            },
+          },
+          profile: {
+            create: {
+              image,
             },
           },
         },

@@ -82,6 +82,7 @@ export class AuthResolver {
     @Args('accessToken') accessToken: string,
     @Args('tokenExpiry') tokenExpiry: Date,
   ): Promise<AuthPayload> {
+    console.log(image, ': resolve image');
     return this.authService.handleGoogleSignIn(
       googleUserId,
       email,
