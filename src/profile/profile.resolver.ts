@@ -10,16 +10,18 @@ import {
 import { CurrentUserId } from '../auth/decorators/currentUserId-decorator';
 import { Profile } from '../graphql';
 import { RecipeBookService } from '../recipe-book/recipe-book.service';
+import { InventoryService } from 'src/inventory/inventory.service';
 
 @Resolver('Profile')
 export class ProfileResolver {
   constructor(
     private readonly profileService: ProfileService,
     private readonly recipeBookService: RecipeBookService,
+    private readonly inventoryService: InventoryService,
   ) {}
 
   @Query('getProfile')
-  getProfile(@Args('userId') userId: string) {
+  getProfile(@CurrentUserId() userId: string) {
     return this.profileService.getProfile(userId);
   }
 
@@ -29,14 +31,18 @@ export class ProfileResolver {
     return this.profileService.updateProfile(userId, image);
   }
 
-  @ResolveField('prefferedBook')
-  async prefferedBook(
+  @ResolveField('preferredBook')
+  async preferredBook(
     @Parent() profile: Profile,
     @CurrentUserId() userId: string,
   ) {
     return await this.recipeBookService.findOne(
-      profile.prefferedBook.name,
+      profile.preferredBookName,
       userId,
     );
+  }
+  @ResolveField('preferredInventory')
+  async preferredInventory(@Parent() profile: Profile) {
+    return await this.inventoryService.findOne(profile.preferredInventoryId);
   }
 }

@@ -1,3 +1,4 @@
+import { InventoryService } from 'src/inventory/inventory.service';
 import { Module } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ProfileResolver } from './profile.resolver';
@@ -10,6 +11,7 @@ import { UserService } from 'src/user/user.service';
     ProfileResolver,
     ProfileService,
     UserService,
+    InventoryService,
     RecipeBookService,
     PrismaService,
   ],
