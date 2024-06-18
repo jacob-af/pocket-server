@@ -6,6 +6,9 @@ type Profile {
   preferredBookName: String
   preferredInventory: Inventory
   preferredInventoryId: String
+  recipes: [Recipe]
+  builds: [Build]
+  books: [RecipeBook]
 }
 
 input ProfileInput {

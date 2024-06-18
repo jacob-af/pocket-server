@@ -479,6 +479,9 @@ export class Profile {
     preferredBookName?: Nullable<string>;
     preferredInventory?: Nullable<Inventory>;
     preferredInventoryId?: Nullable<string>;
+    recipes?: Nullable<Nullable<Recipe>[]>;
+    builds?: Nullable<Nullable<Build>[]>;
+    books?: Nullable<Nullable<RecipeBook>[]>;
 }
 
 export class RecipeBook {
@@ -599,9 +602,6 @@ export class User {
     lastEdited?: Nullable<DateTime>;
     following?: Nullable<Nullable<Following>[]>;
     followedBy?: Nullable<Nullable<Follower>[]>;
-    myBuild?: Nullable<Nullable<Build>[]>;
-    allBuilds?: Nullable<Nullable<Build>[]>;
-    buildEditedBy?: Nullable<Nullable<Build>[]>;
     profile?: Nullable<Profile>;
 }
 

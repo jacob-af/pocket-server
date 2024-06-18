@@ -352,20 +352,8 @@ export class BuildService {
     }
   }
 
-  async allBuilds(userId: string) {
-    const buildUser = await this.prisma.buildUser.findMany({
-      where: { userId: userId },
-    });
-
-    return buildUser.map(async (each) => {
-      const build = await this.prisma.build.findUnique({
-        where: { id: each.buildId },
-      });
-      return {
-        ...build,
-        permission: each.permission,
-      };
-    });
+  async allBuilds(options: object) {
+    return await this.prisma.build.findMany(options);
   }
 
   async changeBuildPermission({

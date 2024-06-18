@@ -81,9 +81,6 @@ describe('AuthService', () => {
     lastEdited: new Date(),
     following: [],
     followedBy: [],
-    myBuild: [],
-    allBuilds: [],
-    buildEditedBy: [],
     profile: null,
   };
 

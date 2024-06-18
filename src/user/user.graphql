@@ -6,9 +6,6 @@ type User {
   lastEdited: Date
   following: [Following]
   followedBy: [Follower]
-  myBuild: [Build]
-  allBuilds: [Build]
-  buildEditedBy: [Build]
   profile: Profile
 }
 
