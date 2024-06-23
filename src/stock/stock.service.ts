@@ -136,7 +136,7 @@ export class StockService {
     }
   }
 
-  async pricePerOunce(stock) {
+  async pricePerOunce(stock: Stock) {
     const conversion = await this.prisma.unitConversion.findUnique({
       where: {
         fromUnitName_toUnitName: {

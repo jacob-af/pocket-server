@@ -197,6 +197,8 @@ export abstract class IQuery {
 
     abstract findFolloweddUsersBuildPermission(buildId: string): Nullable<Nullable<UserBuildPermission>[]> | Promise<Nullable<Nullable<UserBuildPermission>[]>>;
 
+    abstract findByIngredient(ingredientName?: Nullable<string>): Nullable<Nullable<Build>[]> | Promise<Nullable<Nullable<Build>[]>>;
+
     abstract costBuild(buildId?: Nullable<string>, inventoryId?: Nullable<string>): Nullable<Cost> | Promise<Nullable<Cost>>;
 
     abstract ingredients(): Nullable<Ingredient>[] | Promise<Nullable<Ingredient>[]>;
@@ -533,6 +535,7 @@ export class Stock {
     price?: Nullable<number>;
     amount?: Nullable<number>;
     unit?: Nullable<Unit>;
+    unitAbb?: Nullable<string>;
     buildRef?: Nullable<Build>;
     ingredient?: Nullable<Ingredient>;
     inventory?: Nullable<Inventory>;
@@ -603,6 +606,7 @@ export class User {
     following?: Nullable<Nullable<Following>[]>;
     followedBy?: Nullable<Nullable<Follower>[]>;
     profile?: Nullable<Profile>;
+    role?: Nullable<string>;
 }
 
 export class Following {

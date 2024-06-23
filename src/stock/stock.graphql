@@ -2,6 +2,7 @@ type Stock {
   price: Float
   amount: Float
   unit: Unit
+  unitAbb: String
   buildRef: Build
   ingredient: Ingredient
   inventory: Inventory
