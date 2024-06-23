@@ -89,6 +89,22 @@ export class BuildResolver {
     });
   }
 
+  @Query('findByIngredient')
+  async findByIngredient(
+    @CurrentUserId() userId: string,
+    @Args('ingredientname') ingredientName: string,
+  ) {
+    return await this.buildService.allBuilds({
+      where: {
+        touch: {
+          some: {
+            ingredientName,
+          },
+        },
+      },
+    });
+  }
+
   @Query('costBuild')
   async costBuild(
     @Args('buildId') buildId: string,
@@ -98,11 +114,15 @@ export class BuildResolver {
       const { touch } = await this.buildService.findBuildById(buildId);
       const totalCost = await touch.reduce(async (accPromise, t) => {
         const acc = await accPromise;
-
+        console.log(t);
         const stock = await this.stockService.findOne(
           t.ingredientName,
           inventoryId,
         );
+        if (!stock) {
+          console.log('error thrown');
+          throw new Error(t.ingredientName);
+        }
         const ppo = await this.stockService.pricePerOunce(stock);
         const { convertedAmount } = await this.unitService.convertUnits(
           t.amount,
@@ -115,7 +135,7 @@ export class BuildResolver {
 
       return { cost: totalCost };
     } catch (err) {
-      throw err;
+      return err;
     }
   }
 

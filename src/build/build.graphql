@@ -146,6 +146,7 @@ type Query {
   findAllBuilds: [Build]
   findOneBuild(recipeName: String!, buildName: String!): Build
   findFolloweddUsersBuildPermission(buildId: String!): [UserBuildPermission]
+  findByIngredient(ingredientName: String): [Build]
   costBuild(buildId: String, inventoryId: String): Cost
 }
 
