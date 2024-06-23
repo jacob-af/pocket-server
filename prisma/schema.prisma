@@ -15,6 +15,7 @@ model User {
   lastEdited         DateTime?        @default(now())
   password           String?          @db.VarChar(255)
   refreshToken       String?          @db.VarChar(255)
+  role               String           @default("user") @db.VarChar(15)
   followedBy         Follow[]         @relation("followedBy")
   following          Follow[]         @relation("following")
   recipe             Recipe[]
