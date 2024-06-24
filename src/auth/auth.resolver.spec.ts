@@ -47,6 +47,7 @@ describe('AuthResolver', () => {
     id: '1',
     email: 'test@example.com',
     userName: 'Test User',
+    role: 'Free User',
     dateJoined: new Date(),
     lastEdited: new Date(),
     password: 'hashedpassword', // Sensitive field for testing only
@@ -202,6 +203,7 @@ describe('AuthResolver', () => {
           id: '1',
           userName: 'Test User',
           email: 'test@example.com',
+          role: 'Free User',
           dateJoined: new Date('2024-06-08T12:03:09.495Z'),
           lastEdited: new Date('2024-06-08T12:03:09.495Z'),
           password: 'hashedpassword',
