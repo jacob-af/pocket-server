@@ -19,6 +19,8 @@ import { StockModule } from './stock/stock.module';
 import { TouchModule } from './touch/touch.module';
 import { UnitModule } from './unit/unit.module';
 import { UserModule } from './user/user.module';
+import { WebhooksController } from './webhooks/webhooks.controller';
+import { WebhooksModule } from './webhooks/webhooks.module';
 import { join } from 'path';
 
 @Module({
@@ -50,8 +52,9 @@ import { join } from 'path';
     UnitModule,
     InventoryModule,
     StockModule,
+    WebhooksModule,
   ],
-  controllers: [],
+  controllers: [WebhooksController],
   providers: [
     PrismaService,
     { provide: APP_GUARD, useClass: AccessTokenGuard },
