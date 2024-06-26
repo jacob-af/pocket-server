@@ -37,17 +37,11 @@ export class WebhooksController {
     }
 
     switch (event.type) {
-      //   case 'checkout.session.completed':
-      //     const customer = event.data.object;
-      //     console.log(customer);
-      //     await this.webhooksService.createSubscription(
-      //       customer.customer_details.email,
-      //       customer.customer as string,
-      //     );
-      //     console.log(`customer created!`);
-      //     break;
       case 'checkout.session.completed':
         await this.webhooksService.upsertSubscription(event);
+        break;
+      case 'customer.subscription.deleted':
+        await this.webhooksService.deleteSubscription(event);
         break;
 
       // ... handle other event types
