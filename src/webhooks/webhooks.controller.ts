@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Res } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { WebhooksService } from './webhooks.service'; // Import your Webhooks service
 import Stripe from 'stripe';
@@ -14,6 +14,11 @@ export class WebhooksController {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2024-04-10',
     });
+  }
+
+  @Get('/')
+  async index(): Promise<string> {
+    return 'ok';
   }
 
   @Public()
