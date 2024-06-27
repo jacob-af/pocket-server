@@ -16,6 +16,7 @@ export class WebhooksController {
     });
   }
 
+  @Public()
   @Get('/')
   async index(): Promise<string> {
     return 'ok';
