@@ -28,6 +28,16 @@ export class AuthService {
         userName: createUserInput.userName,
         password: hpassword,
         email: createUserInput.email,
+        subscription: {
+          create: {
+            status: 'free',
+          },
+        },
+        profile: {
+          create: {
+            preferredBookName: 'Top 25',
+          },
+        },
       },
     });
     const { accessToken, refreshToken } = await this.createTokens(
