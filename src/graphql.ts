@@ -191,15 +191,13 @@ export class NewTokenResponse {
 export abstract class IQuery {
     abstract hello(): string | Promise<string>;
 
-    abstract findAllBuilds(): Nullable<Nullable<Build>[]> | Promise<Nullable<Nullable<Build>[]>>;
-
     abstract findOneBuild(recipeName: string, buildName: string): Nullable<Build> | Promise<Nullable<Build>>;
 
     abstract findFolloweddUsersBuildPermission(buildId: string): Nullable<Nullable<UserBuildPermission>[]> | Promise<Nullable<Nullable<UserBuildPermission>[]>>;
 
-    abstract findByIngredient(ingredientName?: Nullable<string>): Nullable<Nullable<Build>[]> | Promise<Nullable<Nullable<Build>[]>>;
-
     abstract costBuild(buildId?: Nullable<string>, inventoryId?: Nullable<string>): Nullable<Cost> | Promise<Nullable<Cost>>;
+
+    abstract getBuilds(keyword?: Nullable<string>, isPublic?: Nullable<boolean>, fromBook?: Nullable<boolean>, shared?: Nullable<boolean>, permission?: Nullable<Permission>, createdBy?: Nullable<string>, skip?: Nullable<number>, take?: Nullable<number>): Nullable<Nullable<Build>[]> | Promise<Nullable<Nullable<Build>[]>>;
 
     abstract ingredients(): Nullable<Ingredient>[] | Promise<Nullable<Ingredient>[]>;
 
@@ -499,6 +497,7 @@ export class RecipeBook {
     permission?: Nullable<Permission>;
     userBuild: Build[];
     publicBuild?: Nullable<Nullable<Build>[]>;
+    allBuild?: Nullable<Nullable<Build>[]>;
 }
 
 export class RecipeBookUser {

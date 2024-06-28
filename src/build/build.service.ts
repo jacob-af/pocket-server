@@ -83,43 +83,151 @@ export class BuildService {
     }
   }
 
-  async findAll(recipeName: string, userId: string) {
+  async getBuilds({
+    keyword,
+    isPublic,
+    fromBook,
+    shared,
+    createdById,
+    skip,
+    take,
+    userId,
+  }: {
+    keyword: string;
+    isPublic: boolean;
+    fromBook: boolean;
+    shared: boolean;
+    permission: Permission;
+    createdById: string;
+    skip: number;
+    take: number;
+    userId: string;
+  }) {
     const builds = await this.prisma.build.findMany({
       where: {
-        recipeName: recipeName,
-        OR: [
-          // Direct association through BuildUser
+        AND: [
           {
-            buildUser: {
-              some: {
-                userId: userId,
-              },
-            },
-          },
-          // Indirect association through RecipeBookBuild and RecipeBookUser
-          {
-            recipeBookBuild: {
-              some: {
-                recipeBook: {
-                  recipeBookUser: {
-                    some: {
-                      userId: userId,
+            OR: [
+              {
+                touch: {
+                  some: {
+                    ingredientName: {
+                      contains: keyword,
+                      mode: 'insensitive', // Makes the search case-insensitive
                     },
                   },
                 },
               },
-            },
+              {
+                recipe: {
+                  about: {
+                    contains: keyword,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+              {
+                notes: {
+                  contains: keyword,
+                },
+              },
+            ],
+          },
+          {
+            OR: [
+              {
+                isPublic,
+              },
+              {
+                buildUser: {
+                  some: {
+                    userId: shared ? userId : undefined,
+                  },
+                },
+              },
+              {
+                createdById,
+              },
+              {
+                recipeBookBuild: {
+                  some: {
+                    recipeBook: {
+                      recipeBookUser: {
+                        some: {
+                          userId: fromBook ? userId : undefined,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            ],
           },
         ],
       },
       include: {
-        createdBy: true, // Optional, include related user information
-        editedBy: true, // Optional, include related user information
+        buildUser: {
+          where: {
+            userId: userId,
+          },
+        },
       },
+      skip,
+      take,
     });
-
-    return builds;
+    return builds.map((build) => {
+      console.log(build);
+      if (build.buildUser.length > 0) {
+        return {
+          ...build,
+          permission: build.buildUser[0].permission,
+        };
+      } else {
+        return {
+          ...build,
+          permission: Permission.VIEW,
+        };
+      }
+    });
   }
+
+  // async findAll(recipeName: string, userId: string) {
+  //   const builds = await this.prisma.build.findMany({
+  //     where: {
+  //       recipeName: recipeName,
+  //       OR: [
+  //         // Direct association through BuildUser
+  //         {
+  //           buildUser: {
+  //             some: {
+  //               userId: userId,
+  //             },
+  //           },
+  //         },
+  //         // Indirect association through RecipeBookBuild and RecipeBookUser
+  //         {
+  //           recipeBookBuild: {
+  //             some: {
+  //               recipeBook: {
+  //                 recipeBookUser: {
+  //                   some: {
+  //                     userId: userId
+  //                   },
+  //                 },
+  //               },
+  //             },
+  //           },
+  //         },
+  //       ],
+  //     },
+  //     include: {
+  //       createdBy: true, // Optional, include related user information
+  //       editedBy: true, // Optional, include related user information
+  //     },
+  //   });
+
+  //   return builds;
+  // }
 
   async findOne(recipeName: string, buildName: string, userId: string) {
     try {
@@ -164,6 +272,7 @@ export class BuildService {
     }
     return null;
   }
+
   async findBuildByIdWithPermission(buildId: string, userId) {
     console.log(buildId);
     if (!!buildId) {

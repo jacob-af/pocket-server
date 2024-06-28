@@ -143,11 +143,19 @@ input ChangeBuildPermissionInput {
 }
 
 type Query {
-  findAllBuilds: [Build]
   findOneBuild(recipeName: String!, buildName: String!): Build
   findFolloweddUsersBuildPermission(buildId: String!): [UserBuildPermission]
-  findByIngredient(ingredientName: String): [Build]
   costBuild(buildId: String, inventoryId: String): Cost
+  getBuilds(
+    keyword: String
+    isPublic: Boolean
+    fromBook: Boolean
+    shared: Boolean
+    permission: Permission
+    createdBy: String
+    skip: Int
+    take: Int
+  ): [Build]
 }
 
 type Mutation {

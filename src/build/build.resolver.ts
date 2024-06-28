@@ -61,12 +61,29 @@ export class BuildResolver {
     return this.buildService.uploadBook(bookId, updateManyBuildInput, userId);
   }
 
-  @Query('findAllBuilds')
-  findAll(
-    @Args('recipeName') recipeName: string,
+  @Query('getBuilds')
+  async getBuilds(
+    @Args('keyword') keyword: string,
+    @Args('isPublic') isPublic: boolean,
+    @Args('fromBook') fromBook: boolean,
+    @Args('shared') shared: boolean,
+    @Args('permission') permission: Permission,
+    @Args('createdById') createdById: string,
+    @Args('skip') skip: number,
+    @Args('take') take: number,
     @CurrentUserId() userId: string,
   ) {
-    return this.buildService.findAll(recipeName, userId);
+    return await this.buildService.getBuilds({
+      keyword,
+      isPublic,
+      fromBook,
+      shared,
+      permission,
+      createdById,
+      skip,
+      take,
+      userId,
+    });
   }
 
   @Query('findOneBuild')
@@ -86,22 +103,6 @@ export class BuildResolver {
     return await this.buildService.findFolloweddUsersBuildPermission({
       userId,
       buildId,
-    });
-  }
-
-  @Query('findByIngredient')
-  async findByIngredient(
-    @CurrentUserId() userId: string,
-    @Args('ingredientname') ingredientName: string,
-  ) {
-    return await this.buildService.allBuilds({
-      where: {
-        touch: {
-          some: {
-            ingredientName,
-          },
-        },
-      },
     });
   }
 
