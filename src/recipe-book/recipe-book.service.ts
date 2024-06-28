@@ -152,24 +152,26 @@ export class RecipeBookService {
     userId: string;
     recipeBookId: string;
   }) {
-    const bookUser = await this.prisma.recipeBookUser.delete({
-      where: {
-        userId_recipeBookId: {
-          userId,
-          recipeBookId,
+    try {
+      await this.prisma.recipeBookUser.delete({
+        where: {
+          userId_recipeBookId: {
+            userId,
+            recipeBookId,
+          },
         },
-      },
-      include: {
-        user: true,
-        recipeBook: true,
-      },
-    });
-    return {
-      bookUser,
-      status: {
-        message: `User ${bookUser.user.userName}no longer has access to Recipe Book ${bookUser.recipeBook.name}`,
-      },
-    };
+      });
+      console.log('cheese');
+      return {
+        message: `User no longer has access to Recipe Book`,
+      };
+    } catch (err) {
+      return {
+        status: {
+          message: err.message,
+        },
+      };
+    }
   }
 
   async allBooks(options: object) {
@@ -177,6 +179,7 @@ export class RecipeBookService {
   }
 
   async findOne(name: string, userId: string) {
+    console.log('hello');
     try {
       const recipeBook = await this.prisma.recipeBook.findUnique({
         where: {
@@ -192,11 +195,20 @@ export class RecipeBookService {
           },
         },
       });
-      const book = {
-        ...recipeBook,
-        permission: bookUser.permission,
-      };
-      return book;
+      console.log(recipeBook);
+      if (!!bookUser) {
+        const book = {
+          ...recipeBook,
+          permission: bookUser.permission,
+        };
+        return book;
+      } else {
+        const book = {
+          ...recipeBook,
+          permission: 'VIEW',
+        };
+        return book;
+      }
     } catch (err) {
       console.log(err);
     }
@@ -275,13 +287,14 @@ export class RecipeBookService {
       });
 
       return builds.map((book) => {
-        return book.build.buildUser[0] !== undefined
+        const { buildUser, ...build } = book.build;
+        return buildUser[0] !== undefined
           ? {
-              ...book.build,
-              permission: book.build.buildUser[0].permission,
+              ...build,
+              permission: buildUser[0].permission,
             }
           : {
-              ...book.build,
+              ...build,
               permission: 'VIEW',
             };
       }); // Extract the builds or return an empty array
@@ -291,17 +304,43 @@ export class RecipeBookService {
     }
   }
 
-  async publicBuild(id) {
-    return this.prisma.build.findMany({
+  async publicBuild(recipeBookId: string) {
+    const builds = await this.prisma.build.findMany({
       where: {
         isPublic: true,
         recipeBookBuild: {
           some: {
-            recipeBookId: id,
+            recipeBookId,
           },
         },
       },
     });
+    const buildsWithPermission = builds.map((build) => {
+      return {
+        ...build,
+        permission: 'VIEW',
+      };
+    });
+    return buildsWithPermission;
+  }
+
+  async allBuild(recipeBookId: string, userId: string) {
+    const userBuilds = await this.build(recipeBookId, userId);
+    const publicBuilds = await this.publicBuild(recipeBookId);
+
+    const map = new Map(userBuilds.map((item) => [item.id, item]));
+
+    // Step 3: Iterate through the second array and add new objects
+    publicBuilds.forEach((item) => {
+      if (!map.has(item.id)) {
+        map.set(item.id, item);
+      }
+    });
+
+    // Step 4: Convert the map back to an array
+    const builds = Array.from(map.values());
+    console.log(builds[0]);
+    return builds;
   }
 
   async findFolloweddUsersBookPermission({

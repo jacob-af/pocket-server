@@ -202,9 +202,19 @@ export class RecipeBookResolver {
   ) {
     return await this.recipeBookService.build(recipeBook.id, userId);
   }
+
   @ResolveField('publicBuild')
   async publicBuild(@Parent() recipeBook: RecipeBook) {
     return await this.recipeBookService.publicBuild(recipeBook.id);
+  }
+
+  @ResolveField('allBuild')
+  async allBuild(
+    @Parent() recipeBook: RecipeBook,
+    @CurrentUserId() userId: string,
+  ) {
+    console.log('oading');
+    return await this.recipeBookService.allBuild(recipeBook.id, userId);
   }
 
   @ResolveField('createdBy')

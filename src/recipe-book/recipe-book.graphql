@@ -11,6 +11,7 @@ type RecipeBook {
   permission: Permission
   userBuild: [Build!]!
   publicBuild: [Build]
+  allBuild: [Build]
 }
 
 type RecipeBookUser {
