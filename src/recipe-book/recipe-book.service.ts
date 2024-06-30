@@ -324,10 +324,19 @@ export class RecipeBookService {
     return buildsWithPermission;
   }
 
-  async allBuild(recipeBookId: string, userId: string) {
-    const userBuilds = await this.build(recipeBookId, userId);
+  async allBuild({
+    recipeBookId,
+    userId,
+  }: {
+    recipeBookId: string;
+    userId: string;
+  }) {
+    let userBuilds = [];
+    if (userId != undefined) {
+      userBuilds = await this.build(recipeBookId, userId);
+    }
     const publicBuilds = await this.publicBuild(recipeBookId);
-
+    console.log(publicBuilds);
     const map = new Map(userBuilds.map((item) => [item.id, item]));
 
     // Step 3: Iterate through the second array and add new objects

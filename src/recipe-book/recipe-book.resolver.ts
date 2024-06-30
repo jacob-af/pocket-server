@@ -211,10 +211,12 @@ export class RecipeBookResolver {
   @ResolveField('allBuild')
   async allBuild(
     @Parent() recipeBook: RecipeBook,
-    @CurrentUserId() userId: string,
+    @CurrentUserId() userId?: string,
   ) {
-    console.log('oading');
-    return await this.recipeBookService.allBuild(recipeBook.id, userId);
+    return await this.recipeBookService.allBuild({
+      recipeBookId: recipeBook.id,
+      userId,
+    });
   }
 
   @ResolveField('createdBy')
