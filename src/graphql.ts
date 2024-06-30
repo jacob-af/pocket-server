@@ -241,6 +241,8 @@ export abstract class IQuery {
 
     abstract userRecipes(skip?: Nullable<number>, take?: Nullable<number>): Nullable<Recipe>[] | Promise<Nullable<Recipe>[]>;
 
+    abstract getRecipes(keyword?: Nullable<string>, isPublic?: Nullable<boolean>, fromBook?: Nullable<boolean>, shared?: Nullable<boolean>, permission?: Nullable<Permission>, createdBy?: Nullable<string>, orderBy?: Nullable<string>, asc?: Nullable<boolean>, skip?: Nullable<number>, take?: Nullable<number>): Nullable<Nullable<Recipe>[]> | Promise<Nullable<Nullable<Recipe>[]>>;
+
     abstract findAllStock(): Nullable<Nullable<Stock>[]> | Promise<Nullable<Nullable<Stock>[]>>;
 
     abstract findManyStocks(inventoryId?: Nullable<string>, skip?: Nullable<number>, take?: Nullable<number>): Nullable<Nullable<Stock>[]> | Promise<Nullable<Nullable<Stock>[]>>;
@@ -497,7 +499,7 @@ export class RecipeBook {
     permission?: Nullable<Permission>;
     userBuild: Build[];
     publicBuild?: Nullable<Nullable<Build>[]>;
-    allBuild?: Nullable<Nullable<Build>[]>;
+    allBuild: Build[];
 }
 
 export class RecipeBookUser {

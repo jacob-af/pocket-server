@@ -38,6 +38,18 @@ type Query {
   recipe(name: String!): Recipe
   userRecipeList: [Recipe]!
   userRecipes(skip: Int, take: Int): [Recipe]!
+  getRecipes(
+    keyword: String
+    isPublic: Boolean
+    fromBook: Boolean
+    shared: Boolean
+    permission: Permission
+    createdBy: String
+    orderBy: String
+    asc: Boolean
+    skip: Int
+    take: Int
+  ): [Recipe]
 }
 
 type Mutation {

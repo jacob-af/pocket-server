@@ -71,6 +71,32 @@ export class RecipeResolver {
   }
 
   //Queries
+  @Query('getRecipes')
+  async getRecipes(
+    @Args('keyword') keyword: string,
+    @Args('isPublic') isPublic: boolean,
+    @Args('fromBook') fromBook: boolean,
+    @Args('shared') shared: boolean,
+    @Args('createdBy') createdById: string,
+    @Args('orderBy') orderBy: string,
+    @Args('asc') asc: boolean,
+    @Args('skip') skip: number,
+    @Args('take') take: number,
+    @CurrentUserId() userId: string,
+  ) {
+    return await this.recipeService.getRecipes({
+      keyword,
+      isPublic,
+      fromBook,
+      shared,
+      createdById,
+      orderBy,
+      asc,
+      skip,
+      take,
+      userId,
+    });
+  }
 
   @Public()
   @Query('publicRecipe')
@@ -126,6 +152,25 @@ export class RecipeResolver {
   async publicBuild(@Parent() book: RecipeBook) {
     return this.buildService.publicBuilds(book.name);
   }
+
+  // @ResolveField('build')
+  // async build(
+  //   @Parent() recipe: Recipe,
+  //   @Args('isPublic') isPublic: boolean,
+  //   @Args('fromBook') fromBook: boolean,
+  //   @Args('shared') shared: boolean,
+  //   @Args('createdBy') createdById: string,
+  //   @CurrentUserId() userId: string,
+  // ) {
+  //   return this.buildService.getBuilds({
+  //     recipeName: recipe.name,
+  //     isPublic,
+  //     fromBook,
+  //     shared,
+  //     createdById,
+  //     userId,
+  //   });
+  // }
 
   @ResolveField('createdBy')
   async createdBy(@Parent() recipe: Recipe) {

@@ -89,6 +89,105 @@ export class RecipeService {
     return await this.prisma.recipe.delete({ where: { id } });
   }
 
+  async getRecipes({
+    keyword,
+    isPublic,
+    fromBook,
+    shared,
+    createdById,
+    orderBy = 'name',
+    asc = true,
+    skip,
+    take,
+    userId,
+  }: {
+    keyword: string;
+    isPublic: boolean;
+    fromBook: boolean;
+    shared: boolean;
+    createdById: string;
+    orderBy: string;
+    asc: boolean;
+    skip: number;
+    take: number;
+    userId: string;
+  }) {
+    const recipes = await this.prisma.recipe.findMany({
+      where: {
+        build: {
+          some: {
+            AND: [
+              {
+                OR: [
+                  {
+                    touch: {
+                      some: {
+                        ingredientName: {
+                          contains: keyword,
+                          mode: 'insensitive', // Makes the search case-insensitive
+                        },
+                      },
+                    },
+                  },
+                  {
+                    recipe: {
+                      about: {
+                        contains: keyword,
+                        mode: 'insensitive',
+                      },
+                    },
+                  },
+                  {
+                    notes: {
+                      contains: keyword,
+                    },
+                  },
+                ],
+              },
+              {
+                AND: [
+                  {
+                    isPublic,
+                  },
+                  {
+                    buildUser: {
+                      some: {
+                        userId: shared ? userId : undefined,
+                      },
+                    },
+                  },
+                  {
+                    createdById,
+                  },
+                  {
+                    recipeBookBuild: {
+                      some: {
+                        recipeBook: {
+                          recipeBookUser: {
+                            some: {
+                              userId: fromBook ? userId : undefined,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      },
+
+      orderBy: {
+        [orderBy]: asc ? 'asc' : 'desc',
+      },
+      skip,
+      take,
+    });
+    return recipes;
+  }
+
   async allRecipes(options: object) {
     return await this.prisma.recipe.findMany(options);
   }
